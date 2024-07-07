@@ -47,7 +47,7 @@ class UserCoverModel
         if ($style) {
             $this->_style = $style;
         } else {
-            $this->_style = "tr:hover .animetitle[href*='/{id}/']:before{background-image:url({url})}";
+            $this->_style = ".data.image a[href^='/{type}/'{id}/']:before{background-image:url({url})!important}";
         }
     }
 
