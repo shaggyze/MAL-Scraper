@@ -95,7 +95,6 @@ class UserListModel extends MainModel
                 $count = count($content);
                 for ($i = 0; $i < $count; $i++) {
                     if (!empty($content[$i]['anime_image_path'])) {
-						url = $this->.$content[$i]['anime_id'].;
                         $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
                     } else {
                         $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
