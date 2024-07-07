@@ -31,19 +31,28 @@ class UserCoverModel
     private $_style;
 
     /**
+     * CSS genre.
+     *
+     * @var string
+     */
+    private $_genre;
+
+    /**
      * Default constructor.
      *
      * @param string $user
      * @param string $type
      * @param string $style
+     * @param string $genre
      * @param string $parserArea
      *
      * @return void
      */
-    public function __construct($user, $type, $style)
+    public function __construct($user, $type, $style, $genre)
     {
         $this->_user = $user;
         $this->_type = $type;
+		$this->_genre = $genre;
         if ($style) {
             $this->_style = $style;
         } else {
@@ -58,7 +67,7 @@ class UserCoverModel
      */
     public function getAllInfo()
     {
-        $list = (new UserList($this->_user, $this->_type, 7))->getAllInfo();
+        $list = (new UserList($this->_user, $this->_type, 7, $this->_genre))->getAllInfo();
 
         $cover = '';
         foreach ($list as $c) {

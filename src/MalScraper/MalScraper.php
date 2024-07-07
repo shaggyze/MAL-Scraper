@@ -646,7 +646,7 @@ class MalScraper
      *
      * @return array
      */
-    private function getUserList($user, $type = 'anime', $status = 7)
+    private function getUserList($user, $type = 'anime', $status = 7, $genre = 0)
     {
         return (new UserList($user, $type, $status))->getAllInfo();
     }
@@ -657,10 +657,11 @@ class MalScraper
      * @param string      $user  Username
      * @param string      $type  (Optional) Either anime or manga
      * @param string|bool $style (Optional) CSS style for the cover
+     * @param string      $genre  (Optional) number of genre
      *
      * @return string
      */
-    private function getUserCover($user, $type = 'anime', $style = false)
+    private function getUserCover($user, $type = 'anime', $style = false, $genre = 0)
     {
         return (new UserCover($user, $type, $style))->getAllInfo();
     }
