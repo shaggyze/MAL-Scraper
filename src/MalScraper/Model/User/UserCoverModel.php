@@ -47,7 +47,7 @@ class UserCoverModel
         if ($style) {
             $this->_style = $style;
         } else {
-            $this->_style = ".data.image a[href^='/{type}/'{id}/']:before{background-image:url({url})!important}";
+            $this->_style = '.data.image a[href^="/{type}/{id}/"]:before{background-image:url("{url}")!important}';
         }
     }
 

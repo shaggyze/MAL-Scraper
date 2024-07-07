@@ -1,12 +1,14 @@
 {
-    "name": "rl404/mal-scraper",
+    "name": "shaggyze/mal-scraper",
     "description": "Unofficial MyAnimeList API that scrap and parse everything from MyAnimeList web into array and json",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
             "name": "Axel Oktavian Antonio",
-            "email": "axel.rl.404@gmail.com"
+            "email": "axel.rl.404@gmail.com",
+            "name": "ShaggyZE",
+            "email": "shaggyze@gmail.com"
         }
     ],
     "require": {
