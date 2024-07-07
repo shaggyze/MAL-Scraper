@@ -63,9 +63,9 @@ class UserCoverModel
         $cover = '';
         foreach ($list as $c) {
             if ($this->_type == 'anime') {
-                $temp = str_replace(['{type}', '{id}', '{url}'], ['anime', [$c['anime_id'], $c['anime_image_path']], $this->_style);
+                $temp = str_replace(['{type}', '{id}', '{url}'], ['anime', $c['anime_id'], $c['anime_image_path']], $this->_style);
             } else {
-                $temp = str_replace(['{type}', '{id}', '{url}'], ['manga', [$c['manga_id'], $c['manga_image_path']], $this->_style);
+                $temp = str_replace(['{type}', '{id}', '{url}'], ['manga', $c['manga_id'], $c['manga_image_path']], $this->_style);
             }
             $cover .= $temp."\n";
         }
