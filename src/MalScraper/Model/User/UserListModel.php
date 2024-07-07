@@ -80,19 +80,22 @@ class UserListModel extends MainModel
         $offset = 0;
         while (true) {
             $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status;
-
+			
             $content = json_decode(file_get_contents($url), true);
-
+			
             if ($content) {
+                /**
                 $count = count($content);
                 for ($i = 0; $i < $count; $i++) {
-                    if (!empty($content[$i]['anime_image_path'])) {
-                        $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
+					$url2 = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status;
+					$content2 = json_decode(file_get_contents($url2), true);
+                    if (!empty($content[$i]['anime_title'])) {
+                        $content[$i]['anime_desc'] = $content2[$i]['anime_desc']);
                     } else {
-                        $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
+                        $content[$i]['manga_desc'] = $content2[$i]['manga_desc']);
                     }
                 }
-
+                */
                 $data = array_merge($data, $content);
 
                 $offset += 300;

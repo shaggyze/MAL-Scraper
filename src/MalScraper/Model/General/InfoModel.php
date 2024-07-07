@@ -119,14 +119,14 @@ class InfoModel extends MainModel
      * @param string                             $type
      *
      * @return string
-     */
+
     private function getTitle3($anime_info, $type)
     {
         preg_match('/('.$type.':<\/span>)([^<]*)/', $anime_info->innertext, $title);
 
         return trim($title ? $title[2] : '');
     }
-
+     */
     /**
      * Get anime/manga promotional video.
      *

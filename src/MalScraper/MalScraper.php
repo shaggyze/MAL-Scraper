@@ -46,6 +46,7 @@ use MalScraper\Model\Top\TopPeopleModel as TopPeople;
 use MalScraper\Model\User\FriendModel as Friend;
 use MalScraper\Model\User\HistoryModel as History;
 use MalScraper\Model\User\UserCoverModel as UserCover;
+use MalScraper\Model\User\UserDescModel as UserDesc;
 use MalScraper\Model\User\UserListModel as UserList;
 use MalScraper\Model\User\UserModel as User;
 
@@ -662,5 +663,19 @@ class MalScraper
     private function getUserCover($user, $type = 'anime', $style = false)
     {
         return (new UserCover($user, $type, $style))->getAllInfo();
+    }
+
+    /**
+     * Get user desc.
+     *
+     * @param string      $user  Username
+     * @param string      $type  (Optional) Either anime or manga
+     * @param string|bool $style (Optional) CSS style for the desc
+     *
+     * @return string
+     */
+    private function getUserDesc($user, $type = 'anime', $style = false)
+    {
+        return (new UserDesc($user, $type, $style))->getAllInfo();
     }
 }
