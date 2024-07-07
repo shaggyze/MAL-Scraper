@@ -648,7 +648,7 @@ class MalScraper
      */
     private function getUserList($user, $type = 'anime', $status = 7, $genre = 0)
     {
-        return (new UserList($user, $type, $status))->getAllInfo();
+        return (new UserList($user, $type, $status, $genre))->getAllInfo();
     }
 
     /**
@@ -663,7 +663,7 @@ class MalScraper
      */
     private function getUserCover($user, $type = 'anime', $style = false, $genre = 0)
     {
-        return (new UserCover($user, $type, $style))->getAllInfo();
+        return (new UserCover($user, $type, $style, $genre))->getAllInfo();
     }
 
     /**
