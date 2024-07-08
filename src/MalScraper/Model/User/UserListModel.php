@@ -97,12 +97,12 @@ class UserListModel extends MainModel
 			if (!empty($content[$i]['anime_id'])) {
 			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
-			  $content = array_merge($content, $content2['data']);
+			  content[$i]['synopsis'] = $content2['data']['synopsis']);
 			}
 			if (!empty($content[$i]['manga_id'])) {
 			  $url2 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
-			  $content = array_merge($content, $content2['data']);
+			  content[$i]['synopsis'] = $content2['data']['synopsis']);
 			}
 			if (is_array($content[$i]['anime_studios'])) {
 			  $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
