@@ -103,7 +103,7 @@ class InfoModel extends MainModel
     {
         $title2 = [];
 
-        $anime_info = $this->_parser->find('.page-common .spaceit_pad', 0);
+        $anime_info = $this->_parser->find('.dark-text', 0);
 
         $title2['english'] = $this->getTitle3($anime_info, 'English');
         $title2['synonym'] = $this->getTitle3($anime_info, 'Synonyms');
@@ -248,7 +248,7 @@ class InfoModel extends MainModel
     {
         $info = [];
 
-        $anime_info = $this->_parser->find('.js-scrollfix-bottom', 0);
+        $anime_info = $this->_parser->find('.dark-text', 0);
         $other_info = (count($anime_info->find('h2')) > 2) ? $anime_info->find('h2', 1) : $anime_info->find('h2', 0);
         if ($other_info) {
             $next_info = $other_info->next_sibling();
