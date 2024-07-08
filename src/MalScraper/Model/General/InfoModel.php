@@ -98,7 +98,7 @@ class InfoModel extends MainModel
      * Get anime/manga alternative title.
      *
      * @return array
-     */
+     *
     private function getTitle2()
     {
         $title2 = [];
@@ -119,7 +119,7 @@ class InfoModel extends MainModel
      * @param string                             $type
      *
      * @return string
-     */
+     *
     private function getTitle3($anime_info, $type)
     {
         preg_match('/('.$type.':<\/span>)([^<]*)/', $anime_info->innertext, $title);
@@ -243,7 +243,7 @@ class InfoModel extends MainModel
      * Get anime/manga detail info.
      *
      * @return array
-     */
+     *
     private function getOtherInfo()
     {
         $info = [];
