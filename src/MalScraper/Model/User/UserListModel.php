@@ -94,13 +94,13 @@ class UserListModel extends MainModel
             if ($content) {
                 $count = count($content);
                 for ($i = 0; $i < $count; $i++) {
-					if is_array($content[$i]['anime_studios']) {
+					if (is_array($content[$i]['anime_studios'])) {
 						$content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios'])
 					}
-					if is_array($content[$i]['anime_licensors']) {
+					if (is_array($content[$i]['anime_licensors'])) {
 						$content[$i]['anime_licensors'] = implode(", ", $content[$i]['anime_licensors'])
 					}
-					if is_array($content[$i]['anime_season']) {
+					if (is_array($content[$i]['anime_season'])) {
 						$content[$i]['anime_season'] = implode(", ", $content[$i]['anime_season'])
 					}
                     if (!empty($content[$i]['anime_image_path'])) {
@@ -109,13 +109,13 @@ class UserListModel extends MainModel
 					if (!empty($content[$i]['manga_image_path'])) {
                         $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
                     }
-					if is_array($content[$i]['manga_magazines']) {
+					if (is_array($content[$i]['manga_magazines'])) {
 						$content[$i]['manga_magazines'] = implode(", ", $content[$i]['manga_magazines'])
 					}
-					if is_array($content[$i]['genres']) {
+					if (is_array($content[$i]['genres'])) {
 						$content[$i]['genres'] = implode(", ", $content[$i]['genres'])
 					}
-					if is_array($content[$i]['demographics']) {
+					if (is_array($content[$i]['demographics'])) {
 						$content[$i]['demographics'] = implode(", ", $content[$i]['demographics'])
 					}
                 }
