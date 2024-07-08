@@ -95,11 +95,11 @@ class UserListModel extends MainModel
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
-			  $url2 = 'https://api.jikan.moe/v4/anime/' . $content[$i]['anime_id']
-			  $content2 = json_decode(file_get_contents($url), true);
+			  $url2 = 'https://api.jikan.moe/v4/anime/' . $content[$i]['anime_id'];
+			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content = array_merge($content, $content2);
 			} else {
-			  $url2 = 'https://api.jikan.moe/v4/manga/' . $content[$i]['manga_id']
+			  $url2 = 'https://api.jikan.moe/v4/manga/' . $content[$i]['manga_id'];
 			  $content2 = json_decode(file_get_contents($url), true);
 			  $content = array_merge($content, $content2);
 			}
