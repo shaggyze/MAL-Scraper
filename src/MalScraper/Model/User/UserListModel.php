@@ -94,7 +94,7 @@ class UserListModel extends MainModel
 		if ($content) {
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
-			if (!empty($content[$i]['anime_id'])) {
+			/*if (!empty($content[$i]['anime_id'])) {
 			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
@@ -102,7 +102,7 @@ class UserListModel extends MainModel
 			  $url2 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
-			}/*
+			}
 			if (!empty($content[$i]['anime_id'])) {
 			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
@@ -144,8 +144,7 @@ class UserListModel extends MainModel
 			}*/
 			if (!empty($content[$i]['anime_image_path'])) {
 			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
-			}
-			if (!empty($content[$i]['manga_image_path'])) {
+			} else {
 			  $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
 			}
 		  }
