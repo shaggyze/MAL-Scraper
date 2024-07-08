@@ -100,7 +100,7 @@ class UserListModel extends MainModel
 			  $content = array_merge($content, $content2);
 			} else {
 			  $url2 = 'https://api.jikan.moe/v4/manga/' . $content[$i]['manga_id'];
-			  $content2 = json_decode(file_get_contents($url), true);
+			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content = array_merge($content, $content2);
 			}
 			if (is_array($content[$i]['anime_studios'])) {
