@@ -98,12 +98,12 @@ class InfoModel extends MainModel
      * Get anime/manga alternative title.
      *
      * @return array
-     *
+     */
     private function getTitle2()
     {
         $title2 = [];
 
-        $anime_info = $this->_parser->find('.dark-text', 0);
+        $anime_info = $this->_parser->find('span.dark_text', 0);
 
         $title2['english'] = $this->getTitle3($anime_info, 'English');
         $title2['synonym'] = $this->getTitle3($anime_info, 'Synonyms');
@@ -119,7 +119,7 @@ class InfoModel extends MainModel
      * @param string                             $type
      *
      * @return string
-     *
+     */
     private function getTitle3($anime_info, $type)
     {
         preg_match('/('.$type.':<\/span>)([^<]*)/', $anime_info->innertext, $title);
@@ -243,12 +243,12 @@ class InfoModel extends MainModel
      * Get anime/manga detail info.
      *
      * @return array
-     *
+     */
     private function getOtherInfo()
     {
         $info = [];
 
-        $anime_info = $this->_parser->find('.dark-text', 0);
+        $anime_info = $this->_parser->find('.js-scrollfix-bottom', 0);
         $other_info = (count($anime_info->find('h2')) > 2) ? $anime_info->find('h2', 1) : $anime_info->find('h2', 0);
         if ($other_info) {
             $next_info = $other_info->next_sibling();
@@ -833,7 +833,7 @@ class InfoModel extends MainModel
             'id'        => $this->getId(),
             'cover'     => $this->getCover(),
             'title'     => $this->getTitle(),
-            /*'title2'    => $this->getTitle2(),*/
+            'title2'    => $this->getTitle2(),
             'video'     => $this->getVideo(),
             'synopsis'  => $this->getSynopsis(),
             'score'     => $this->getScore(),
@@ -844,7 +844,7 @@ class InfoModel extends MainModel
             'favorite'  => $this->getFavorite(),
         ];
 
-        /*$data = array_merge($data, $this->getOtherInfo());*/
+        $data = array_merge($data, $this->getOtherInfo());
 
         $data2 = [
             'related'        => $this->getRelated(),
