@@ -96,20 +96,39 @@ class UserListModel extends MainModel
 		  for ($i = 0; $i < $count; $i++) {
 			if (is_array($content[$i]['anime_studios'])) {
 			  $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
-			} else if (is_array($content[$i]['anime_licensors'])) {
+			} else {
+			  $content[$i]['anime_studios'] = "";
+			}
+			if (is_array($content[$i]['anime_licensors'])) {
 			  $content[$i]['anime_licensors'] = implode(", ", $content[$i]['anime_licensors']);
-			} else if (is_array($content[$i]['anime_season'])) {
+			} else {
+			  $content[$i]['anime_licensors'] = "";
+			}
+			if (is_array($content[$i]['anime_season'])) {
 			  $content[$i]['anime_season'] = implode(", ", $content[$i]['anime_season']);
-			} else if (!empty($content[$i]['anime_image_path'])) {
+			} else {
+			  $content[$i]['anime_season'] = "";
+			}
+			if (!empty($content[$i]['anime_image_path'])) {
 			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
-			} else if (!empty($content[$i]['manga_image_path'])) {
+			}
+			if (!empty($content[$i]['manga_image_path'])) {
 			  $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
-			} else if (is_array($content[$i]['manga_magazines'])) {
+			}
+			if (is_array($content[$i]['manga_magazines'])) {
 			  $content[$i]['manga_magazines'] = implode(", ", $content[$i]['manga_magazines']);
-			} else if (is_array($content[$i]['genres'])) {
+			} else {
+			  $content[$i]['manga_magazines'] = "";
+			}
+			if (is_array($content[$i]['genres'])) {
 			  $content[$i]['genres'] = implode(", ", $content[$i]['genres']);
-			} else if (is_array($content[$i]['demographics'])) {
+			} else {
+			  $content[$i]['genres'] = "";
+			}
+			if (is_array($content[$i]['demographics'])) {
 			  $content[$i]['demographics'] = implode(", ", $content[$i]['demographics']);
+			} else {
+			  $content[$i]['demographics'] = "";
 			}
 		  }
 
