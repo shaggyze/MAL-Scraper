@@ -833,7 +833,7 @@ class InfoModel extends MainModel
             'id'        => $this->getId(),
             'cover'     => $this->getCover(),
             'title'     => $this->getTitle(),
-            'title2'    => $this->getTitle2(),
+            /*'title2'    => $this->getTitle2(),*/
             'video'     => $this->getVideo(),
             'synopsis'  => $this->getSynopsis(),
             'score'     => $this->getScore(),
@@ -844,7 +844,7 @@ class InfoModel extends MainModel
             'favorite'  => $this->getFavorite(),
         ];
 
-        $data = array_merge($data, $this->getOtherInfo());
+        /*$data = array_merge($data, $this->getOtherInfo());*/
 
         $data2 = [
             'related'        => $this->getRelated(),
