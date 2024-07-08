@@ -157,7 +157,13 @@ class InfoModel extends MainModel
 
             return trim(preg_replace('/\n[^\S\n]*/', "\n", $synopsis));
         } else {
-            return;
+            $synopsis = $this->_parser->find('span[itemprop=description]', 0);
+			if ($synopsis) {
+				$synopsis = $synopsis->plaintext;
+				return trim(preg_replace('/\n[^\S\n]*/', "\n", $synopsis));
+			} else {
+				return;
+			}
         }
     }
 
