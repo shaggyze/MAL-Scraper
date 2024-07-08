@@ -98,8 +98,7 @@ class UserListModel extends MainModel
 			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
-			}
-			if (!empty($content[$i]['manga_id'])) {
+			} else {
 			  $url2 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
@@ -108,13 +107,12 @@ class UserListModel extends MainModel
 			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content[$i]['rank'] = $content2['data']['rank'];
-			}
-			if (!empty($content[$i]['manga_id'])) {
+			} else {
 			  $url2 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			}
-			if (is_array($content[$i]['anime_studios'])) {
+			/*if (is_array($content[$i]['anime_studios'])) {
 			  $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
 			} else {
 			  $content[$i]['anime_studios'] = "";
@@ -128,12 +126,6 @@ class UserListModel extends MainModel
 			  $content[$i]['anime_season'] = implode(", ", $content[$i]['anime_season']);
 			} else {
 			  $content[$i]['anime_season'] = "";
-			}
-			if (!empty($content[$i]['anime_image_path'])) {
-			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
-			}
-			if (!empty($content[$i]['manga_image_path'])) {
-			  $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
 			}
 			if (is_array($content[$i]['manga_magazines'])) {
 			  $content[$i]['manga_magazines'] = implode(", ", $content[$i]['manga_magazines']);
@@ -149,6 +141,12 @@ class UserListModel extends MainModel
 			  $content[$i]['demographics'] = implode(", ", $content[$i]['demographics']);
 			} else {
 			  $content[$i]['demographics'] = "";
+			}*/
+			if (!empty($content[$i]['anime_image_path'])) {
+			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
+			}
+			if (!empty($content[$i]['manga_image_path'])) {
+			  $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
 			}
 		  }
 
