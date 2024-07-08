@@ -248,7 +248,7 @@ class InfoModel extends MainModel
     {
         $info = [];
 
-        $anime_info = $this->_parser->find('span.dark_text', 0);
+        $anime_info = $this->_parser->find('div.leftside', 0);
         $other_info = (count($anime_info->find('h2')) > 2) ? $anime_info->find('h2', 1) : $anime_info->find('h2', 0);
         if ($other_info) {
             $next_info = $other_info->next_sibling();
