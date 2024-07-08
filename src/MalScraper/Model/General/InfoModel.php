@@ -122,7 +122,7 @@ class InfoModel extends MainModel
      */
     private function getTitle3($anime_info, $type)
     {
-        preg_match('/('.$type.':<\/span>)([^<]*)/', $anime_info->innertext, $title);
+        preg_match('/('.$type.':<\/span>)/', $anime_info->innertext, $title);
 
         return trim($title ? $title[2] : '');
     }
