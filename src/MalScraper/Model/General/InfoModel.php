@@ -89,9 +89,9 @@ class InfoModel extends MainModel
      */
     private function getTitle()
     {
-        $anime_cover = $this->_parser->find('img.lazyloaded', 0);
+        $title = $this->_parser->find('h1.title-name.h1_bold_none', 0);
 
-        return $anime_cover ? $anime_cover->alt : '';
+        return trim($title ? $title : '');
     }
 
     /**
