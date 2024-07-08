@@ -77,7 +77,7 @@ class InfoModel extends MainModel
      */
     private function getCover()
     {
-        $anime_cover = $this->_parser->find('img.ac', 0);
+        $anime_cover = $this->_parser->find('img.lazyloaded', 0);
 
         return $anime_cover ? $anime_cover->src : '';
     }
@@ -89,7 +89,7 @@ class InfoModel extends MainModel
      */
     private function getTitle()
     {
-        $anime_cover = $this->_parser->find('img.ac', 0);
+        $anime_cover = $this->_parser->find('img.lazyloaded', 0);
 
         return $anime_cover ? $anime_cover->alt : '';
     }
@@ -151,7 +151,7 @@ class InfoModel extends MainModel
      */
     private function getSynopsis()
     {
-        $synopsis = $this->_parser->find('span[itemprop=description]', 0);
+        $synopsis = $this->_parser->find('p[itemprop=description]', 0);
         if ($synopsis) {
             $synopsis = $synopsis->plaintext;
 
