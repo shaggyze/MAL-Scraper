@@ -84,42 +84,42 @@ class UserListModel extends MainModel
      */
     private function getAllInfo()
     {
-        $data = [];
-        $offset = 0;
-        while (true) {
-            $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
+      $data = [];
+      $offset = 0;
+	  while (true) {
+		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
-            $content = json_decode(file_get_contents($url), true);
+		$content = json_decode(file_get_contents($url), true);
 
-            if ($content) {
-                $count = count($content);
-                for ($i = 0; $i < $count; $i++) {
-					if (is_array($content[$i]['anime_studios'])) {
-						$content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios'])
-					} else if (is_array($content[$i]['anime_licensors'])) {
-						$content[$i]['anime_licensors'] = implode(", ", $content[$i]['anime_licensors'])
-					} else if (is_array($content[$i]['anime_season'])) {
-						$content[$i]['anime_season'] = implode(", ", $content[$i]['anime_season'])
-					} else if (!empty($content[$i]['anime_image_path'])) {
-                        $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
-                    } else if (!empty($content[$i]['manga_image_path'])) {
-                        $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
-                    } else if (is_array($content[$i]['manga_magazines'])) {
-						$content[$i]['manga_magazines'] = implode(", ", $content[$i]['manga_magazines'])
-					} else if (is_array($content[$i]['genres'])) {
-						$content[$i]['genres'] = implode(", ", $content[$i]['genres'])
-					} else if (is_array($content[$i]['demographics'])) {
-						$content[$i]['demographics'] = implode(", ", $content[$i]['demographics'])
-					}
-                }
+		if ($content) {
+		  $count = count($content);
+		  for ($i = 0; $i < $count; $i++) {
+			if (is_array($content[$i]['anime_studios'])) {
+			  $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
+			} else if (is_array($content[$i]['anime_licensors'])) {
+			  $content[$i]['anime_licensors'] = implode(", ", $content[$i]['anime_licensors']);
+			} else if (is_array($content[$i]['anime_season'])) {
+			  $content[$i]['anime_season'] = implode(", ", $content[$i]['anime_season']);
+			} else if (!empty($content[$i]['anime_image_path'])) {
+			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
+			} else if (!empty($content[$i]['manga_image_path'])) {
+			  $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
+			} else if (is_array($content[$i]['manga_magazines'])) {
+			  $content[$i]['manga_magazines'] = implode(", ", $content[$i]['manga_magazines']);
+			} else if (is_array($content[$i]['genres'])) {
+			  $content[$i]['genres'] = implode(", ", $content[$i]['genres']);
+			} else if (is_array($content[$i]['demographics'])) {
+			  $content[$i]['demographics'] = implode(", ", $content[$i]['demographics']);
+			}
+		  }
 
-                $data = array_merge($data, $content);
+		  $data = array_merge($data, $content);
 
-                $offset += 300;
-            } else {
-                break;
-            }
-        }
+		  $offset += 300;
+		} else {
+		  break;
+		}
+	  }
 
         return $data;
     }
