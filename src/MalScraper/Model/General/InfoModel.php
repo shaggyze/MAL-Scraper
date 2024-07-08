@@ -103,7 +103,7 @@ class InfoModel extends MainModel
     {
         $title2 = [];
 
-        $anime_info = $this->_parser->find('.js-scrollfix-bottom', 0);
+        $anime_info = $this->_parser->find('#content > table > tbody > tr > td.borderClass > div > div.js-alternative-titles.hide > div > span', 0);
 
         $title2['english'] = $this->getTitle3($anime_info, 'English');
         $title2['synonym'] = $this->getTitle3($anime_info, 'Synonyms');
@@ -122,7 +122,7 @@ class InfoModel extends MainModel
      */
     private function getTitle3($anime_info, $type)
     {
-        preg_match('/('.$type.':<\/span>)/', $anime_info->innertext, $title);
+        preg_match('/('.$type.':<\/span>)([^<]*)/', $anime_info->innertext, $title);
 
         return trim($title ? $title[2] : '');
     }
