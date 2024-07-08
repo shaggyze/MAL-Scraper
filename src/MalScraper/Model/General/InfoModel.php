@@ -103,7 +103,7 @@ class InfoModel extends MainModel
     {
         $title2 = [];
 
-        $anime_info = $this->_parser->find('#content > table > tbody > tr > td.borderClass > div > div.js-alternative-titles.hide > div > span', 0);
+        $anime_info = $this->_parser->find('.page-common .dark_text', 0);
 
         $title2['english'] = $this->getTitle3($anime_info, 'English');
         $title2['synonym'] = $this->getTitle3($anime_info, 'Synonyms');
