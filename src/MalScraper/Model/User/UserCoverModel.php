@@ -3,7 +3,7 @@
 namespace MalScraper\Model\User;
 
 use MalScraper\Model\User\UserListModel as UserList;
-use MalScraper\Model\General\InfoModel as Info
+use MalScraper\Model\General\InfoModel as Info;
 
 /**
  * UserCoverModel class.
