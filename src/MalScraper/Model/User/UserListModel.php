@@ -99,11 +99,11 @@ class UserListModel extends MainModel
 			if ($this->_type == 'anime') {
 			  $content3 = $content2::getInfo('anime', $content[$i]['anime_id']);
 			} else {
-}			  $content3 = $content2::getInfo('manga', $content[$i]['manga_id']);
+			  $content3 = $content2::getInfo('manga', $content[$i]['manga_id']);
 		    }
 			$content[$i]['synopsis'] = $content3['data']['synopsis'];
 			$content[$i]['rank'] = $content3['data']['rank'];
-			}/*
+			/*
 			/*if (is_array($content[$i]['anime_studios'])) {
 			  $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
 			} else {
