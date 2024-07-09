@@ -90,24 +90,19 @@ class UserListModel extends MainModel
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
 		$content = json_decode(file_get_contents($url), true);
-		$content2[];
+		$content2 = new MalScraper();
+
 
 		if ($content) {
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
-			if (!empty($content[$i]['anime_id'])) {
-			  $content2->getInfo('anime', $content[$i]['anime_id']);
-			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
+			if ($this->_type == 'anime') {
+			  $content3 = $content2::getInfo('anime', $content[$i]['anime_id']);
 			} else {
-			  $content2->getInfo('manga', $content[$i]['manga_id']);
-			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
-			}
-			if (!empty($content[$i]['anime_id'])) {
-			  $content2->getInfo('anime', $content[$i]['anime_id']);
-			  $content[$i]['rank'] = $content2['data']['rank'];
-			} else {
-			  $content2->getInfo('manga', $content[$i]['manga_id']);
-			  $content[$i]['rank'] = $content2['data']['rank'];
+}			  $content3 = $content2::getInfo('manga', $content[$i]['manga_id']);
+		    }
+			$content[$i]['synopsis'] = $content3['data']['synopsis'];
+			$content[$i]['rank'] = $content3['data']['rank'];
 			}/*
 			/*if (is_array($content[$i]['anime_studios'])) {
 			  $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
