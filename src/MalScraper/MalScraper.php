@@ -172,7 +172,7 @@ class MalScraper
      *
      * @return array
      */
-    private function getInfo($type, $id)
+    public function getInfo($type, $id)
     {
         return (new Info($type, $id))->getAllInfo();
     }
