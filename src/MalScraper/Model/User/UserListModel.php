@@ -4,6 +4,7 @@ namespace MalScraper\Model\User;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
+use MalScraper;
 
 /**
  * UserListModel class.
@@ -91,7 +92,6 @@ class UserListModel extends MainModel
 
 		$content = json_decode(file_get_contents($url), true);
 		$content2 = new MalScraper();
-
 
 		if ($content) {
 		  $count = count($content);
