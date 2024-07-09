@@ -96,17 +96,17 @@ class UserListModel extends MainModel
 		  for ($i = 0; $i < $count; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
 			  $content2->getInfo('anime', $content[$i]['anime_id']);
-			  $content[$i]['synopsis'] = $content2['data']['synopsis']
+			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
 			} else {
 			  $content2->getInfo('manga', $content[$i]['manga_id']);
-			  $content[$i]['synopsis'] = $content2['data']['synopsis']
+			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
 			}
 			if (!empty($content[$i]['anime_id'])) {
 			  $content2->getInfo('anime', $content[$i]['anime_id']);
-			  $content[$i]['rank'] = $content2['data']['rank']
+			  $content[$i]['rank'] = $content2['data']['rank'];
 			} else {
 			  $content2->getInfo('manga', $content[$i]['manga_id']);
-			  $content[$i]['rank'] = $content2['data']['rank']
+			  $content[$i]['rank'] = $content2['data']['rank'];
 			}/*
 			/*if (is_array($content[$i]['anime_studios'])) {
 			  $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
