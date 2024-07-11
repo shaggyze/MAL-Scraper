@@ -57,9 +57,9 @@ class UserCoverModel
             $this->_style = $style;
         } else {
 			if ($this->_type == 'anime') {
-				$this->_style = '.data.image a[href^="/{type}/{anime_id}/"]:before{background-image:url("{anime_image_path}")!important}';
+				$this->_style = '.data.image a[href^="/{type}/{anime_id}/"]:before{background-image:url("{anime_image_path}")}';
 			} else {
-				$this->_style = '.data.image a[href^="/{type}/{manga_id}/"]:before{background-image:url("{manga_image_path}")!important}';
+				$this->_style = '.data.image a[href^="/{type}/{manga_id}/"]:before{background-image:url("{manga_image_path}")}';
 			}
 		}
     }
