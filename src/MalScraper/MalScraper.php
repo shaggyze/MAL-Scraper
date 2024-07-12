@@ -627,4 +627,56 @@ class MalScraper
     /**
      * Get user history.
      *
-     * @param string      $user 
+     * @param string      $user Username
+     * @param string|bool $type (Optional) Either anime or manga
+     *
+     * @return array
+     */
+    private function getUserHistory($user, $type = false)
+    {
+        return (new History($user, $type))->getAllInfo();
+    }
+
+    /**
+     * Get user list.
+     *
+     * @param string $user   Username
+     * @param string $type   (Optional) Either anime or manga
+     * @param string $status (Optional) Anime/manga status
+     *
+     * @return array
+     */
+    private function getUserList($user, $type = 'anime', $status = 7, $genre = 0)
+    {
+        return (new UserList($user, $type, $status, $genre))->getAllInfo();
+    }
+
+    /**
+     * Get user cover.
+     *
+     * @param string      $user  Username
+     * @param string      $type  (Optional) Either anime or manga
+     * @param string|bool $style (Optional) CSS style for the cover
+     * @param string      $genre  (Optional) number of genre
+     *
+     * @return string
+     */
+    private function getUserCover($user, $type = 'anime', $style = false, $genre = 0)
+    {
+        return (new UserCover($user, $type, $style, $genre))->getAllInfo();
+    }
+
+    /**
+     * Get user desc.
+     *
+     * @param string      $user  Username
+     * @param string      $type  (Optional) Either anime or manga
+     * @param string|bool $style (Optional) CSS style for the desc
+     *
+     * @return string
+     */
+    private function getUserDesc($user, $type = 'anime', $style = false)
+    {
+        return (new UserDesc($user, $type, $style))->getAllInfo();
+    }
+}
