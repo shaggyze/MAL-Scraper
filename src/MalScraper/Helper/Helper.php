@@ -137,7 +137,7 @@ class Helper
             return 'summer';
         }
 
-        return 'autumn';
+        return 'fall';
     }
 
     /**
@@ -154,7 +154,7 @@ class Helper
         $str = str_replace(['v.jpg', 't.jpg'], '.jpg', $str);
         $str = str_replace('_thumb.jpg', '.jpg', $str);
         $str = str_replace('userimages/thumbs', 'userimages', $str);
-        $str = preg_replace('/r\/\d{1,3}x\d{1,3}\//', '', $str);
+        $str = preg_replace('/r\/\d{1,3}x\d{1,3}\//', 'l', $str);
         $str = preg_replace('/\?.+/', '', $str);
 
         return $str;
