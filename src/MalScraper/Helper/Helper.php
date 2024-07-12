@@ -168,53 +168,54 @@ class Helper
      *
      * @return string
      */
-    public static function imageUrlReplace($str, $type)
+    public static function imageUrlReplace($str, $type, $orig)
     {
 		if ($type == 'anime') {
 			switch ($str) {
 				case '38339':
 					$str = 'https://shaggyze.website/Themes/covers/suzumi_bune.jpg';
-					break;
+					return $str;
 				case '51122':
 					$str = 'https://cdn.myanimelist.net/images/anime/1792/136743l.jpg';
-					break;
+					return $str;
 				case '54757':
 					$str = 'https://shaggyze.website/Themes/covers/3-nen_z-gumi_ginpachi-sensei.webp';
-					break;
+					return $str;
 				case '58755':
 					$str = 'https://shaggyze.website/Themes/covers/5-toubun_no_hanayome.png';
-					break;
+					return $str;
 				case '55408':
 					$str = 'https://shaggyze.website/Themes/covers/100_manten_pax_salomena.jpg';
-					break;
+					return $str;
 				case '54996':
 					$str = 'https://cdn.myanimelist.net/images/anime/1837/135286l.jpg';
-					break;
+					return $str;
 				case '42845':
 					$str = 'https://cdn.myanimelist.net/images/anime/1010/115142l.jpg';
-					break;
+					return $str;
 				case '50980':
 					$str = 'https://cdn.myanimelist.net/images/anime/1763/120846l.jpg';
-					break;
+					return $str;
 				case '56715':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
-					break;
+					return $str;
 				case '55569':
 					$str = 'https://cdn.myanimelist.net/images/anime/1236/136294l.jpg';
-					break;
+					return $str;
 				case '55826':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
-					break;
+					return $str;
 				case '52420':
 					$str = 'https://cdn.myanimelist.net/images/anime/1818/127729l.jpg';
-					break;
+					return $str;
 				case '52575':
 					$str = 'https://cdn.myanimelist.net/images/anime/1012/126441l.jpg';
-					break;
+					return $str;
+				case else:
+					return $orig;
 			}
 		} else {
 		}
-		return $str;
 	}
 
     /**
