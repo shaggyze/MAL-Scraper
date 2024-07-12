@@ -211,7 +211,7 @@ class Helper
 				case '52575':
 					$str = 'https://cdn.myanimelist.net/images/anime/1012/126441l.jpg';
 					return $str;
-				case else:
+				default:
 					return $orig;
 			}
 		} else {
