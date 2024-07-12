@@ -122,12 +122,12 @@ class UserListModel extends MainModel
 			} else {
 			  $content[$i]['manga_image_path'] = Helper::imageUrlReplace($content[$i]['manga_id'], 'manga', $content[$i]['manga_image_path']);
 			}
-			if (!empty($content[$i]['genres']) && is_array($content[$i]['genres'])) {
+			/*if (!empty($content[$i]['genres']) && is_array($content[$i]['genres'])) {
 			  $content[$i]['genres'] = implode(", ", $content[$i]['genres']);
 			} elseif (!empty($content[$i]['genres'])) {
-			} else {
+			} else {*/
 			  $content[$i]['genres'] = "";
-			}
+			/*}*/
             if ($this->_type == 'anime') {
 			  if (!empty($content[$i]['anime_studios']) && is_array($content[$i]['anime_studios'])) {
 			    $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
