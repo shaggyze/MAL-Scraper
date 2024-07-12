@@ -151,11 +151,12 @@ class Helper
     {
         preg_match('/(questionmark)|(qm_50)/', $str, $temp_image);
         $str = $temp_image ? '' : $str;
-        $str = str_replace(['v.jpg', 't.jpg'], 'l.jpg', $str);
+        $str = str_replace(['v.jpg', '.jpg'], '.jpg', $str);
         $str = str_replace('_thumb.jpg', 'l.jpg', $str);
         $str = str_replace('userimages/thumbs', 'userimages', $str);
         $str = preg_replace('/r\/\d{1,3}x\d{1,3}\//', '', $str);
         $str = preg_replace('/\?.+/', '', $str);
+        $str = str_replace('.jpg', 'l.jpg', $str);
 
         return $str;
     }
