@@ -124,7 +124,7 @@ class UserListModel extends MainModel
 			}
 			if (!empty($content[$i]['genres']) && is_array($content[$i]['genres'])) {
 			  $content[$i]['genres'] = implode(", ", $content[$i]['genres']);
-			} else if (!empty($content[$i]['genres']) {
+			} elseif (!empty($content[$i]['genres']) {
 			} else {
 			  $content[$i]['genres'] = "";
 			}
