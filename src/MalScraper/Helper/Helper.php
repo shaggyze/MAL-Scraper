@@ -7,8 +7,8 @@ namespace MalScraper\Helper;
  */
 class Helper
 {
-	ini_set("log_errors", TRUE)
-	ini_set("error_log", "error_log")
+	ini_set("log_errors", TRUE);
+	ini_set("error_log", "error_log");
     /**
      * Convert return result into easy-to-read result.
      *
