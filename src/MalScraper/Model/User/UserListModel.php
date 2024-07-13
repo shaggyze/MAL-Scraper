@@ -130,12 +130,12 @@ class UserListModel extends MainModel
 			/*}*/
             if ($this->_type == 'anime') {
 			  if (!empty($content[$i]['anime_studios']) && is_array($content[$i]['anime_studios'])) {
-			    $content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);
+			    /*$content[$i]['anime_studios'] = implode(", ", $content[$i]['anime_studios']);*/
 			  } else {
 			    $content[$i]['anime_studios'] = "";
 			  }
 			  if (!empty($content[$i]['anime_licensors']) && is_array($content[$i]['anime_licensors'])) {
-			    $content[$i]['anime_licensors'] = implode(", ", $content[$i]['anime_licensors']);
+			    /*$content[$i]['anime_licensors'] = implode(", ", $content[$i]['anime_licensors']);*/
 			  } else {
 			    $content[$i]['anime_licensors'] = "";
 			  }
