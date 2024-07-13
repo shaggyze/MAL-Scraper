@@ -204,11 +204,11 @@ class Helper
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				/*case '42845':
-					$str = 'https://cdn.myanimelist.net/images/anime/1010/115142l.jpg';
+				case '57554':
+					$str = 'https://shaggyze.website/Themes/covers/rurouni_kenshin__meiji_kenkaku_romantan_-_kyoto_douran.jpeg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
-					return $str;*/
+					return $str;
 				/*case '50980':
 					$str = 'https://cdn.myanimelist.net/images/anime/1763/120846l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
@@ -243,10 +243,21 @@ class Helper
 					if (!empty($orig)) {
 						return $orig;
 					} else {
+						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+						echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 						return ('https://shaggyze.github.io/Themes/unavailable.png');
 					}
 			}
 		} else {
+			switch ($str) {
+				default:
+					if (!empty($orig)) {
+						return $orig;
+					} else {
+						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+						echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+						return ('https://shaggyze.github.io/Themes/unavailable.png');
+					}
 		}
 	}
 
