@@ -198,24 +198,31 @@ class Helper
 					return $str;
 				case '42845':
 					$str = 'https://cdn.myanimelist.net/images/anime/1010/115142l.jpg';
+					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '50980':
 					$str = 'https://cdn.myanimelist.net/images/anime/1763/120846l.jpg';
+					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '56715':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
+					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '55569':
 					$str = 'https://cdn.myanimelist.net/images/anime/1236/136294l.jpg';
+					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '55826':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
+					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '52420':
 					$str = 'https://cdn.myanimelist.net/images/anime/1818/127729l.jpg';
+					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '52575':
 					$str = 'https://cdn.myanimelist.net/images/anime/1012/126441l.jpg';
+					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				default:
 					return $orig;
