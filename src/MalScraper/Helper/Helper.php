@@ -7,6 +7,8 @@ namespace MalScraper\Helper;
  */
 class Helper
 {
+	ini_set("log_errors", TRUE)
+	ini_set("error_log", "error_log")
     /**
      * Convert return result into easy-to-read result.
      *
@@ -174,55 +176,55 @@ class Helper
 			switch ($str) {
 				case '38339':
 					$str = 'https://shaggyze.website/Themes/covers/suzumi_bune.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '51122':
 					$str = 'https://cdn.myanimelist.net/images/anime/1792/136743l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '54757':
 					$str = 'https://shaggyze.website/Themes/covers/3-nen_z-gumi_ginpachi-sensei.webp';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '58755':
 					$str = 'https://shaggyze.website/Themes/covers/5-toubun_no_hanayome.png';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '55408':
 					$str = 'https://shaggyze.website/Themes/covers/100_manten_pax_salomena.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '54996':
 					$str = 'https://cdn.myanimelist.net/images/anime/1837/135286l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '42845':
 					$str = 'https://cdn.myanimelist.net/images/anime/1010/115142l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '50980':
 					$str = 'https://cdn.myanimelist.net/images/anime/1763/120846l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '56715':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '55569':
 					$str = 'https://cdn.myanimelist.net/images/anime/1236/136294l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '55826':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '52420':
 					$str = 'https://cdn.myanimelist.net/images/anime/1818/127729l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				case '52575':
 					$str = 'https://cdn.myanimelist.net/images/anime/1012/126441l.jpg';
-					echo ('/* Compare ' . $str . ' with ' . $orig . ' */');
+					error_log('PHP Notice:  ' . $str . ' with ' . $orig . ' */');
 					return $str;
 				default:
 					return $orig;
