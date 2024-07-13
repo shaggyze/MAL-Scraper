@@ -835,8 +835,8 @@ class InfoModel extends MainModel
      */
     private function getAllInfo()
     {
+		$data = $this->getId();
         $data = [
-            'id'        => $this->getId(),
             'cover'     => $this->getCover(),
             'title'     => $this->getTitle(),
             'title2'    => $this->getTitle2(),

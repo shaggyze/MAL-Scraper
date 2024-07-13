@@ -176,53 +176,53 @@ class Helper
 			switch ($str) {
 				case '38339':
 					$str = 'https://shaggyze.website/Themes/covers/suzumi_bune.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				case '1317':
 					$str = 'https://shaggyze.website/Themes/covers/eyeshield_21__maboroshi_no_golden_bowl.png';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				case '54757':
 					$str = 'https://shaggyze.website/Themes/covers/3-nen_z-gumi_ginpachi-sensei.webp';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				case '58755':
 					$str = 'https://shaggyze.website/Themes/covers/5-toubun_no_hanayome.png';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				case '55408':
 					$str = 'https://shaggyze.website/Themes/covers/100_manten_pax_salomena.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				case '43879':
 					$str = 'https://shaggyze.website/Themes/covers/curry_meshi_in_miracle.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				case '57554':
 					$str = 'https://shaggyze.website/Themes/covers/rurouni_kenshin__meiji_kenkaku_romantan_-_kyoto_douran.jpeg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				/*case '50980':
 					$str = 'https://cdn.myanimelist.net/images/anime/1763/120846l.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;*/
 				case '56715':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				/*case '55569':
 					$str = 'https://cdn.myanimelist.net/images/anime/1236/136294l.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;*/
 				case '55826':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
@@ -231,20 +231,20 @@ class Helper
 					return $str;
 				/*case '52420':
 					$str = 'https://cdn.myanimelist.net/images/anime/1818/127729l.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;*/
 				/*case '52575':
 					$str = 'https://cdn.myanimelist.net/images/anime/1012/126441l.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;*/
 				default:
 					if (!empty($orig)) {
 						return $orig;
 					} else {
-						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 						echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 						return ('https://shaggyze.github.io/Themes/unavailable.png');
 					}
 			}
@@ -254,8 +254,8 @@ class Helper
 					if (!empty($orig)) {
 						return $orig;
 					} else {
-						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 						echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
+						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 						return ('https://shaggyze.github.io/Themes/unavailable.png');
 					}
 			}
