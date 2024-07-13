@@ -1,5 +1,6 @@
 <?php
-
+ini_set("log_errors", TRUE);
+ini_set("error_log", "error_log");
 namespace MalScraper\Helper;
 
 /**
@@ -7,8 +8,6 @@ namespace MalScraper\Helper;
  */
 class Helper
 {
-	ini_set("log_errors", TRUE);
-	ini_set("error_log", "error_log");
     /**
      * Convert return result into easy-to-read result.
      *
