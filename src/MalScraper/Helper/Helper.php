@@ -258,6 +258,7 @@ class Helper
 						echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 						return ('https://shaggyze.github.io/Themes/unavailable.png');
 					}
+			}
 		}
 	}
 
