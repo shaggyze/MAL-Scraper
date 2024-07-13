@@ -240,7 +240,11 @@ class Helper
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;*/
 				default:
-					return $orig;
+					if (!empty($orig)) {
+						return $orig;
+					} else {
+						return ('https://shaggyze.github.io/Themes/unavailable.png');
+					}
 			}
 		} else {
 		}
