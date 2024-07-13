@@ -179,7 +179,7 @@ class Helper
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				case '51122':
+				case '1317':
 					$str = 'https://shaggyze.website/Themes/covers/eyeshield_21__maboroshi_no_golden_bowl.png';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
