@@ -180,7 +180,7 @@ class Helper
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				case '51122':
-					$str = 'https://cdn.myanimelist.net/images/anime/1792/136743l.jpg';
+					$str = 'https://shaggyze.website/Themes/covers/eyeshield_21__maboroshi_no_golden_bowl.png';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
@@ -199,46 +199,46 @@ class Helper
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				case '54996':
-					$str = 'https://cdn.myanimelist.net/images/anime/1837/135286l.jpg';
+				case '43879':
+					$str = 'https://shaggyze.website/Themes/covers/curry_meshi_in_miracle.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				case '42845':
+				/*case '42845':
 					$str = 'https://cdn.myanimelist.net/images/anime/1010/115142l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
-					return $str;
-				case '50980':
+					return $str;*/
+				/*case '50980':
 					$str = 'https://cdn.myanimelist.net/images/anime/1763/120846l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
-					return $str;
+					return $str;*/
 				case '56715':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				case '55569':
+				/*case '55569':
 					$str = 'https://cdn.myanimelist.net/images/anime/1236/136294l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
-					return $str;
+					return $str;*/
 				case '55826':
 					$str = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				case '52420':
+				/*case '52420':
 					$str = 'https://cdn.myanimelist.net/images/anime/1818/127729l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
-					return $str;
-				case '52575':
+					return $str;*/
+				/*case '52575':
 					$str = 'https://cdn.myanimelist.net/images/anime/1012/126441l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					echo('<b>Notice</b>:  Compare  ' . $str . ' with ' . $orig);
-					return $str;
+					return $str;*/
 				default:
 					return $orig;
 			}
