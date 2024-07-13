@@ -1,7 +1,8 @@
 <?php
+
+namespace MalScraper\Helper;
 ini_set("log_errors", TRUE);
 ini_set("error_log", "error_log");
-namespace MalScraper\Helper;
 
 /**
  *	Helper class.
