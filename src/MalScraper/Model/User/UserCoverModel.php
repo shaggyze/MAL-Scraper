@@ -74,7 +74,7 @@ class UserCoverModel
         $list = (new UserList($this->_user, $this->_type, 7, $this->_genre))->getAllInfo();
 
         $cover = 'no user';
-		if (!empty($list)) {
+		if (is_array($list)) {
 			$cover = '';
 			foreach ($list as $c) {
 				if ($this->_type == 'anime') {
