@@ -90,7 +90,7 @@ class UserListModel extends MainModel
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
 		$content = json_decode(file_get_contents($url), true);
-		if ($content[0]['message'] == 'invalid request') { return; }
+
 		if ($content) {
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
