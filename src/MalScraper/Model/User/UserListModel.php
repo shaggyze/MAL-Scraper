@@ -146,12 +146,12 @@ class UserListModel extends MainModel
 			  }
 			} else {
 			  if (!empty($content[$i]['manga_magazines']) && is_array($content[$i]['manga_magazines'])) {
-			    $content[$i]['manga_magazines'] = implode(", ", $content[$i]['manga_magazines']);
+			    /*$content[$i]['manga_magazines'] = implode(", ", $content[$i]['manga_magazines']);*/
 			  } else {
 			    $content[$i]['manga_magazines'] = "";
 			  }
 			  if (!empty($content[$i]['demographics']) && is_array($content[$i]['demographics'])) {
-			    $content[$i]['demographics'] = implode(", ", $content[$i]['demographics']);
+			    /*$content[$i]['demographics'] = implode(", ", $content[$i]['demographics']);*/
 			  } else {
 			    $content[$i]['demographics'] = "";
 			  }
