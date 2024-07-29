@@ -109,13 +109,13 @@ class UserListModel extends MainModel
 		if ($content) {
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
-			if (!empty($content[$i]['anime_id'])) {
+			/*if (!empty($content[$i]['anime_id'])) {
 			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
 			} else {
 			  $url2 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $content2 = json_decode(file_get_contents($url2), true);
-			}
+			}*/
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
