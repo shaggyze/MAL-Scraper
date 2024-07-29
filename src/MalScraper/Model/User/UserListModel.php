@@ -85,7 +85,7 @@ class UserListModel extends MainModel
      *
      * @return string|int
      */
-    public function __get_subdirectory($type, $id) {
+    public function get_subdirectory($type, $id) {
     $subdirectory_number = floor($id / 10000);
     $subdirectory_path = '../info/' . $type . '/' . $subdirectory_number . '/';
 
@@ -110,12 +110,12 @@ class UserListModel extends MainModel
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
-			  $subdirectory = __get_subdirectory('anime', $content[$i]['anime_id'] );
+			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url2 = 'https://shaggyze.website/msa/info/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
 			} else {
-			  $subdirectory = __get_subdirectory('anime', $content[$i]['manga_id'] );
+			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url2 = 'https://shaggyze.website/msa/info/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $content[$i]['synopsis'] = $content2['data']['synopsis'];
