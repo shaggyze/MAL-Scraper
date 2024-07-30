@@ -125,6 +125,7 @@ class UserListModel extends MainModel
 			  $synopsis = str_replace("\r", '', $synopsis);
 			  $synopsis = str_replace("\n", '', $synopsis);
 			  $synopsis = str_replace("nn", '', $synopsis);
+			  $synopsis = str_replace('"', '\"', $synopsis);
 			  $content[$i]['synopsis'] = addslashes($synopsis);
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			} else {
@@ -135,6 +136,7 @@ class UserListModel extends MainModel
 			  $synopsis = str_replace("\r", '', $synopsis);
 			  $synopsis = str_replace("\n", '', $synopsis);
 			  $synopsis = str_replace("nn", '', $synopsis);
+			  $synopsis = str_replace('"', '\"', $synopsis);
 			  $content[$i]['synopsis'] = addslashes($synopsis);
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			}
