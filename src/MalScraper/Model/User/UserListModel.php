@@ -121,18 +121,18 @@ class UserListModel extends MainModel
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
-			  $synopsis = preg_replace('/&#(x)?0*(?(1)27|39);?/i', "'", stripslashes($content2['data']['synopsis']));
+			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
 			  $synopsis = str_replace("\r", '', $synopsis);
-			  $synopsis = str_replace("\n", '\\n', addslashes($synopsis));
-			  $content[$i]['synopsis'] = $synopsis;
-			  $content[$i]['rank'] = $content2['data']['rank'];
+			  $synopsis = str_replace("nn", '\n\n', $synopsis);
+			  $synopsis = str_replace('"', '\"', $synopsis);
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
 			  $synopsis = str_replace("\r", '', $synopsis);
-			  $synopsis = str_replace("nn", '\n\n', addslashes($synopsis));
+			  $synopsis = str_replace("nn", '\n\n', $synopsis);
+			  $synopsis = str_replace('"', '\"', $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			}
