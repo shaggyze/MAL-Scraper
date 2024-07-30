@@ -123,6 +123,7 @@ class UserListModel extends MainModel
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $synopsis = preg_replace('/&#(x)?0*(?(1)27|39);?/i', "'", stripslashes($content2['data']['synopsis']));
 			  $synopsis = str_replace("\r", '', $synopsis);
+			  $synopsis = str_replace("\n", '', $synopsis);
 			  $synopsis = str_replace("nn", '', $synopsis);
 			  $content[$i]['synopsis'] = addslashes($synopsis);
 			  $content[$i]['rank'] = $content2['data']['rank'];
@@ -132,6 +133,7 @@ class UserListModel extends MainModel
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
 			  $synopsis = str_replace("\r", '', $synopsis);
+			  $synopsis = str_replace("\n", '', $synopsis);
 			  $synopsis = str_replace("nn", '', $synopsis);
 			  $content[$i]['synopsis'] = addslashes($synopsis);
 			  $content[$i]['rank'] = $content2['data']['rank'];
