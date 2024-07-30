@@ -94,22 +94,6 @@ class UserListModel extends MainModel
     }
 
     /**
-     * Default call.
-     *
-     * @param string $trxt
-     *
-     * @return string
-     */
-    public function esc_js($text)
-	{
-        $safe_text = preg_replace('/&#(x)?0*(?(1)27|39);?/i', "'", stripslashes($text));
-        $safe_text = str_replace("\r", '', $safe_text);
-        $safe_text = str_replace("\n", '\\n', addslashes($safe_text));
-
-        return strval($safe_text);
-    }
-
-    /**
      * Get user list.
      *
      * @return array
@@ -137,13 +121,19 @@ class UserListModel extends MainModel
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
-			  $content[$i]['synopsis'] = esc_js($content2['data']['synopsis']);
+			  $synopsis = preg_replace('/&#(x)?0*(?(1)27|39);?/i', "'", stripslashes($content2['data']['synopsis']));
+			  $synopsis = str_replace("\r", '', $synopsis);
+			  $synopsis = str_replace("\n", '\\n', addslashes($synopsis));
+			  $content[$i]['synopsis'] = $synopsis;
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
-			  $content[$i]['synopsis'] = esc_js($content2['data']['synopsis']);
+			  $synopsis = preg_replace('/&#(x)?0*(?(1)27|39);?/i', "'", stripslashes($content2['data']['synopsis']));
+			  $synopsis = str_replace("\r", '', $synopsis);
+			  $synopsis = str_replace("\n", '\\n', addslashes($synopsis));
+			  $content[$i]['synopsis'] = $synopsis;
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			}
 			/*if (!empty($content[$i]['anime_id'])) {
