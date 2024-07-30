@@ -85,11 +85,12 @@ class UserListModel extends MainModel
      *
      * @return string|int
      */
-    public function get_subdirectory($type, $id) {
-    $subdirectory_number = floor($id / 10000);
-    $subdirectory_path = '../info/' . $type . '/' . $subdirectory_number . '/';
+    public function get_subdirectory($type, $id)
+	{
+        $subdirectory_number = floor($id / 10000);
+        $subdirectory_path = '../info/' . $type . '/' . $subdirectory_number . '/';
 
-    return strval($subdirectory_number);
+        return strval($subdirectory_number);
     }
 
     /**
@@ -99,22 +100,13 @@ class UserListModel extends MainModel
      *
      * @return string
      */
-    public function esc_js($text) {
-	$safe_text = preg_replace('/&#(x)?0*(?(1)27|39);?/i', "'", stripslashes($text));
-	$safe_text = str_replace("\r", '', $safe_text);
-	$safe_text = str_replace("\n", '\\n', addslashes($safe_text ));
-	/**
-	 * Filters a string cleaned and escaped for output in JavaScript.
-	 *
-	 * Text passed to esc_js() is stripped of invalid or special characters,
-	 * and properly slashed for output.
-	 *
-	 * @since 2.0.6
-	 *
-	 * @param string $safe_text The text after it has been escaped.
-	 * @param string $text      The text prior to being escaped.
-	 */
-	return apply_filters('js_escape', $safe_text, $text);
+    public function esc_js($text)
+	{
+        $safe_text = preg_replace('/&#(x)?0*(?(1)27|39);?/i', "'", stripslashes($text));
+        $safe_text = str_replace("\r", '', $safe_text);
+        $safe_text = str_replace("\n", '\\n', addslashes($safe_text ));
+
+        return $safe_text;
     }
 
     /**
