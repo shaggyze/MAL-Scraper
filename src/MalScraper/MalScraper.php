@@ -657,7 +657,7 @@ class MalScraper
      * @param string      $user  Username
      * @param string      $type  (Optional) Either anime or manga
      * @param string|bool $style (Optional) CSS style for the cover
-     * @param string      $genre  (Optional) number of genre
+     * @param string      $genre (Optional) number of genre
      *
      * @return string
      */
@@ -672,6 +672,7 @@ class MalScraper
      * @param string      $user  Username
      * @param string      $type  (Optional) Either anime or manga
      * @param string|bool $style (Optional) CSS style for the desc
+     * @param string      $genre (Optional) number of genre
      *
      * @return string
      */
