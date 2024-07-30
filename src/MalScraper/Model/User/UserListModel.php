@@ -122,25 +122,21 @@ class UserListModel extends MainModel
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
-			  $synopsis = str_replace("\r", '', $synopsis);
-			  $synopsis = str_replace("\n", '', $synopsis);
-			  $synopsis = str_replace("nn", '', $synopsis);
+			  $synopsis = str_replace(array('nn', "\n", "\t", "\r"), "", $synopsis)
 			  $synopsis = str_replace('"', "'", $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
 			  $content[$i]['rank'] = $content2['data']['rank'];
-			  if (empty($content[$i]['anime_title_eng'])) {$content[$i]['anime_title_eng'] = "N/A";}
+			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
-			  $synopsis = str_replace("\r", '', $synopsis);
-			  $synopsis = str_replace("\n", '', $synopsis);
-			  $synopsis = str_replace("nn", '', $synopsis);
+			  $synopsis = str_replace(array('nn', "\n", "\t", "\r"), "", $synopsis)
 			  $synopsis = str_replace('"', "'", $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
 			  $content[$i]['rank'] = $content2['data']['rank'];
-			  if (empty($content[$i]['manga_english'])) {$content[$i]['manga_english'] = "N/A";}
+			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
 			/*if (!empty($content[$i]['anime_id'])) {
 			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
