@@ -46,8 +46,10 @@ use MalScraper\Model\Top\TopPeopleModel as TopPeople;
 use MalScraper\Model\User\FriendModel as Friend;
 use MalScraper\Model\User\HistoryModel as History;
 use MalScraper\Model\User\UserCoverModel as UserCover;
+use MalScraper\Model\User\UserCSSModel as UserCSS;
 use MalScraper\Model\User\UserDescModel as UserDesc;
 use MalScraper\Model\User\UserListModel as UserList;
+use MalScraper\Model\User\UserListCSSModel as UserListCSS;
 use MalScraper\Model\User\UserModel as User;
 
 /**
@@ -646,11 +648,24 @@ class MalScraper
      *
      * @return array
      */
+    private function getUserCSSList($user, $type = 'anime', $status = 7, $genre = 0)
+    {
+        return (new UserListCSS($user, $type, $status, $genre))->getAllInfo();
+    }
+
+    /**
+     * Get user list.
+     *
+     * @param string $user   Username
+     * @param string $type   (Optional) Either anime or manga
+     * @param string $status (Optional) Anime/manga status
+     *
+     * @return array
+     */
     private function getUserList($user, $type = 'anime', $status = 7, $genre = 0)
     {
         return (new UserList($user, $type, $status, $genre))->getAllInfo();
     }
-
     /**
      * Get user cover.
      *
@@ -666,6 +681,20 @@ class MalScraper
         return (new UserCover($user, $type, $style, $genre))->getAllInfo();
     }
 
+    /**
+     * Get user cover.
+     *
+     * @param string      $user  Username
+     * @param string      $type  (Optional) Either anime or manga
+     * @param string|bool $style (Optional) CSS style for the cover
+     * @param string      $genre (Optional) number of genre
+     *
+     * @return string
+     */
+    private function getUserCSS($user, $type = 'anime', $style = false, $genre = 0)
+    {
+        return (new UserCSS($user, $type, $style, $genre))->getAllInfo();
+    }
     /**
      * Get user desc.
      *
