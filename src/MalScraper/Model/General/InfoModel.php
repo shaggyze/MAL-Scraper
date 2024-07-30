@@ -103,11 +103,11 @@ class InfoModel extends MainModel
     {
         $title2 = [];
 
-        $anime_info = $this->_parser->find('span.dark_text', 0);
+        $title_info = $this->_parser->find('span.dark_text', 0);
 
-        $title2['english'] = $this->getTitle3($anime_info, 'English');
-        $title2['synonym'] = $this->getTitle3($anime_info, 'Synonyms');
-        $title2['japanese'] = $this->getTitle3($anime_info, 'Japanese');
+        $title2['english'] = $this->getTitle3($title_info, 'English');
+        $title2['synonym'] = $this->getTitle3($title_info, 'Synonyms');
+        $title2['japanese'] = $this->getTitle3($title_info, 'Japanese');
 
         return $title2;
     }
@@ -115,16 +115,16 @@ class InfoModel extends MainModel
     /**
      * Get anime/manga alternative title.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $anime_info
+     * @param \simplehtmldom_1_5\simple_html_dom $title_info
      * @param string                             $type
      *
      * @return string
      */
-    private function getTitle3($anime_info, $type)
+    private function getTitle3($title_info, $type)
     {
-        preg_match('/('.$type.':<\/span>)([^<]*)/', $anime_info->innertext, $title);
+        preg_match('/('.$type.':<\/span>)([^<]*)/', $title_info->innertext, $title2);
 
-        return trim($title ? $title[2] : '');
+        return trim($title2 ? $title2[2] : '');
     }
 
     /**
@@ -254,8 +254,8 @@ class InfoModel extends MainModel
     {
         $info = [];
 
-        $anime_info = $this->_parser->find('div.leftside', 0);
-        $other_info = (count($anime_info->find('h2')) > 2) ? $anime_info->find('h2', 1) : $anime_info->find('h2', 0);
+        $more_info = $this->_parser->find('div.leftside', 0);
+        $other_info = (count($more_info->find('h2')) > 2) ? $more_info->find('h2', 1) : $more_info->find('h2', 0);
         if ($other_info) {
             $next_info = $other_info->next_sibling();
             while (true) {
