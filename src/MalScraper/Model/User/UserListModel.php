@@ -126,9 +126,13 @@ class UserListModel extends MainModel
 			  $synopsis = str_replace(array('nn', "\n", "\t", "\r"), "", $synopsis);
 			  $synopsis = str_replace('"', "'", $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
+			} else {
+			  $content[$i]['synopsis'] = "N/A";
 			}
 			if (!empty($content2['data']['rank'])) {
 			  $content[$i]['rank'] = $content2['data']['rank'];
+			} else {
+			  $content[$i]['rank'] = "N/A";
 			}
 			if (!empty($content[$i]['anime_image_path'])) {
 			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
