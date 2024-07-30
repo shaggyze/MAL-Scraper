@@ -104,9 +104,9 @@ class UserListModel extends MainModel
 	{
         $safe_text = preg_replace('/&#(x)?0*(?(1)27|39);?/i', "'", stripslashes($text));
         $safe_text = str_replace("\r", '', $safe_text);
-        $safe_text = str_replace("\n", '\\n', addslashes($safe_text ));
+        $safe_text = str_replace("\n", '\\n', addslashes($safe_text));
 
-        return $safe_text;
+        return strval($safe_text);
     }
 
     /**
