@@ -648,7 +648,7 @@ class MalScraper
      *
      * @return array
      */
-    private function getUserCSSList($user, $type = 'anime', $status = 7, $genre = 0)
+    private function getUserListCSS($user, $type = 'anime', $status = 7, $genre = 0)
     {
         return (new UserListCSS($user, $type, $status, $genre))->getAllInfo();
     }
