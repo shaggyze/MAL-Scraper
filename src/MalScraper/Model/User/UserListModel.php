@@ -110,43 +110,25 @@ class UserListModel extends MainModel
 		if ($content) {
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
-			/*if (!empty($content[$i]['anime_id'])) {
-			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
-			  $content2 = json_decode(file_get_contents($url2), true);
-			} else {
-			  $url2 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
-			  $content2 = json_decode(file_get_contents($url2), true);
-			}*/
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
-			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
-			  $synopsis = str_replace(array('nn', "\n", "\t", "\r"), "", $synopsis)
-			  $synopsis = str_replace('"', "'", $synopsis);
-			  $content[$i]['synopsis'] = $synopsis;
-			  $content[$i]['rank'] = $content2['data']['rank'];
 			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  $content2 = json_decode(file_get_contents($url2), true);
+			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
+			}
+			if (!empty($content2['data']['synopsis'])) {
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
 			  $synopsis = str_replace(array('nn', "\n", "\t", "\r"), "", $synopsis)
 			  $synopsis = str_replace('"', "'", $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
+			if (!empty($content2['data']['rank'])) {
 			  $content[$i]['rank'] = $content2['data']['rank'];
-			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
-			/*if (!empty($content[$i]['anime_id'])) {
-			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
-			  $content2 = json_decode(file_get_contents($url2), true);
-			  $content[$i]['rank'] = $content2['data']['rank'];
-			} else {
-			  $url2 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
-			  $content2 = json_decode(file_get_contents($url2), true);
-			  $content[$i]['rank'] = $content2['data']['rank'];
-			}*/
 			if (!empty($content[$i]['anime_image_path'])) {
 			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
 			} else {
