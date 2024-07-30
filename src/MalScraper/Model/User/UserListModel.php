@@ -126,6 +126,7 @@ class UserListModel extends MainModel
 			  $synopsis = str_replace(array('nn', "\n", "\t", "\r"), "", $synopsis)
 			  $synopsis = str_replace('"', "'", $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
+			}
 			if (!empty($content2['data']['rank'])) {
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			}
