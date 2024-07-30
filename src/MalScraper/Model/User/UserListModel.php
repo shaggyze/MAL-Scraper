@@ -128,6 +128,7 @@ class UserListModel extends MainModel
 			  $synopsis = str_replace('"', "'", $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
 			  $content[$i]['rank'] = $content2['data']['rank'];
+			  if (empty($content[$i]['anime_title'])) {$content[$i]['anime_title'] = "N/A"};
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
@@ -139,6 +140,7 @@ class UserListModel extends MainModel
 			  $synopsis = str_replace('"', "'", $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
 			  $content[$i]['rank'] = $content2['data']['rank'];
+			  if (empty($content[$i]['manga_title'])) {$content[$i]['manga_title'] = "N/A"};
 			}
 			/*if (!empty($content[$i]['anime_id'])) {
 			  $url2 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
