@@ -126,7 +126,7 @@ class UserListModel extends MainModel
 			  $synopsis = str_replace("\n", '', $synopsis);
 			  $synopsis = str_replace("nn", '', $synopsis);
 			  $synopsis = str_replace('"', "'", $synopsis);
-			  $content[$i]['synopsis'] = $synopsis);
+			  $content[$i]['synopsis'] = $synopsis;
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
