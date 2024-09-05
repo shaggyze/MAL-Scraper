@@ -130,6 +130,11 @@ class UserListCSSModel extends MainModel
 			} else {
 			  $content[$i]['synopsis'] = "N/A";
 			}
+			if (!empty($content[$i]['anime_title_eng'])) {
+			  $content[$i]['anime_title_eng'] = str_replace('"', '', $content[$i]['anime_title_eng']);
+			} else {
+			  $content[$i]['manga_title_eng'] = str_replace('"', '', $content[$i]['manga_title_eng']);
+			}
 			if (!empty($content2['data']['rank'])) {
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			} else {
