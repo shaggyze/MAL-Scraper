@@ -110,7 +110,6 @@ class UserListCSSModel extends MainModel
 		if ($content) {
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
-			  $content[$i]['\a'] = "\a";
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
@@ -185,6 +184,7 @@ class UserListCSSModel extends MainModel
 			    $content[$i]['demographics'] = "";
 			  }
 		    }
+		  $content[$i]['a'] = "\a";
 		  }
 
 		  $data = array_merge($data, $content);
