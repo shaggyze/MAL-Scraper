@@ -184,7 +184,7 @@ class UserListCSSModel extends MainModel
 			    $content[$i]['demographics'] = "";
 			  }
 		    }
-		  $content[$i]['a'] = "\a";
+		  $content[$i]['\a'] = "-a";
 		  }
 
 		  $data = array_merge($data, $content);
