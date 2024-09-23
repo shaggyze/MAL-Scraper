@@ -156,7 +156,7 @@ class UserListCSSModel extends MainModel
 			if (!empty($content2['data']['duration'])) {
 			  $episodes = $content2['data']['episodes'];
 			  $duration = str_replace(' min. per ep.', "", $content2['data']['duration']);
-			  $totalminutes = int($episodes) * int($duration);
+			  $totalminutes = ($episodes * $duration);
 			  $total_runtime = convertMinutesToHoursMinutes($totalminutes);
 			  $content[$i]['total_runtime'] = $total_runtime;
 			} else {
