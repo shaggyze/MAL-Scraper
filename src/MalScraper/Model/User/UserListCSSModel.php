@@ -198,9 +198,24 @@ class UserListCSSModel extends MainModel
 			  $content[$i]['rank'] = "N/A";
 			}
 			if (!empty($content2['data']['serialization'])) {
-			  $content[$i]['serialization'] = $content2['data']['serialization'];
+			  $serializations = $content2['data']['serialization'];
+			  $serializationNames = '';
+			  foreach ($serializations as $serialization) {
+				$serializationNames .= $serialization['name'] . ', ';
+			  }
+			  $content[$i]['serialization'] = rtrim($serializationNames, ', ');
 			} else {
-			  $content[$i]['serialization'] = "N/A";
+			  $content[$i]['serialization'] = 'N/A';
+			}
+			if (!empty($content['data']['manga_magazines'])) {
+			  $mangamagazines = $content2['data']['manga_magazines'];
+			  $mangamagazineNames = '';
+			  foreach ($mangamagazines as $mangamagazine) {
+				$mangamagazineNames .= $mangamagazine['name'] . ', ';
+			  }
+			  $content[$i]['manga_magazines'] = rtrim($mangamagazineNames, ', ');
+			} else {
+			  $content[$i]['manga_magazines'] = 'N/A';
 			}
 			if (!empty($content[$i]['anime_image_path'])) {
 			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
