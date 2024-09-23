@@ -113,9 +113,9 @@ class UserListCSSModel extends MainModel
 
 		$formattedtime .= $remainingminutes . " mins";
 
-		return $formattedtime;
+		return strval($formattedtime);
 	}
-	 
+
     /**
      * Get user list.
      *
