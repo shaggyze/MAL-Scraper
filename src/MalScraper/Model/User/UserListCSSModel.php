@@ -212,6 +212,7 @@ class UserListCSSModel extends MainModel
 			  $mangamagazineNames = '';
 			  foreach ($mangamagazines as $mangamagazine) {
 				$mangamagazineNames .= $mangamagazine['name'] . ', ';
+			  alert($mangamagazineNames . ' ' . $mangamagazine);
 			  }
 			  $content[$i]['manga_magazines'] = rtrim($mangamagazineNames, ', ');
 			} else {
