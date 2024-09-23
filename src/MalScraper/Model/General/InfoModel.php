@@ -348,7 +348,7 @@ class InfoModel extends MainModel
                 foreach ($next_info->find('a') as $each_info) {
                     $temp_id = explode('/', $each_info->href);
                     $info_temp[$info_temp_index]['id'] = $clean_info_type == 'authors' ? $temp_id[2] : $temp_id[3];
-                    $info_temp[$info_temp_index]['name'] = $each_info->plaintext;
+                    $info_temp[$info_temp_index]['name'] = str_replace('                 ', '', $each_info->plaintext);
                     $info_temp_index++;
                 }
             }
