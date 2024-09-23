@@ -197,6 +197,11 @@ class UserListCSSModel extends MainModel
 			} else {
 			  $content[$i]['rank'] = "N/A";
 			}
+			if (!empty($content2['data']['serialization'])) {
+			  $content[$i]['serialization'] = $content2['data']['serialization'];
+			} else {
+			  $content[$i]['serialization'] = "N/A";
+			}
 			if (!empty($content[$i]['anime_image_path'])) {
 			  $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
 			} else {

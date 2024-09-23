@@ -340,6 +340,7 @@ class InfoModel extends MainModel
             || $clean_info_type == 'genres'
             || $clean_info_type == 'themes'
 			|| $clean_info_type == 'demographic'
+			|| $clean_info_type == 'serialization'
             || $clean_info_type == 'authors'
         ) {
             $info_temp = [];
