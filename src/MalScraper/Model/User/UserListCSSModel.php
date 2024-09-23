@@ -148,10 +148,35 @@ class UserListCSSModel extends MainModel
 			    $content[$i]['year'] = (int) substr($content2['data']['published']['start'], -4);
 			  }
 			}
+			if (!empty($content2['data']['genres'])) {
+			  $genres = $content2['data']['genres'];
+			  $genreNames = '';
+			  foreach ($genres as $genre) {
+				$genreNames .= $genre['name'] . ', ';
+			  }
+			  $content[$i]['genres'] = rtrim($genreNames, ', ');
+			} else {
+			  $content[$i]['genres'] = 'N/A';
+			}
 			if (!empty($content2['data']['themes'])) {
-			  $content[$i]['themes'] = $content2['data']['themes'];
+			  $themes = $content2['data']['themes'];
+			  $themeNames = '';
+			  foreach ($themes as $theme) {
+				$themeNames .= $theme['name'] . ', ';
+			  }
+			  $content[$i]['themes'] = rtrim($themeNames, ', ');
 			} else {
 			  $content[$i]['themes'] = 'N/A';
+			}
+			if (!empty($content2['data']['demographics'])) {
+			  $demographics = $content2['data']['demographics'];
+			  $demographicNames = '';
+			  foreach ($demographics as $demographic) {
+				$demographicNames .= $demographic['name'] . ', ';
+			  }
+			  $content[$i]['demographics'] = rtrim($demographicNames, ', ');
+			} else {
+			  $content[$i]['demographics'] = 'N/A';
 			}
 			if (!empty($content[$i]['anime_title'])) {
 			  $content[$i]['anime_title'] = str_replace(['"', '[', ']'], '', $content[$i]['anime_title']);
