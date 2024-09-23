@@ -65,7 +65,10 @@ class MainModel
         if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 403 Forbidden') {
             return 403;
         }
-
+		
+        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 405 Not Allowed') {
+            return 405;
+        }
         return 200;
     }
 
@@ -77,45 +80,19 @@ class MainModel
      *
      * @return \simplehtmldom_1_5\simple_html_dom
      */
-	public static function getParser($url, $contentDiv, $additionalSetting = false)
-	{
-		try {
-			$html = HtmlDomParser::file_get_html($url);
-			if (!$html) {
-				throw new Exception("Failed to fetch HTML content from URL: $url");
-			}
+    public static function getParser($url, $contentDiv, $additionalSetting = false)
+    {
+        $html = HtmlDomParser::file_get_html($url)->find($contentDiv, 0);
+        $html = !$additionalSetting ? $html : $html->next_sibling();
+        $html = $html->outertext;
+        $html = str_replace('&quot;', '\"', $html);
+        $html = str_replace('&lt;', '&l-t;', $html); // handle '<'
+        $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
+        $html = str_replace('&l-t;', '&lt;', $html);
+        $html = HtmlDomParser::str_get_html($html);
 
-			$html = $html->find($contentDiv, 0);
-			if (!$html) {
-				throw new Exception("Content div not found: $contentDiv");
-			}
-
-			$html = !$additionalSetting ? $html : $html->next_sibling();
-			if (!$html) {
-				throw new Exception("Next sibling not found");
-			}
-
-			// The rest of your code remains unchanged
-			$html = $html->outertext;
-			$html = str_replace('&quot;', '\"', $html);
-			$html = str_replace('&lt;', '&l-t;', $html); // handle '<'
-			$html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
-			$html = str_replace('&l-t;', '&lt;', $html);
-			$html = HtmlDomParser::str_get_html($html);
-
-			return $html;   
-
-		} catch (Exception $e) {
-			// Handle the exception, e.g., log it, display an error message, or retry the request
-			if ($e->getCode() === 405) {
-				// Handle 405 error specifically
-				echo "405 Method Not Allowed";
-			} else {
-				// Handle other exceptions
-				echo "An error occurred: " . $e->getMessage();
-			}
-		}
-	}
+        return $html;
+    }
 
     /**
      * Header error check.
