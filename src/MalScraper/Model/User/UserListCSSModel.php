@@ -94,29 +94,6 @@ class UserListCSSModel extends MainModel
     }
 
     /**
-     * Default call.
-     *
-     * @param string $minutes
-     *
-     * @return string
-     */
-    public function get_minstohrsmins($minutes)
-	{
-		$hours = floor($minutes / 60);
-		$remainingminutes = $minutes % 60;
-
-		$formattedtime = "";
-
-		if ($hours > 0) {
-			$formattedtime .= $hours . " h ";
-		}
-
-		$formattedtime .= $remainingminutes . " mins";
-
-		return strval($formattedtime);
-	}
-
-    /**
      * Get user list.
      *
      * @return array
@@ -156,8 +133,14 @@ class UserListCSSModel extends MainModel
 			if (!empty($content2['data']['duration'])) {
 			  $episodes = $content2['data']['episodes'];
 			  $duration = str_replace(' min. per ep.', "", $content2['data']['duration']);
-			  $totalminutes = ($episodes * $duration);
-			  $total_runtime = get_minstohrsmins($totalminutes);
+			  $minutes = ($episodes * $duration);
+			  $hours = floor($minutes / 60);
+			  $remainingminutes = $minutes % 60;
+			  $formattedtime = "";
+			  if ($hours > 0) {
+			    $formattedtime .= $hours . " h ";
+			  }
+			  $total_runtime .= $remainingminutes . " mins";
 			  $content[$i]['total_runtime'] = $total_runtime;
 			} else {
 			  $content[$i]['total_runtime'] = "N/A";
