@@ -94,6 +94,29 @@ class UserListCSSModel extends MainModel
     }
 
     /**
+     * Default call.
+     *
+     * @param string $minutes
+     *
+     * @return string
+     */
+    public function convertMinutesToHoursMinutes($minutes)
+	{
+		$hours = floor($minutes / 60);
+		$remainingMinutes = $minutes % 60;
+
+		$formattedTime = "";
+
+		if ($hours > 0) {
+			$formattedTime .= $hours . " h ";
+		}
+
+		$formattedTime .= $remainingMinutes . " mins";
+
+		return $formattedTime;
+	}
+	 
+    /**
      * Get user list.
      *
      * @return array
@@ -129,6 +152,15 @@ class UserListCSSModel extends MainModel
 			  $content[$i]['synopsis'] = $synopsis;
 			} else {
 			  $content[$i]['synopsis'] = "N/A";
+			}
+			if (!empty($content2['data']['duration'])) {
+			  $episodes = $content2['data']['episodes'];
+			  $duration = str_replace(' min. per ep.', "", $content2['data']['duration']);
+			  $totalminutes = int($episodes) * int($duration);
+			  $total_runtime = convertMinutesToHoursMinutes($totalminutes);
+			  $content[$i]['total_runtime'] = $total_runtime;
+			} else {
+			  $content[$i]['total_runtime'] = "N/A";
 			}
 			if (!empty($content[$i]['anime_title'])) {
 			  $content[$i]['anime_title'] = str_replace(['"', '[', ']'], '', $content[$i]['anime_title']);
