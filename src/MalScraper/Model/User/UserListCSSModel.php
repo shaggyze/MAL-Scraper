@@ -148,6 +148,11 @@ class UserListCSSModel extends MainModel
 			    $content[$i]['year'] = (int) substr($content2['data']['published']['start'], -4);
 			  }
 			}
+			if (!empty($content2['data']['themes'])) {
+			  $content[$i]['themes'] = $content2['data']['themes'];
+			} else {
+			  $content[$i]['themes'] = 'N/A';
+			}
 			if (!empty($content[$i]['anime_title'])) {
 			  $content[$i]['anime_title'] = str_replace(['"', '[', ']'], '', $content[$i]['anime_title']);
 			} else {
