@@ -131,7 +131,7 @@ class UserListCSSModel extends MainModel
 			  $content[$i]['synopsis'] = "N/A";
 			}
 			if (!empty($content2['data']['duration'])) {
-			  $content[$i]['total_runtime'] = floor(str_replace(' min. per ep.', '', $content2['data']['episodes'] * $content2['data']['duration']) / 60) . ' h ' . (str_replace(' min. per ep.', '', $content2['data']['episodes'] * $content2['data']['duration']) % 60) . ' mins';
+			  $content[$i]['total_runtime'] = floor(str_replace(' min. per ep.', '', $content2['data']['episodes'] * $content2['data']['duration']) / 60) . 'h ' . (str_replace(' min. per ep.', '', $content2['data']['episodes'] * $content2['data']['duration']) % 60) . 'm';
 			} else {
 			  $content[$i]['total_runtime'] = "N/A";
 			}
