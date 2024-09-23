@@ -172,7 +172,18 @@ class UserListCSSModel extends MainModel
 			  }
 			  $content[$i]['themes'] = rtrim($themeNames, ', ');
 			} else {
-			  $content[$i]['themes'] = 'N/A';
+			  if (!empty($content2['data']['theme'])) {
+			    $themes = $content2['data']['theme'];
+			    $themeNames = '';
+			    if (is_array($themes)) {
+			    foreach ($themes as $theme) {
+				  $themeNames .= $theme['name'] . ', ';
+			    }
+			    }
+			    $content[$i]['themes'] = rtrim($themeNames, ', ');
+			  } else {
+			    $content[$i]['themes'] = 'N/A';
+			  }
 			}
 			if (!empty($content2['data']['demographic'])) {
 			  $demographics = $content2['data']['demographic'];
