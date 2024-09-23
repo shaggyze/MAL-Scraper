@@ -174,11 +174,11 @@ class UserListCSSModel extends MainModel
 			}
 			if (!empty($content2['data']['demographic'])) {
 			  $demographics = $content2['data']['demographic'];
-			  $demographicNames = '';
+			  $content[$i]['demographic'] = '';
 			  foreach ($demographics as $demographic) {
-				$demographicNames .= $demographic['name'] . ', ';
+				$content[$i]['demographic'] .= $demographic['name'] . ', ';
 			  }
-			  $content[$i]['demographic'] = rtrim($demographicNames, ', ');
+			  $content[$i]['demographic'] = rtrim($content[$i]['demographic'], ', ');
 			} else {
 			  $content[$i]['demographic'] = 'N/A';
 			}
