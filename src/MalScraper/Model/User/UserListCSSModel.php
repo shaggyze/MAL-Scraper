@@ -165,8 +165,10 @@ class UserListCSSModel extends MainModel
 			if (!empty($content2['data']['themes'])) {
 			  $themes = $content2['data']['themes'];
 			  $themeNames = '';
+			  if is_array($themes) {
 			  foreach ($themes as $theme) {
 				$themeNames .= $theme['name'] . ', ';
+			  }
 			  }
 			  $content[$i]['themes'] = rtrim($themeNames, ', ');
 			} else {
@@ -175,8 +177,10 @@ class UserListCSSModel extends MainModel
 			if (!empty($content2['data']['demographic'])) {
 			  $demographics = $content2['data']['demographic'];
 			  $demographicNames = '';
+			  if is_array($demographics) {
 			  foreach ($demographics as $demographic) {
 				$demographicNames .= $demographic['name'] . ', ';
+			  }
 			  }
 			  $content[$i]['demographic'] = rtrim($demographicNames, ', ');
 			} else {
