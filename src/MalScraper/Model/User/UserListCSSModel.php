@@ -139,6 +139,11 @@ class UserListCSSModel extends MainModel
 				$content[$i]['total_runtime'] = 'N/A';
 			  }
 			}
+			if (!empty($content2['data']['premiered'])) {
+			  $content[$i]['year'] = str_replace(['Winter ', 'Spring ', 'Summer ', 'Fall '], '', $content2['data']['premiered']));
+			} else {
+			  $content[$i]['year'] = 'N/A';
+			}
 			if (!empty($content[$i]['anime_title'])) {
 			  $content[$i]['anime_title'] = str_replace(['"', '[', ']'], '', $content[$i]['anime_title']);
 			} else {
