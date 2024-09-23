@@ -142,7 +142,7 @@ class UserListCSSModel extends MainModel
 			if (!empty($content2['data']['premiered'])) {
 			  $content[$i]['year'] = str_replace(['Winter ', 'Spring ', 'Summer ', 'Fall '], '', $content2['data']['premiered']);
 			} else {
-			  $content[$i]['year'] = (int) explode(" ", $content2->data->aired->start)[2];
+			  $content[$i]['year'] = (int) $content2->data->aired->start[strlen($content2->data->aired->start) - 4];
 			}
 			if (!empty($content[$i]['anime_title'])) {
 			  $content[$i]['anime_title'] = str_replace(['"', '[', ']'], '', $content[$i]['anime_title']);
