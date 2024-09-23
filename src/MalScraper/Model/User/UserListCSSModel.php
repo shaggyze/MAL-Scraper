@@ -140,7 +140,7 @@ class UserListCSSModel extends MainModel
 			  }
 			}
 			if (!empty($content2['data']['premiered'])) {
-			  $content[$i]['year'] = str_replace(['Winter ', 'Spring ', 'Summer ', 'Fall '], '', $content2['data']['premiered']));
+			  $content[$i]['year'] = str_replace(['Winter ', 'Spring ', 'Summer ', 'Fall '], '', $content2['data']['premiered']);
 			} else {
 			  $content[$i]['year'] = 'N/A';
 			}
