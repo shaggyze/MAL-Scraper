@@ -207,8 +207,8 @@ class UserListCSSModel extends MainModel
 			} else {
 			  $content[$i]['serialization'] = 'N/A';
 			}
-			if (!empty($content['data']['manga_magazines'])) {
-			  $mangamagazines = $content['data']['manga_magazines'];
+			if (!empty($content['manga_magazines'])) {
+			  $mangamagazines = $content['manga_magazines'];
 			  $mangamagazineNames = '';
 			  foreach ($mangamagazines as $mangamagazine) {
 				$mangamagazineNames .= $mangamagazine['name'] . ', ';
