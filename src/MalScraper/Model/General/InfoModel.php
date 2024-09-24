@@ -337,6 +337,7 @@ class InfoModel extends MainModel
         if ($clean_info_type == 'producers'
             || $clean_info_type == 'licensors'
             || $clean_info_type == 'studios'
+            || $clean_info_type == 'genre'
             || $clean_info_type == 'genres'
             || $clean_info_type == 'theme'
             || $clean_info_type == 'themes'
