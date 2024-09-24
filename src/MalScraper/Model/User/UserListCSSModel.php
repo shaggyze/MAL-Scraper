@@ -155,20 +155,33 @@ class UserListCSSModel extends MainModel
 			if (!empty($content2['data']['genres'])) {
 			  $genres = $content2['data']['genres'];
 			  $genreNames = '';
-			  foreach ($genres as $genre) {
-				$genreNames .= $genre['name'] . ', ';
+			  if (is_array($genres)) {
+			    foreach ($genres as $genre) {
+				  $genreNames .= $genre['name'] . ', ';
+			    }
 			  }
 			  $content[$i]['genres'] = rtrim($genreNames, ', ');
 			} else {
+			  if (!empty($content2['data']['genre'])) {
+			    $genres = $content2['data']['genre'];
+			    $genreNames = '';
+				if (is_array($genres)) {
+			      foreach ($genres as $genre) {
+				    $genreNames .= $genre['name'] . ', ';
+			      }
+				}
+			    $content[$i]['genres'] = rtrim($genreNames, ', ');
+			  } else {
 			  $content[$i]['genres'] = 'N/A';
+			  }
 			}
 			if (!empty($content2['data']['themes'])) {
 			  $themes = $content2['data']['themes'];
 			  $themeNames = '';
 			  if (is_array($themes)) {
-			  foreach ($themes as $theme) {
-				$themeNames .= $theme['name'] . ', ';
-			  }
+			    foreach ($themes as $theme) {
+				  $themeNames .= $theme['name'] . ', ';
+			    }
 			  }
 			  $content[$i]['themes'] = rtrim($themeNames, ', ');
 			} else {
