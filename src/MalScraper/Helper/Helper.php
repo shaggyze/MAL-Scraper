@@ -226,6 +226,14 @@ class Helper
 					$str = 'https://cdn.myanimelist.net/images/anime/1012/126441l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;*/
+				case '56894':
+					$str = 'https://shaggyze.website/Themes/covers/dragon_ball_daima';
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+					return $str;
+				case '4772':
+					$str = 'https://shaggyze.website/Themes/covers/aria_the_origination_episode_5.5.png';
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+					return $str;
 				default:
 					if (!empty($orig)) {
 						return $orig;
