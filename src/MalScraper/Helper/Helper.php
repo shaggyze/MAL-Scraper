@@ -227,7 +227,7 @@ class Helper
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;*/
 				case '56894':
-					$str = 'https://shaggyze.website/Themes/covers/dragon_ball_daima';
+					$str = 'https://shaggyze.website/Themes/covers/dragon_ball_daima.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				case '4772':
