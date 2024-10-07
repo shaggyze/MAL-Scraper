@@ -255,7 +255,7 @@ class Helper
 						return $orig;
 					} else {
 							error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-						return ('https://shaggyze.github.io/Themes/unavailable.png');
+						return ('https://shaggyze.website/Themes/covers/unavailable.png');
 					}
 			}
 		}
