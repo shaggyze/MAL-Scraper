@@ -112,16 +112,16 @@ class UserListCSSModel extends MainModel
 		  for ($i = 0; $i < $count; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
-			  /*$url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];*/
+			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];*/
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
-			  /*$content1 = json_decode(file_get_contents($url1), true);*/
+			  if (!empty($url2) && filter_var($url2, FILTER_VALIDATE_URL)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
-			  /*$url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];*/
+			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];*/
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
-			  /*$content1 = json_decode(file_get_contents($url1), true);*/
+			  if (!empty($url2) && filter_var($url2, FILTER_VALIDATE_URL)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents($url2), true);
 			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
