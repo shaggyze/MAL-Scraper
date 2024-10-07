@@ -48,7 +48,7 @@ class UserCoverModel
      *
      * @return void
      */
-    public function __construct($user, $type="anime", $style, $genre)
+    public function __construct($user, $type="anime", $style, $genre=null)
     {
         $this->_user = $user;
         $this->_type = $type;
