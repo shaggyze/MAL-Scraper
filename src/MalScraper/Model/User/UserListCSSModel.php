@@ -151,7 +151,11 @@ class UserListCSSModel extends MainModel
 			  if (!empty($content2['data']['aired']['start'])) {
 			    $content[$i]['year'] = (int) substr($content2['data']['aired']['start'], -4);
 			  } else {
-			    $content[$i]['year'] = (int) substr($content2['data']['published']['start'], -4);
+			    if (!empty($content2['data']['published']['start'])) {
+			      $content[$i]['year'] = (int) substr($content2['data']['published']['start'], -4);
+			    } else {
+			      $content[$i]['year'] = 'N/A';
+			    }
 			  }
 			}
 			if (!empty($content2['data']['genres'])) {
