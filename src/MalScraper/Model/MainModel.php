@@ -2,7 +2,7 @@
 
 namespace MalScraper\Model;
 
-define('MAX_FILE_SIZE', 100000000);
+define('MAX_FILE_SIZE', 1000000000);
 
 use HtmlDomParser;
 
