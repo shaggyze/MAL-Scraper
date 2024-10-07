@@ -72,7 +72,9 @@ class Helper
                 if (is_array($value)) {
                     $array[$key] = self::superEncode($value);
                 } else {
-                    $array[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+					if (!is_null($value)) {
+						$array[$key] = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+					}
                 }
             }
         }
