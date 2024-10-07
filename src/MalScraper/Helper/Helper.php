@@ -236,12 +236,16 @@ class Helper
 					$str = 'https://shaggyze.website/Themes/covers/aria_the_origination_episode_5.5.png';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
+				case '59463':
+					$str = 'https://shaggyze.website/Themes/covers/majo_no_furo_life.webp';
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+					return $str;
 				default:
 					if (!empty($orig)) {
 						return $orig;
 					} else {
 							error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-						return ('https://shaggyze.github.io/Themes/unavailable.png');
+						return ('https://shaggyze.website/Themes/covers/unavailable.png');
 					}
 			}
 		} else {
