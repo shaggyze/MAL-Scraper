@@ -105,7 +105,7 @@ class UserListModel extends MainModel
 	  while (true) {
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
-		$content = json_decode(file_get_contents($url), true, 512, JSON_BIGINT_AS_STRING);
+		$content = json_decode(file_get_contents($url), true, 5120, JSON_BIGINT_AS_STRING);
 		
 		if ($content) {
 		  $count = count($content);
