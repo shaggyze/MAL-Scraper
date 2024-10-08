@@ -188,10 +188,10 @@ class Helper
 					$str = 'https://shaggyze.website/Themes/covers/3-nen_z-gumi_ginpachi-sensei.webp';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				case '58755':
+				/*case '58755':
 					$str = 'https://shaggyze.website/Themes/covers/5-toubun_no_hanayome.png';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-					return $str;
+					return $str;*/
 				case '55408':
 					$str = 'https://shaggyze.website/Themes/covers/100_manten_pax_salomena.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
@@ -200,10 +200,10 @@ class Helper
 					$str = 'https://shaggyze.website/Themes/covers/curry_meshi_in_miracle.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				case '57554':
+				/*case '57554':
 					$str = 'https://shaggyze.website/Themes/covers/rurouni_kenshin__meiji_kenkaku_romantan_-_kyoto_douran.jpeg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-					return $str;
+					return $str;*/
 				/*case '50980':
 					$str = 'https://cdn.myanimelist.net/images/anime/1763/120846l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
@@ -244,8 +244,9 @@ class Helper
 					if (!empty($orig)) {
 						return $orig;
 					} else {
-							error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-						return ('https://shaggyze.website/Themes/covers/unavailable.png');
+						$str = 'https://shaggyze.website/Themes/covers/unavailable.png';
+						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+						return $str;
 					}
 			}
 		} else {
@@ -254,8 +255,9 @@ class Helper
 					if (!empty($orig)) {
 						return $orig;
 					} else {
-							error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-						return ('https://shaggyze.website/Themes/covers/unavailable.png');
+						$str = 'https://shaggyze.website/Themes/covers/unavailable.png';
+						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+						return $str;
 					}
 			}
 		}
