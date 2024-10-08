@@ -22,33 +22,35 @@ class UserCSSModel
      * @var string
      */
     private $_type;
-
-    /**
-     * CSS status.
-     *
-     * @var string
-     */
-    private $_status;
-
-    /**
-     * CSS genre.
-     *
-     * @var string
-     */
-    private $_genre;
-
+	
     /**
      * CSS style.
      *
      * @var string
      */
     private $_style;
+
+    /**
+     * Anime/manga status.
+     *
+     * @var string
+     */
+    private $_status;
+
+    /**
+     * Anime/manga genre.
+     *
+     * @var string
+     */
+    private $_genre;
+
     /**
      * Default constructor.
      *
      * @param string $user
      * @param string $type
      * @param string $style
+     * @param string $status
      * @param string $genre
      * @param string $parserArea
      *
