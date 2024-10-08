@@ -72,7 +72,7 @@ class UserCSSModel
      */
     public function getAllInfo()
     {
-        $list = (new UserListCSS($this->_user, $this->_type, 7, $this->_genre))->getAllInfo();
+        $list = (new UserListCSS($this->_user, $this->_type, $this->_status, $this->_genre))->getAllInfo();
 
         $cover = 'No UserList';
 		if (is_array($list)) {
