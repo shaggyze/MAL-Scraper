@@ -15,6 +15,8 @@
  */
 
 namespace MalScraper;
+ini_set("log_errors", TRUE);
+ini_set("error_log", "error_log");
 
 use Cache;
 use MalScraper\Helper\Helper;
@@ -110,6 +112,7 @@ class MalScraper
             // set cache path
             if (!empty($config['cache_path'])) {
                 $this->_cache_path = $config['cache_path'];
+				error_log($config['cache_path']);
             }
             $this->_cache->setCachePath($this->_cache_path);
 
@@ -644,6 +647,7 @@ class MalScraper
      * @param string $user   Username
      * @param string $type   (Optional) Either anime or manga
      * @param string $status (Optional) Anime/manga status
+     * @param string $genre  (Optional) number of genre
      *
      * @return array
      */
@@ -658,6 +662,7 @@ class MalScraper
      * @param string $user   Username
      * @param string $type   (Optional) Either anime or manga
      * @param string $status (Optional) Anime/manga status
+     * @param string $genre  (Optional) number of genre
      *
      * @return array
      */
