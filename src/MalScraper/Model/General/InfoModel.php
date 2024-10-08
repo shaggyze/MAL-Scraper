@@ -91,7 +91,7 @@ class InfoModel extends MainModel
     {
         $title = $this->_parser->find('h1[class="title-name"]', 0);
 
-        return $title? $anime_cover->strong : '';
+        return $title ? $title->strong : '';
     }
 
     /**
