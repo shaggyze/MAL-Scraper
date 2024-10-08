@@ -415,7 +415,7 @@ class UserModel extends MainModel
      *
      * @return array
      */
-    private function getFavList($favorite_area, $type)
+    /*private function getFavList($favorite_area, $type)
     {
         $favorite = [];
         $favorite_area = $favorite_area->find('ul[class="favorites-list '.$type.'"]', 0);
@@ -445,7 +445,7 @@ class UserModel extends MainModel
         }
 
         return $favorite;
-    }
+    }*/
 
     /**
      * Get favorite image.
