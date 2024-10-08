@@ -153,7 +153,7 @@ class MalScraper
             } else {
                 $data = call_user_func_array([$this, $method], $arguments);
 				error_log($method);
-				if ($method === "getUserCSS" || $method === "getUser") {
+				if ($method === "getUserCSS" || $method === "getUserCover") {
 					$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 				} else {
 					$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
