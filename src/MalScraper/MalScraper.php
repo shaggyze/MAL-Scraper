@@ -153,7 +153,9 @@ class MalScraper
                 $result = $this->_cache->retrieve($cacheName);
             } else {
                 $data = call_user_func_array([$this, $method], $arguments);
-                $this->_cache->store($cacheName, $data, $this->_cache_time);
+				$timestamp = date('Y-m-d\TH:i:s.u\Z');
+				$data = "/* Generated " . $timestamp . " */\r" . $data;
+                $this->_cache->store($cacheName, '' . $data, $this->_cache_time);
                 $result = $data;
             }
         } else {
