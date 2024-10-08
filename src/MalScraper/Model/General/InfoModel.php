@@ -87,12 +87,21 @@ class InfoModel extends MainModel
      *
      * @return string|bool
      */
-    private function getTitle()
-    {
-        $title = $this->_parser->find('h1[class="title-name"]', 0);
+	private function getTitle()
+	{
+		$titleElement = $this->_parser->find('div.h1-title > div[itemprop="name"] > h1.title-name', 0);
 
-        return $title ? $title->strong : '';
-    }
+		if (!$titleElement) {
+			return ''; // Handle case where title element is not found
+		}
+
+		$title = $titleElement->find('strong', 0)->innertext;
+
+		$title = trim($title); // Remove leading/trailing whitespace
+		$title = preg_replace('/\s+/u', ' ', $title); // Replace multiple spaces with a single space
+
+		return $title;
+	}
 
     /**
      * Get anime/manga alternative title.
@@ -101,7 +110,7 @@ class InfoModel extends MainModel
      */
     private function getTitle2()
     {
-        $title2 = [];
+		$title2 = [];
 
         $title_info = $this->_parser->find('span.dark_text', 0);
 
