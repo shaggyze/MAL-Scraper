@@ -73,7 +73,7 @@ class InfoModel extends MainModel
     /**
      * Get anime/manga cover.
      *
-     * @return string|bool
+     * @return string
      */
 private function getCover()
 {
@@ -86,23 +86,21 @@ private function getCover()
     return $animeImage->src;
 }
 
+    /**
+     * Get anime/manga title.
+     *
+     * @return string
+     */
 private function getTitle()
 {
-    // Traverse upwards from the image to find a more reliable title element (assuming HTML structure is consistent)
     $animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
 
     if (!$animeImage) {
         return ''; // Handle case where image is not found
     }
 
-    // Find the closest parent anchor (assuming title is within the anchor's text content)
-    $parentAnchor = $animeImage->parentNode;
-    if (!$parentAnchor || $parentAnchor->nodeName !== 'a') {
-        return ''; // Handle case where parent anchor is not found
-    }
-
-    // Extract the title from the anchor's text content (assuming it holds the title)
-    $title = trim($parentAnchor->textContent);
+    // Extract the title from the alt attribute
+    $title = trim($animeImage->alt);
 
     return $title;
 }
