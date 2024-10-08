@@ -48,7 +48,7 @@ class UserCSSModel
      *
      * @return void
      */
-    public function __construct($user, $type="anime", $status=7, $genre=null, $style=null)
+    public function __construct($user, $type="anime", $status="7", $genre=null, $style=null)
     {
         $this->_user = $user;
         $this->_type = $type;
