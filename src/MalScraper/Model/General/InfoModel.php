@@ -89,10 +89,10 @@ class InfoModel extends MainModel
      */
 	private function getTitle()
 	{
-		$titleElement = $this->_parser->find('div.h1-title > div[itemprop="name"] > h1.title-name', 0);
+		$titleElement = $this->_parser->find('h1.title-name', 0);
 
 		if (!$titleElement) {
-			return ''; // Handle case where title element is not found
+			return 'null';
 		}
 
 		$title = $titleElement->find('strong', 0)->innertext;
