@@ -156,7 +156,7 @@ class MalScraper
 				if ($method === "getUserCSS" || $method === "getUser") {
 					$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 				} else {
-					$timestamp = json_encode(['data' => ['Generated' => date('Y-m-d\TH:i:s.u\Z')]]);
+					$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
 					$data = array_merge($data, json_decode($timestamp, true));
 				}
                 $this->_cache->store($cacheName, $data, $this->_cache_time);
