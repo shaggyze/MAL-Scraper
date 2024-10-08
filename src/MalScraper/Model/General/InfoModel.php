@@ -89,13 +89,22 @@ class InfoModel extends MainModel
      *
      * @return string
      */
-	private function getTitle()
+	/*private function getTitle()
 	{
 		$animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
 		if (!$animeImage) {
 			return '';
 		}
 		$title = trim($animeImage->alt);
+		return $title;
+	}*/
+	private function getTitle()
+	{
+		$titleElement = $this->_parser->find('span[itemprop="name"]', 0);
+		if (!$titleElement) {
+			return '';
+		}
+		$title = trim($titleElement->textContent);
 		return $title;
 	}
 
