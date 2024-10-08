@@ -24,11 +24,11 @@ class UserCSSModel
     private $_type;
 
     /**
-     * CSS style.
+     * CSS status.
      *
      * @var string
      */
-    private $_style;
+    private $_status;
 
     /**
      * CSS genre.
@@ -37,6 +37,12 @@ class UserCSSModel
      */
     private $_genre;
 
+    /**
+     * CSS style.
+     *
+     * @var string
+     */
+    private $_style;
     /**
      * Default constructor.
      *
