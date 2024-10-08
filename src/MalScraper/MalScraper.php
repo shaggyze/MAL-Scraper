@@ -154,8 +154,8 @@ class MalScraper
                 $data = call_user_func_array([$this, $method], $arguments);
 				error_log($method);
 				if ($method == "usercss" || method === "user-css") {
-					$timestamp = ['data' => ['Generated' => date('Y-m-d\TH:i:s.u\Z')]];
-					$data = array_merge($data, $timestamp);
+					$timestamp = json_encode(['data' => ['Generated' => date('Y-m-d\TH:i:s.u\Z')]]);
+					$data = array_merge($data, json_decode($timestamp, true));
 				} else {
 					$data = '/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */\r' . $data;
 				}
