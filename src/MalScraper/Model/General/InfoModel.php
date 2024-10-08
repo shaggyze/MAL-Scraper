@@ -75,33 +75,37 @@ class InfoModel extends MainModel
      *
      * @return string|bool
      */
-    private function getCover()
-    {
-        $anime_cover = $this->_parser->find('img.lazyloaded', 0);
+private function getCover()
+{
+    $animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
 
-        return $anime_cover ? $anime_cover->src : '';
+    if (!$animeImage) {
+        return ''; // Handle case where image is not found
     }
 
-    /**
-     * Get anime/manga title.
-     *
-     * @return string|bool
-     */
-	private function getTitle()
-	{
-		$titleElement = $this->_parser->find('h1.title-name', 0);
+    return $animeImage->src;
+}
 
-		if (!$titleElement) {
-			return 'null';
-		}
+private function getTitle()
+{
+    // Traverse upwards from the image to find a more reliable title element (assuming HTML structure is consistent)
+    $animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
 
-		$title = $titleElement->find('strong', 0)->innertext;
+    if (!$animeImage) {
+        return ''; // Handle case where image is not found
+    }
 
-		$title = trim($title); // Remove leading/trailing whitespace
-		$title = preg_replace('/\s+/u', ' ', $title); // Replace multiple spaces with a single space
+    // Find the closest parent anchor (assuming title is within the anchor's text content)
+    $parentAnchor = $animeImage->parentNode;
+    if (!$parentAnchor || $parentAnchor->nodeName !== 'a') {
+        return ''; // Handle case where parent anchor is not found
+    }
 
-		return $title;
-	}
+    // Extract the title from the anchor's text content (assuming it holds the title)
+    $title = trim($parentAnchor->textContent);
+
+    return $title;
+}
 
     /**
      * Get anime/manga alternative title.
