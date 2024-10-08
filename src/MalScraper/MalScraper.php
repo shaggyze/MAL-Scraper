@@ -68,7 +68,7 @@ class MalScraper
      *
      * @var bool
      */
-    private $_enable_cache = false;
+    private $_enable_cache = true;
 
     /**
      * Cache expiration time.
@@ -89,7 +89,7 @@ class MalScraper
      *
      * @var bool
      */
-    private $_to_api = false;
+    private $_to_api = true;
 
     /**
      * Default constructor.
@@ -98,7 +98,7 @@ class MalScraper
      *
      * @return void
      */
-    public function __construct($config = false)
+    public function __construct($config = true)
     {
         if (!empty($config['enable_cache']) && $config['enable_cache'] === true) {
             // enable cache function
