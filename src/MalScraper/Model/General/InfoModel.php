@@ -89,7 +89,7 @@ class InfoModel extends MainModel
      */
     private function getTitle()
     {
-        $title = $this->_parser->find('strong.h1[class="title-name"]', 0);
+        $title = $this->_parser->find('h1[class="title-name"] strong', 0);
 
         return $title;
     }
