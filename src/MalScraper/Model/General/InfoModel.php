@@ -75,35 +75,29 @@ class InfoModel extends MainModel
      *
      * @return string
      */
-private function getCover()
-{
-    $animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
-
-    if (!$animeImage) {
-        return ''; // Handle case where image is not found
-    }
-
-    return $animeImage->src;
-}
+	private function getCover()
+	{
+		$animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
+		if (!$animeImage) {
+			return ''; 
+		}
+		return $animeImage->src;
+	}
 
     /**
      * Get anime/manga title.
      *
      * @return string
      */
-private function getTitle()
-{
-    $animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
-
-    if (!$animeImage) {
-        return ''; // Handle case where image is not found
-    }
-
-    // Extract the title from the alt attribute
-    $title = trim($animeImage->alt);
-
-    return $title;
-}
+	private function getTitle()
+	{
+		$animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
+		if (!$animeImage) {
+			return '';
+		}
+		$title = trim($animeImage->alt);
+		return $title;
+	}
 
     /**
      * Get anime/manga alternative title.
