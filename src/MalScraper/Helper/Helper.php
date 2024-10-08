@@ -244,9 +244,8 @@ class Helper
 					if (!empty($orig)) {
 						return $orig;
 					} else {
-						$str = 'https://shaggyze.website/Themes/covers/unavailable.png';
-						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-						return $str;
+						error_log('PHP Notice:  Missing  https://myanimelist.net/anime/' . $str);
+						return ('https://shaggyze.website/Themes/covers/unavailable.png');
 					}
 			}
 		} else {
@@ -255,9 +254,8 @@ class Helper
 					if (!empty($orig)) {
 						return $orig;
 					} else {
-						$str = 'https://shaggyze.website/Themes/covers/unavailable.png';
-						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-						return $str;
+						error_log('PHP Notice:  Missing  https://myanimelist.net/manga/' . $str);
+						return ('https://shaggyze.website/Themes/covers/unavailable.png');
 					}
 			}
 		}
