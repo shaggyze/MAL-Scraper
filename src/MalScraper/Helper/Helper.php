@@ -174,7 +174,6 @@ class Helper
      */
     public static function imageUrlReplace($str, $type, $orig)
     {
-		/* Log File: https://shaggyze.website/msa/error_log */
 		if ($type == 'anime') {
 			switch ($str) {
 				case '38339':
