@@ -112,7 +112,6 @@ class MalScraper
             // set cache path
             if (!empty($config['cache_path'])) {
                 $this->_cache_path = $config['cache_path'];
-				error_log($config['cache_path']);
             }
             $this->_cache->setCachePath($this->_cache_path);
 
@@ -153,9 +152,14 @@ class MalScraper
                 $result = $this->_cache->retrieve($cacheName);
             } else {
                 $data = call_user_func_array([$this, $method], $arguments);
-				$timestamp = date('Y-m-d\TH:i:s.u\Z');
-				$data = "/* Generated " . $timestamp . " */\r" . $data;
-                $this->_cache->store($cacheName, '' . $data, $this->_cache_time);
+				error_log($method);
+				if ($method == "usercss" || method === "user-css") {
+					$timestamp = ['data' => ['Generated' => date('Y-m-d\TH:i:s.u\Z')]];
+					$data = array_merge($data, $timestamp);
+				} else {
+					$data = '/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */\r' . $data;
+				}
+                $this->_cache->store($cacheName, $data, $this->_cache_time);
                 $result = $data;
             }
         } else {
