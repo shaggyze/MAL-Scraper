@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.4",
-        "shaggyze/php-simple-html-dom-parser" : "dev-master",
+        "shaggyze/shaggyze/php-simple-html-dom-parser" : "dev-master",
         "shaggyze/simple-php-cache" : "dev-master"
     },
     "autoload": {
