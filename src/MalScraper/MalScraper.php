@@ -151,22 +151,23 @@ class MalScraper
             if ($isCached) {
                 $result = $this->_cache->retrieve($cacheName);
             } else {
-			if (is_array($data)) {
-				if ($method === "getUserCSS" || $method === "getUserCover") {
-					$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
-				} else {
-					$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
-					if (is_array($decoded = json_decode($timestamp, true))) {
-						$data = array_merge($data, $decoded);
+                $data = call_user_func_array([$this, $method], $arguments);
+				if (is_array($data)) {
+					if ($method === "getUserCSS" || $method === "getUserCover") {
+						$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 					} else {
-						// Handle the case where $timestamp is not a valid JSON string
-						// For example, you could log an error or return an error message
+						$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
+						if (is_array($decoded = json_decode($timestamp, true))) {
+							$data = array_merge($data, $decoded);
+						} else {
+							// Handle the case where $timestamp is not a valid JSON string
+							// For example, you could log an error or return an error message
+						}
 					}
+				} else {
+					// Handle the case where $data is not an array
+					// For example, you could log an error or return an error message
 				}
-			} else {
-				// Handle the case where $data is not an array
-				// For example, you could log an error or return an error message
-			}
                 $this->_cache->store($cacheName, $data, $this->_cache_time);
                 $result = $data;
             }
