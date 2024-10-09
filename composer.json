@@ -13,8 +13,8 @@
     ],
     "require": {
         "php": ">=5.4",
-        "shaggyze/shaggyze/php-simple-html-dom-parser" : "dev-master",
-        "shaggyze/simple-php-cache" : "dev-master"
+        "rl404/php-simple-html-dom-parser" : "~1.5.0",
+        "rl404/simple-php-cache" : "~1.6.1"
     },
     "autoload": {
         "psr-0": {
