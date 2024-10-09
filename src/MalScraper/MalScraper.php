@@ -157,7 +157,7 @@ class MalScraper
 				} else {
 					$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
 					if (is_array($decoded = json_decode($timestamp, true))) {
-						$data = array_merge($data, $decoded);
+						$data = array_merge($data, json_decode($timestamp, true));
 					} else {
 						// Handle the case where $timestamp is not a valid JSON string
 						// For example, you could log an error or return an error message
