@@ -152,15 +152,17 @@ class MalScraper
                 $result = $this->_cache->retrieve($cacheName);
             } else {
                 $data = call_user_func_array([$this, $method], $arguments);
-				if ($method === "getUserCSS" || $method === "getUserCover") {
+				if ($data) {
+					if ($method === "getUserCSS" || $method === "getUserCover") {
 					$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
-				} else {
-					$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
-					if (is_array($decoded = json_decode($timestamp, true))) {
-						$data = array_merge($data, json_decode($timestamp, true));
 					} else {
-						// Handle the case where $timestamp is not a valid JSON string
-						// For example, you could log an error or return an error message
+						$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
+						if (is_array($decoded = json_decode($timestamp, true))) {
+							$data = array_merge($data, json_decode($timestamp, true));
+						} else {	
+							// Handle the case where $timestamp is not a valid JSON string
+							// For example, you could log an error or return an error message
+						}
 					}
 				}
                 $this->_cache->store($cacheName, $data, $this->_cache_time);
