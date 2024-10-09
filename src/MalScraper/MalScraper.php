@@ -161,13 +161,11 @@ class MalScraper
 						if (is_array($decoded = json_decode($timestamp, true))) {
 							$data = array_merge($data, $decoded);
 						} else {
-							// Handle the case where $timestamp is not a valid JSON string
-							// For example, you could log an error or return an error message
+							$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 						}
 					}
 				} else {
-					// Handle the case where $data is not an array
-					// For example, you could log an error or return an error message
+					$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 				}
                 $this->_cache->store($cacheName, $data, $this->_cache_time);
                 $result = $data;
