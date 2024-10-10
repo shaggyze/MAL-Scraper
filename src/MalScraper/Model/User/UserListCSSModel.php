@@ -113,7 +113,7 @@ class UserListCSSModel extends MainModel
 		  $count = count($content['data']);
 		  $content = $content['data'];
 		  error_log($content['0']['manga_english']);
-		  for ($i = 0; $i < $count; $i++) {
+		  for ($i = 0; $i < $count - 1; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
