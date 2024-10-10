@@ -102,12 +102,12 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
-	  while (true) {https://shaggyze.website/msa/userlist?u=ShaggyZE&t=manga&st=7&g=0
-		$url0 = 'https://shaggyze.website/msa/userlist?u='.$this->_user.'&t='.$this->_type.'&st='.$this->_status.'&g'.$this->_genre;
-		$url1 = 'https://shaggyze.website/cache/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
+	  while (true) {
+		$url = 'https://shaggyze.website/msa/userlist?u='.$this->_user.'&t='.$this->_type.'&st='.$this->_status.'&g'.$this->_genre;
+		$url0 = 'https://shaggyze.website/cache/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
 
-		if (!filter_var($url1, FILTER_VALIDATE_URL) || !@file_get_contents($url1)) {$url1 = $url0;}
-		$content = json_decode(file_get_contents($url1), true);
+		if (!filter_var($url0, FILTER_VALIDATE_URL) || !@file_get_contents($url0)) {$url0 = $url;}
+		$content = json_decode(file_get_contents($url0), true);
 
 		if ($content) {
 		  $count = count($content);
