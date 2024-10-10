@@ -303,12 +303,11 @@ class UserListCSSModel extends MainModel
 
 		  $data = array_merge($data, $content);
 
-		  /*$offset += 300;
+		  /*$offset += 300;*/
 		} else {
 		  break;
-		}*/
-		break;
-	  }
+		}
+	  /*}*/
 
         return $data;
     }
