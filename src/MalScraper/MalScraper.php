@@ -152,7 +152,7 @@ class MalScraper
                 $result = $this->_cache->retrieve($cacheName);
             } else {
                 $data = call_user_func_array([$this, $method], $arguments);
-				error_log($method);
+				/*error_log($method);*/
 				if ($data) {
 					if ($method === "getUserCSS" || $method === "getUserCover") {
 						$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
