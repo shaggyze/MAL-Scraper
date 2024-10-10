@@ -112,7 +112,7 @@ class UserListCSSModel extends MainModel
 		if ($content) {
 		  $count = count($content['data']);
 		  $content = $content['data'];
-		  error_log($content);
+		  error_log($content['0']['anime_title_eng']);
 		  for ($i = 0; $i < $count; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
