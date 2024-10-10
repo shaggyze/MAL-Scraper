@@ -305,7 +305,7 @@ class UserListCSSModel extends MainModel
 
 		  /*$offset += 300;*/
 		} else {
-		  break;
+
 		}
 	  /*}*/
 
