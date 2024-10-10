@@ -102,7 +102,7 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
-	  while (true) {
+	  /*while (true) {*/
 		$url = 'https://shaggyze.website/msa/userlist?u='.$this->_user.'&t='.$this->_type.'&st='.$this->_status.'&g'.$this->_genre;
 		$url0 = 'https://shaggyze.website/cache/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
 
@@ -303,10 +303,11 @@ class UserListCSSModel extends MainModel
 
 		  $data = array_merge($data, $content);
 
-		  $offset += 300;
+		  /*$offset += 300;
 		} else {
 		  break;
-		}
+		}*/
+		break;
 	  }
 
         return $data;
