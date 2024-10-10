@@ -54,7 +54,7 @@ class UserListCSSModel extends MainModel
         $this->_type = $type;
         $this->_status = $status;
 		$this->_genre = $genre;
-        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status.'&genre='.$genre;
+        $this->_url = 'https://shaggyze.website/msa/userlist?u='.$user.'&t='.&type.'&st='.$status.'&g='.$genre;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
