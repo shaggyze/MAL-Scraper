@@ -102,10 +102,12 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
-	  while (true) {
-		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
+	  while (true) {https://shaggyze.website/msa/userlist?u=ShaggyZE&t=manga&st=7&g=0
+		$url0 = 'https://shaggyze.website/msa/userlist?u='.$this->_user.'&t='.$this->_type.'&st='.$this->_status.'&g'.$this->_genre;
+		$url1 = 'https://shaggyze.website/cache/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
 
-		$content = json_decode(file_get_contents($url), true);
+		if (!filter_var($url1, FILTER_VALIDATE_URL) || !@file_get_contents($url1)) {$url1 = $url0;}
+		$content = json_decode(file_get_contents($url1), true);
 
 		if ($content) {
 		  $count = count($content);
@@ -114,14 +116,14 @@ class UserListCSSModel extends MainModel
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
-			  /*if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}*/
+			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents($url1), true);
 			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
-			  /*if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}*/
+			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents($url1), true);
 			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
