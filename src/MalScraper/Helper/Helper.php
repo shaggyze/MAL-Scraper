@@ -174,6 +174,7 @@ class Helper
      */
     public static function imageUrlReplace($str, $type, $orig, $user)
     {
+		$animeImageUrl = '';
 		if ($user === "ShaggyZE" || $user === "johneaston") {
 			if ($type == 'anime') {
 				switch ($str) {
