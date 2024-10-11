@@ -174,6 +174,34 @@ class Helper
      */
     public static function imageUrlReplace($str, $type, $orig, $user)
     {
+		if ($user === "ShaggyZE" || $user === "johneaston") {
+			if ($type == 'anime') {
+				switch ($str) {
+					case '513'
+						$str = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
+						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+						return $str;
+					}
+					default:
+					if (!empty($orig)) {
+						return $orig;
+					} else {
+						error_log('PHP Notice:  Missing  https://myanimelist.net/anime/' . $str);
+						return ('https://shaggyze.website/Themes/covers/unavailable.png');
+					}
+					
+			} else {
+				switch ($str) {
+					default:
+						if (!empty($orig)) {
+							return $orig;
+						} else {
+							error_log('PHP Notice:  Missing  https://myanimelist.net/manga/' . $str);
+							return ('https://shaggyze.website/Themes/covers/unavailable.png');
+						}
+				}
+			}
+		}
 		if ($type == 'anime') {
 			switch ($str) {
 				case '38339':
@@ -246,7 +274,6 @@ class Helper
 						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 						return $str;
 					}
-					break;
 				default:
 					if (!empty($orig)) {
 						return $orig;
