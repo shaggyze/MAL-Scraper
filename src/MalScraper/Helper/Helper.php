@@ -242,10 +242,11 @@ class Helper
 					return $str;
 				case '513'
 					if ($user === "ShaggyZE" || $user === "johneaston") {
-					$str = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
-					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-					return $str;
+						$str = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
+						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+						return $str;
 					}
+					break;
 				default:
 					if (!empty($orig)) {
 						return $orig;
