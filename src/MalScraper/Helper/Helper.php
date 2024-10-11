@@ -178,15 +178,15 @@ class Helper
 			if ($type == 'anime') {
 				switch ($str) {
 					case '513'
-						$str = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
-						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-						return $str;
+						$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
+						error_log('PHP Notice:  Compare  ' . $animeImageUrl . ' with ' . $orig);
+						return $animeImageUrl;
 					}
 					default:
 					if (!empty($orig)) {
 						return $orig;
 					} else {
-						error_log('PHP Notice:  Missing  https://myanimelist.net/anime/' . $str);
+						error_log('PHP Notice:  Missing  https://myanimelist.net/anime/' . $animeImageUrl);
 						return ('https://shaggyze.website/Themes/covers/unavailable.png');
 					}
 					
@@ -196,7 +196,7 @@ class Helper
 						if (!empty($orig)) {
 							return $orig;
 						} else {
-							error_log('PHP Notice:  Missing  https://myanimelist.net/manga/' . $str);
+							error_log('PHP Notice:  Missing  https://myanimelist.net/manga/' . $animeImageUrl);
 							return ('https://shaggyze.website/Themes/covers/unavailable.png');
 						}
 				}
@@ -268,12 +268,6 @@ class Helper
 					$str = 'https://shaggyze.website/Themes/covers/majo_no_furo_life.webp';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
-				case '513'
-					if ($user === "ShaggyZE" || $user === "johneaston") {
-						$str = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
-						error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
-						return $str;
-					}
 				default:
 					if (!empty($orig)) {
 						return $orig;
