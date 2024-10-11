@@ -178,11 +178,10 @@ class Helper
 		if ($user === "ShaggyZE" || $user === "johneaston") {
 			if ($type == 'anime') {
 				switch ($str) {
-					case '513'
+					case '513':
 						$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
-						error_log('PHP Notice:  Compare  ' . $animeImageUrl . ' with ' . $orig);
+						error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig); // Check if set before using
 						return $animeImageUrl;
-					}
 					default:
 					if (!empty($orig)) {
 						return $orig;
