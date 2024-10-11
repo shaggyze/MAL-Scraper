@@ -245,6 +245,7 @@ class Helper
 					$str = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
+					}
 				default:
 					if (!empty($orig)) {
 						return $orig;
