@@ -77,7 +77,7 @@ class MalScraper
      *
      * @var int
      */
-    private $_cache_time = 4000000;
+    private $_cache_time = 500000;
 
     /**
      * Cache path.
