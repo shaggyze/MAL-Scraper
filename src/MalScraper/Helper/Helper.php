@@ -172,7 +172,7 @@ class Helper
      *
      * @return string
      */
-    public static function imageUrlReplace($str, $type, $orig)
+    public static function imageUrlReplace($str, $type, $orig, $user)
     {
 		if ($type == 'anime') {
 			switch ($str) {
@@ -238,6 +238,11 @@ class Helper
 					return $str;
 				case '59463':
 					$str = 'https://shaggyze.website/Themes/covers/majo_no_furo_life.webp';
+					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
+					return $str;
+				case '513'
+					if ($user === "ShaggyZE" || $user === "johneaston") {
+					$str = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
 					error_log('PHP Notice:  Compare  ' . $str . ' with ' . $orig);
 					return $str;
 				default:
