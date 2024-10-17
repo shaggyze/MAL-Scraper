@@ -112,16 +112,24 @@ private function getTitle2()
     if (!$title_info) {
         return 'N/A';
     }
-$title2 = $title_info;
+
     // Loop through each child element (span.dark_text) of title_info
-    foreach ($title_info->children() as $child) {
-        $text = trim($child->innertext);
-		$title2 = ['English:',$text];
-        if (strpos($text, ':') !== false) {
-            list($lang, $title) = explode(':', $text, 2);
+foreach ($title_info->children() as $child) {
+    $text = trim($child->innertext);
+
+    // Ensure the text contains a colon before splitting
+    if (strpos($text, ':') !== false) {
+        list($lang, $title) = explode(':', $text, 2);
+
+        // Check if language and title are not empty
+        if (!empty($lang) && !empty($title)) {
             $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
+        } else {
+            // Handle error or log warning if language or title is empty
+            error_log("Invalid title format: $text");
         }
     }
+}
 
     return $title2;
 }
