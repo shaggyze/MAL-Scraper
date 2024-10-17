@@ -112,7 +112,7 @@ private function getTitle2()
     $alternativeTitlesSection = $this->_parser->find('h2:contains("Alternative Titles")', 0);
 
     if (!$alternativeTitlesSection) {
-        return 'N/A';
+        return 'N/A 1';
     }
 
     // Find the next h2 element after the alternative titles section
@@ -152,7 +152,7 @@ private function getTitle3($title_info, $type)
         }
     }
 
-    return 'N/A';
+    return 'N/A 2';
 }
 
     /**
