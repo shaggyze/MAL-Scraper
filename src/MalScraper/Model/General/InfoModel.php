@@ -81,7 +81,7 @@ class InfoModel extends MainModel
 		if (!$animeImage) {
 			return 'N/A'; 
 		}
-		return $animeImage->src;
+		return Helper::imageUrlCleaner($animeImage->src);
 	}
 
     /**
@@ -89,22 +89,13 @@ class InfoModel extends MainModel
      *
      * @return string
      */
-	/*private function getTitle()
-	{
-		$animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
-		if (!$animeImage) {
-			return '';
-		}
-		$title = trim($animeImage->alt);
-		return $title;
-	}*/
 	private function getTitle()
 	{
-		$titleElement = $this->_parser->find('span[itemprop="name"]', 0);
-		if (!$titleElement) {
-			return '';
+		$animeImage = $this->_parser->find('.lazyloaded', 0);
+		if (!$animeImage) {
+			return 'N/A';
 		}
-		$title = trim($titleElement->textContent);
+		$title = trim($animeImage->alt);
 		return $title;
 	}
 
