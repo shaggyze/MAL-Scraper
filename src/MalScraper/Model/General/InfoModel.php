@@ -136,6 +136,7 @@ private function getTitle2()
  */
 private function getTitle3($title_info, $type)
 {
+        $text = $title_info;
     foreach ($title_info as $titleElement) {
         $text = trim($titleElement->innertext);
 return $text;
@@ -149,7 +150,7 @@ return $title;
         }
     }
 
-    return 'N/A 2';
+    return $text ? $text : 'N/A';
 }
 
     /**
