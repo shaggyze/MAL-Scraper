@@ -114,22 +114,10 @@ private function getTitle2()
         return 'N/A';
     }
 
-    // Find all span elements within the section
-    $titleElements = $alternativeTitlesSection->find('span.dark_text');
-
-    foreach ($titleElements as $titleElement) {
-        $text = trim($titleElement->innertext);
-
-        // Extract language and title using regular expression
-        if (preg_match('/(.+):(.+)/', $text, $matches)) {
-            $lang = strtolower($matches[1]);
-            $title = trim($matches[2]);
-            $title2[$lang] = $title;
-        } else {
-            // Handle invalid title format
-            error_log("Invalid title format: $text");
-        }
-    }
+    // Pass the alternative titles section to getTitle3
+    $title2['english'] = $this->getTitle3($alternativeTitlesSection, 'English');
+    $title2['synonym'] = $this->getTitle3($alternativeTitlesSection, 'Synonyms');
+    $title2['japanese'] = $this->getTitle3($alternativeTitlesSection, 'Japanese');
 
     return $title2;
 }
@@ -144,7 +132,7 @@ private function getTitle2()
  */
 private function getTitle3($title_info, $type)
 {
-    // Assuming the $title_info contains the entire alternative titles section
+    // Find all span elements within the section
     $titleElements = $title_info->find('span.dark_text');
 
     foreach ($titleElements as $titleElement) {
