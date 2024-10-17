@@ -108,16 +108,20 @@ private function getTitle2()
 {
     $title2 = [];
 
-    // Find the alternative titles section using XPath
-    $alternativeTitlesSection = $this->_parser->find('//div[@class="js-alternative-titles"]', 0);
+    // Find the section between the two h2 elements
+    $alternativeTitlesSection = $this->_parser->find('h2:contains("Alternative Titles") ~ * h2:contains("Information")', 0);
+
     if (!$alternativeTitlesSection) {
         return 'N/A';
     }
 
-    // Pass the alternative titles section to getTitle3
-    $title2['english'] = $this->getTitle3($alternativeTitlesSection, 'English');
-    $title2['synonym'] = $this->getTitle3($alternativeTitlesSection, 'Synonyms');
-    $title2['japanese'] = $this->getTitle3($alternativeTitlesSection, 'Japanese');
+    // Find all span elements within the section
+    $titleElements = $alternativeTitlesSection->find('div.spaceit_pad span.dark_text');
+
+    // Call getTitle3 for each language
+    $title2['english'] = $this->getTitle3($titleElements, 'English');
+    $title2['japanese'] = $this->getTitle3($titleElements, 'Japanese');
+    $title2['synonym'] = $this->getTitle3($titleElements, 'Synonym');
 
     return $title2;
 }
@@ -132,10 +136,7 @@ private function getTitle2()
  */
 private function getTitle3($title_info, $type)
 {
-    // Find all span elements within the section
-    $titleElements = $title_info->find('span.dark_text');
-
-    foreach ($titleElements as $titleElement) {
+    foreach ($title_info as $titleElement) {
         $text = trim($titleElement->innertext);
 
         if (preg_match('/(.+):(.+)/', $text, $matches)) {
