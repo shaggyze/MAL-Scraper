@@ -4,8 +4,6 @@ namespace MalScraper\Model\General;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
-ini_set("log_errors", TRUE);
-ini_set("error_log", "error_log");
 
 /**
  * InfoModel class.
@@ -118,19 +116,19 @@ private function getTitle2()
     // Loop through each child element (span.dark_text) of title_info
 foreach ($title_info->children() as $child) {
     $text = trim($child->innertext);
-
+$title2[0] = $title2[0] + $text
     // Ensure the text contains a colon before splitting
-    //if (strpos($text, ':') !== false) {
+    if (strpos($text, ':') !== false) {
         list($lang, $title) = explode(':', $text, 2);
 
         // Check if language and title are not empty
-        //if (!empty($lang) && !empty($title)) {
-           $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
-        //} else {
+        if (!empty($lang) && !empty($title)) {
+            $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
+        } else {
             // Handle error or log warning if language or title is empty
-        //    error_log("Invalid title format: $text");
-        //}
-    //}
+            error_log("Invalid title format: $text");
+        }
+    }
 }
 
     return $title2;
