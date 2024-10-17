@@ -122,6 +122,8 @@ foreach ($title_info->children() as $child) {
         list($lang, $title) = explode(':', $text, 2);
 
         // Check if language and title are not empty
+		error_log("Language: $lang");
+		error_log("Title: $title");
         if (!empty($lang) && !empty($title)) {
             $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
         } else {
