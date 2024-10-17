@@ -136,6 +136,7 @@ private function getTitle2()
 */
 private function getTitle3($title_info, $type)
 {
+	$text = trim($title_info->innertext);
     foreach ($title_info as $titleElement) {
         $text = trim($titleElement->innertext);
 
