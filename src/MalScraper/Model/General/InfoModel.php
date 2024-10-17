@@ -112,7 +112,7 @@ private function getTitle2()
     if (!$title_info) {
         return 'N/A';
     }
-
+$title2 = $text;
     // Loop through each child element (span.dark_text) of title_info
 foreach ($title_info->children() as $child) {
     $text = trim($child->innertext);
