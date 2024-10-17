@@ -108,8 +108,10 @@ class InfoModel extends MainModel
     {
 		$title2 = [];
 
-        $title_info = $this->_parser->find('span.dark_text', 0);
-
+        $title_info = $this->_parser->find('div.spaceit_pad span.dark_text', 0);
+		if (!$animeImage) {
+			return 'N/A';
+		}
         $title2['english'] = $this->getTitle3($title_info, 'English');
         $title2['synonym'] = $this->getTitle3($title_info, 'Synonyms');
         $title2['japanese'] = $this->getTitle3($title_info, 'Japanese');
@@ -129,7 +131,7 @@ class InfoModel extends MainModel
     {
         preg_match('/('.$type.':<\/span>)([^<]*)/', $title_info->innertext, $title2);
 
-        return trim($title2 ? $title2[2] : '');
+        return trim($title2 ? $title2[2] : 'N/A');
     }
 
     /**
