@@ -118,7 +118,7 @@ foreach ($title_info->children() as $child) {
     $text = trim($child->innertext);
 
     // Ensure the text contains a colon before splitting
-    if (strpos($text, ':') !== false) {
+    //if (strpos($text, ':') !== false) {
         list($lang, $title) = explode(':', $text, 2);
 
         // Check if language and title are not empty
@@ -130,7 +130,7 @@ foreach ($title_info->children() as $child) {
             // Handle error or log warning if language or title is empty
             error_log("Invalid title format: $text");
         }
-    }
+    //}
 }
 
     return $title2;
