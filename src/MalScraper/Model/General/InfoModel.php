@@ -79,7 +79,7 @@ class InfoModel extends MainModel
 	{
 		$animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
 		if (!$animeImage) {
-			return ''; 
+			return 'N/A'; 
 		}
 		return $animeImage->src;
 	}
