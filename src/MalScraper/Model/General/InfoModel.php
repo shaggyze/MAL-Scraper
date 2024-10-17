@@ -116,8 +116,7 @@ private function getTitle2()
     // Loop through each child element (span.dark_text) of title_info
 foreach ($title_info->children() as $child) {
     $text = trim($child->innertext);
-    if ($child->tag === 'span') {
-        $text = trim($child->innertext);
+
     // Ensure the text contains a colon before splitting
     if (strpos($text, ':') !== false) {
         list($lang, $title) = explode(':', $text, 2);
