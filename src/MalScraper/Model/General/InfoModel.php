@@ -112,11 +112,11 @@ private function getTitle2()
     $alternativeTitlesSection = $this->_parser->find('h2', 0);
 
     if (!$alternativeTitlesSection) {
-        return 'N/A 1';
+        return 'N/A';
     }
 
-    // Find all span elements within the alternative titles section
-    $titleElements = $alternativeTitlesSection->find('div.spaceit_pad span.dark_text');
+    // Find all span elements after the alternative titles section
+    $titleElements = $alternativeTitlesSection->next_sibling()->find('div.spaceit_pad span.dark_text');
 
     // Call getTitle3 for each language
     $title2['english'] = $this->getTitle3($titleElements, 'English');
@@ -133,25 +133,24 @@ private function getTitle2()
  * @param string                             $type
  *
  * @return string
-*/
+ */
 private function getTitle3($title_info, $type)
 {
-	$text = trim($title_info->innertext);
     foreach ($title_info as $titleElement) {
         $text = trim($titleElement->innertext);
 
-        if (preg_match('/('.$type.':<\/span>)([^<]*)/', $text, $matches)) {
+        if (preg_match('/(.+):(.+)/', $text, $matches)) {
             $lang = strtolower($matches[1]);
             $title = trim($matches[2]);
 
-            if ($lang === strtolower($type)) {
+            if ($lang === $type) {
                 return $title;
             }
         }
     }
 
-    return $text;
-} 
+    return 'N/A 2';
+}
 
     /**
      * Get anime/manga promotional video.
