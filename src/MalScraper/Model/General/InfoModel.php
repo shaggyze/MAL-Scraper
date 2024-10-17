@@ -121,8 +121,9 @@ private function getTitle2()
     // Call getTitle3 for each language
     $title2['english'] = $this->getTitle3($titleElements, 'English');
     $title2['japanese'] = $this->getTitle3($titleElements, 'Japanese');
-    $title2['synonym'] = $this->getTitle3($titleElements, 'Synonym');
-
+    $title2['synonyms'] = $this->getTitle3($titleElements, 'Synonyms');
+    $title2['french'] = $this->getTitle3($titleElements, 'French');
+	
     return $title2;
 }
 
