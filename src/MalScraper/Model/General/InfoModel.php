@@ -4,6 +4,8 @@ namespace MalScraper\Model\General;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
+ini_set("log_errors", TRUE);
+ini_set("error_log", "error_log");
 
 /**
  * InfoModel class.
