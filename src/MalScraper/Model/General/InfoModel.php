@@ -109,7 +109,7 @@ class InfoModel extends MainModel
 		$title2 = [];
 
         $title_info = $this->_parser->find('div.spaceit_pad span.dark_text', 0);
-		if (!$animeImage) {
+		if (!$title_info) {
 			return 'N/A';
 		}
         $title2['english'] = $this->getTitle3($title_info, 'English');
