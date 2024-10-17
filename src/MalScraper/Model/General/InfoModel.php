@@ -133,13 +133,13 @@ private function getTitle2()
  * @param string                             $type
  *
  * @return string
-
+*/
 private function getTitle3($title_info, $type)
 {
     foreach ($title_info as $titleElement) {
         $text = trim($titleElement->innertext);
 
-        if (preg_match('/(.+):(.+)/', $text, $matches)) {
+        if (preg_match('/('.$type.':<\/span>)([^<]*)/', $text, $matches)) {
             $lang = strtolower($matches[1]);
             $title = trim($matches[2]);
 
@@ -150,13 +150,7 @@ private function getTitle3($title_info, $type)
     }
 
     return 'N/A 2';
-} */
-    private function getTitle3($title_info, $type)
-    {
-        preg_match('/('.$type.':<\/span>)([^<]*)/', $title_info->innertext, $title2);
-
-        return trim($title2 ? $title2[2] : 'N/A 2');
-    }
+} 
 
     /**
      * Get anime/manga promotional video.
