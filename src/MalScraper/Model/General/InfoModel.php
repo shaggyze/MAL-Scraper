@@ -77,11 +77,11 @@ class InfoModel extends MainModel
      */
 	private function getCover()
 	{
-		$animeImage = $this->_parser->find('.lazyloaded', 0);
+		$animeImage = $this->_parser->find('.lazyload', 0);
 		if (!$animeImage) {
 			return 'N/A'; 
 		}
-		return Helper::imageUrlCleaner($animeImage->src);
+		return Helper::imageUrlCleaner($animeImage->data-src);
 	}
 
     /**
@@ -91,7 +91,7 @@ class InfoModel extends MainModel
      */
 	private function getTitle()
 	{
-		$animeImage = $this->_parser->find('.lazyloaded', 0);
+		$animeImage = $this->_parser->find('.lazyload', 0);
 		if (!$animeImage) {
 			return 'N/A';
 		}
