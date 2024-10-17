@@ -116,6 +116,7 @@ $title2 = $title_info;
     // Loop through each child element (span.dark_text) of title_info
     foreach ($title_info->children() as $child) {
         $text = trim($child->innertext);
+		$title2 = $text
         if (strpos($text, ':') !== false) {
             list($lang, $title) = explode(':', $text, 2);
             $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
