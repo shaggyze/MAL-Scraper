@@ -126,12 +126,12 @@ foreach ($title_info->children() as $child) {
         // Check if language and title are not empty
 		error_log("Language: " . $lang .  "Title: " . $title);
 		$title2 = ("Language: " . $lang .  "Title: " . $title);
-        if (!empty($lang) && !empty($title)) {
-            $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
-        } else {
+        //if (!empty($lang) && !empty($title)) {
+        //    $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
+        //} else {
             // Handle error or log warning if language or title is empty
-            error_log("Invalid title format: $text");
-        }
+        //    error_log("Invalid title format: $text");
+        //}
     //}
 }
 
