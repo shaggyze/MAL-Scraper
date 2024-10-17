@@ -109,7 +109,7 @@ private function getTitle2()
     $title2 = [];
 
     // Find the h2 element containing "Alternative Titles"
-    $alternativeTitlesSection = $this->_parser->find('h2:contains("Alternative Titles")', 0);
+    $alternativeTitlesSection = $this->_parser->find('h2', 0);
 
     if (!$alternativeTitlesSection) {
         return 'N/A 1';
