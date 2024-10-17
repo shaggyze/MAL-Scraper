@@ -138,7 +138,7 @@ private function getTitle3($title_info, $type)
 {
     foreach ($title_info as $titleElement) {
         $text = trim($titleElement->innertext);
-
+return $text;
         if (preg_match('/(.+):(.+)/', $text, $matches)) {
             $lang = strtolower($matches[1]);
             $title = trim($matches[2]);
