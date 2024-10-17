@@ -77,7 +77,7 @@ class InfoModel extends MainModel
      */
 	private function getCover()
 	{
-		$animeImage = $this->_parser->find('img[class="lazyloaded"][itemprop="image"]', 0);
+		$animeImage = $this->_parser->find('img[class=" lazyloaded"][itemprop="image"]', 0);
 		if (!$animeImage) {
 			return 'N/A'; 
 		}
