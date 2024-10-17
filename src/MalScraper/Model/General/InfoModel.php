@@ -108,45 +108,60 @@ private function getTitle2()
 {
     $title2 = [];
 
-    $title_info = $this->_parser->find('.js-sns-icon-container', 0);
-    if (!$title_info) {
+    // Find the alternative titles section using XPath
+    $alternativeTitlesSection = $this->_parser->find('//div[@class="js-alternative-titles"]', 0);
+    if (!$alternativeTitlesSection) {
         return 'N/A';
     }
 
+    // Find all span elements within the section
+    $titleElements = $alternativeTitlesSection->find('span.dark_text');
 
-foreach ($title_info->children() as $child) {
-    $text = trim($child->innertext);
-$title2 = $title2 . " " . $text;
-    // Ensure the text contains a colon before splitting
-    if (strpos($text, ':') !== false) {
-        list($lang, $title) = explode(':', $text, 2);
+    foreach ($titleElements as $titleElement) {
+        $text = trim($titleElement->innertext);
 
-        // Check if language and title are not empty
-        if (!empty($lang) && !empty($title)) {
-            $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
+        // Extract language and title using regular expression
+        if (preg_match('/(.+):(.+)/', $text, $matches)) {
+            $lang = strtolower($matches[1]);
+            $title = trim($matches[2]);
+            $title2[$lang] = $title;
         } else {
-            // Handle error or log warning if language or title is empty
+            // Handle invalid title format
             error_log("Invalid title format: $text");
         }
     }
-}
 
     return $title2;
 }
-    /**
-     * Get anime/manga alternative title.
-     *
-     * @param \simplehtmldom_1_5\simple_html_dom $title_info
-     * @param string                             $type
-     *
-     * @return string
-     */
-    private function getTitle3($title_info, $type)
-    {
-        preg_match('/('.$type.':<\/span>)([^<]*)/', $title_info->innertext, $title2);
 
-        return trim($title2 ? $title2[2] : 'N/A');
+/**
+ * Get anime/manga alternative title.
+ *
+ * @param \simplehtmldom_1_5\simple_html_dom $title_info
+ * @param string                             $type
+ *
+ * @return string
+ */
+private function getTitle3($title_info, $type)
+{
+    // Assuming the $title_info contains the entire alternative titles section
+    $titleElements = $title_info->find('span.dark_text');
+
+    foreach ($titleElements as $titleElement) {
+        $text = trim($titleElement->innertext);
+
+        if (preg_match('/(.+):(.+)/', $text, $matches)) {
+            $lang = strtolower($matches[1]);
+            $title = trim($matches[2]);
+
+            if ($lang === $type) {
+                return $title;
+            }
+        }
     }
+
+    return 'N/A';
+}
 
     /**
      * Get anime/manga promotional video.
