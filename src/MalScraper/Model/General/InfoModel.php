@@ -108,12 +108,12 @@ private function getTitle2()
 {
     $title2 = [];
 
-    $title_info = $this->_parser->find('div.spaceit_pad span.dark_text', 0);
+    $title_info = $this->_parser->find('.js-sns-icon-container', 0);
     if (!$title_info) {
         return 'N/A';
     }
 
-    // Loop through each child element (span.dark_text) of title_info
+
 foreach ($title_info->children() as $child) {
     $text = trim($child->innertext);
 $title2 = $title2 . " " . $text;
