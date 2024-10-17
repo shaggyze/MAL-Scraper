@@ -143,7 +143,7 @@ private function getTitle3($title_info, $type)
             $lang = strtolower($matches[1]);
             $title = trim($matches[2]);
 
-            if ($lang === $type) {
+            if ($lang === strtolower($type)) {
                 return $title;
             }
         }
