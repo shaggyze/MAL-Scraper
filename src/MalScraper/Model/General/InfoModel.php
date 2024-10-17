@@ -149,7 +149,7 @@ private function getTitle3($title_info, $type)
         }
     }
 
-    return 'N/A 2';
+    return $text;
 } 
 
     /**
