@@ -142,7 +142,7 @@ private function getTitle3($title_info, $type)
         if (preg_match('/(.+):(.+)/', $text, $matches)) {
             $lang = strtolower($matches[1]);
             $title = trim($matches[2]);
-
+return $title
             if ($lang === strtolower($type)) {
                 return $title;
             }
