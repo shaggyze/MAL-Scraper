@@ -108,18 +108,15 @@ private function getTitle2()
 {
     $title2 = [];
 
-    // Find the first h2 element containing "Alternative Titles"
+    // Find the h2 element containing "Alternative Titles"
     $alternativeTitlesSection = $this->_parser->find('h2:contains("Alternative Titles")', 0);
 
     if (!$alternativeTitlesSection) {
         return 'N/A 1';
     }
 
-    // Find the next h2 element after the alternative titles section
-    $nextH2 = $alternativeTitlesSection->next_sibling('h2');
-
-    // Find all span elements between the two h2 elements
-    $titleElements = $this->_parser->find('div.spaceit_pad span.dark_text', 0, $alternativeTitlesSection, $nextH2);
+    // Find all span elements within the alternative titles section
+    $titleElements = $alternativeTitlesSection->find('div.spaceit_pad span.dark_text');
 
     // Call getTitle3 for each language
     $title2['english'] = $this->getTitle3($titleElements, 'English');
