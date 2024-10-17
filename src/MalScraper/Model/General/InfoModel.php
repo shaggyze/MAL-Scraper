@@ -108,7 +108,7 @@ private function getTitle2()
 {
     $title2 = [];
 
-    $title_info = $this->_parser->find('div.spaceit_pad', 0);
+    $title_info = $this->_parser->find('div.spaceit_pad span.dark_text', 0);
     if (!$title_info) {
         return 'N/A';
     }
