@@ -150,7 +150,7 @@ return $title;
         }
     }
 
-    return $text ? '' : 'N/A';
+    return $text ? '' : 'N/A 2';
 }
 
     /**
