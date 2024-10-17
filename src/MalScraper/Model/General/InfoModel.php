@@ -81,7 +81,7 @@ class InfoModel extends MainModel
 		if (!$animeImage) {
 			return 'N/A'; 
 		}
-		return Helper::imageUrlCleaner($animeImage->data-src);
+		return Helper::imageUrlCleaner($animeImage->getAttribute('data-src'));
 	}
 
     /**
