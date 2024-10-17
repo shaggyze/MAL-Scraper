@@ -108,7 +108,7 @@ private function getTitle2()
 {
     $title2 = [];
 
-    $title_info = $this->_parser->find('div.spaceit_pad span.dark_text', 0);
+    $title_info = $this->_parser->find('div.spaceit_pad', 0);
     if (!$title_info) {
         return 'N/A';
     }
@@ -117,6 +117,7 @@ private function getTitle2()
 foreach ($title_info->children() as $child) {
     $text = trim($child->innertext);
     if ($child->tag === 'span') {
+        $text = trim($child->innertext);
     // Ensure the text contains a colon before splitting
     if (strpos($text, ':') !== false) {
         list($lang, $title) = explode(':', $text, 2);
@@ -129,7 +130,6 @@ foreach ($title_info->children() as $child) {
             error_log("Invalid title format: $text");
         }
     }
-	}
 }
 
     return $title2;
