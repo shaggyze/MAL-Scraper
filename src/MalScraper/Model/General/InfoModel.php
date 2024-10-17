@@ -116,7 +116,7 @@ private function getTitle2()
     }
 
     // Find all span elements after the alternative titles section
-    $titleElements = $alternativeTitlesSection->next_sibling()->find('div.spaceit_pad span.dark_text');
+    $titleElements = $alternativeTitlesSection->find('div.spaceit_pad span.dark_text');
 
     // Call getTitle3 for each language
     $title2['english'] = $this->getTitle3($titleElements, 'English');
