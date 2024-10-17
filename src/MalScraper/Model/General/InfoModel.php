@@ -104,21 +104,26 @@ class InfoModel extends MainModel
      *
      * @return array
      */
-    private function getTitle2()
-    {
-		$title2 = [];
+private function getTitle2()
+{
+    $title2 = [];
 
-        $title_info = $this->_parser->find('div.spaceit_pad span.dark_text', 0);
-		if (!$title_info) {
-			return 'N/A';
-		}
-        $title2['english'] = $this->getTitle3($title_info, 'English');
-        $title2['synonym'] = $this->getTitle3($title_info, 'Synonyms');
-        $title2['japanese'] = $this->getTitle3($title_info, 'Japanese');
-
-        return $title2;
+    $title_info = $this->_parser->find('div.spaceit_pad span.dark_text', 0);
+    if (!$title_info) {
+        return 'N/A';
     }
 
+    // Loop through each child element (span.dark_text) of title_info
+    foreach ($title_info->children() as $child) {
+        $text = trim($child->innertext);
+        if (strpos($text, ':') !== false) {
+            list($lang, $title) = explode(':', $text, 2);
+            $title2[strtolower($lang)] = trim($title); // Store title with lowercase language key
+        }
+    }
+
+    return $title2;
+}
     /**
      * Get anime/manga alternative title.
      *
