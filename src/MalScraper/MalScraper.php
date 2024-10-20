@@ -152,7 +152,7 @@ class MalScraper
             if ($isCached) {
                 $result = $this->_cache->retrieve($cacheName);
             } else {
-				if (is_array($data)) {
+				if ($data !== '404') {
 				if ($data) {
 					if ($method === "getUserCSS" || $method === "getUserCover") {
 						$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
