@@ -139,7 +139,7 @@ class MalScraper
     {
         $data = call_user_func_array([$this, $method], $arguments);
         $result = $data;
-
+error_log($data);
         // if cache function enabled
         if ($this->_enable_cache === true) {
             $this->_cache->setCache(str_replace('get', '', $method));
