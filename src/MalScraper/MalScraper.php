@@ -162,8 +162,8 @@ class MalScraper
 							if ($data === '404') {
 								$result = $data;
 							} else {
-								$data = array_merge($data, $decoded);}
-						}
+								$data = array_merge($data, $decoded);
+							}
 						} else {
 							$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 						}
