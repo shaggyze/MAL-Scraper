@@ -137,7 +137,7 @@ class MalScraper
      */
     public function __call($method, $arguments)
     {
-        $result = '';
+        $result = '404';
 
         // if cache function enabled
         if ($this->_enable_cache === true) {
@@ -152,6 +152,7 @@ class MalScraper
                 $result = $this->_cache->retrieve($cacheName);
             } else {
                 $data = call_user_func_array([$this, $method], $arguments);
+				if ($data !=='404') {
 				/*error_log($method);*/
 				if ($data) {
 					if ($method === "getUserCSS" || $method === "getUserCover") {
@@ -170,6 +171,7 @@ class MalScraper
                 $this->_cache->store($cacheName, $data, $this->_cache_time);
                 $result = $data;
             }
+			}
         } else {
             $result = call_user_func_array([$this, $method], $arguments);
         }
