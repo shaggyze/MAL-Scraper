@@ -160,7 +160,7 @@ class MalScraper
 						$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
 						if (is_array($decoded = json_decode($timestamp, true))) {
 							var_dump($data);
-							if ($data === '404') {
+							if ($data == '404') {
 								$result = $data;
 							} else {
 								$data = array_merge($data, $decoded);
