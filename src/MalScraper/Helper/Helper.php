@@ -43,12 +43,12 @@ class Helper
         if (is_numeric($response)) {
             header('HTTP/1.1 '.$response);
             $result['status'] = $response;
-            $result['status_message'] = self::toResponse($response);
+            $result['message'] = self::toResponse($response);
             $result['data'] = [];
         } else {
             header('HTTP/1.1 '. 200);
             $result['status'] = 200;
-            $result['status_message'] = 'Success';
+            $result['message'] = 'Success';
             $result['data'] = self::superEncode($response);
         }
 
