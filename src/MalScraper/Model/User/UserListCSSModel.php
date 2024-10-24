@@ -101,7 +101,8 @@ class UserListCSSModel extends MainModel
      *
      * @return int
      */
-	function calculate_percentage($whole, $part) {
+	public function calculate_percentage($whole, $part)
+	{
 		if ($whole == 0) {
 			return 0; // Avoid division by zero
 		}
