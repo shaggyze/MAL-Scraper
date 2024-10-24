@@ -228,11 +228,15 @@ class UserListCSSModel extends MainModel
 			}
 			if (!empty($content[$i]['num_watched_episodes'])) {
 			  if ($content[$i]['anime_num_episodes'] !== 0) {
-				  $content[$i]['progress_percent'] = round(($content[$i]['num_watched_episodes'] / $content[$i]['anime_num_episodes']) * 100, 2);
+			    $content[$i]['progress_percent'] = round(($content[$i]['num_watched_episodes'] / $content[$i]['anime_num_episodes']) * 100, 2);
+			  } else {
+			    $content[$i]['progress_percent'] = 0;
 			  }
 			} else {
 			  if ($content[$i]['manga_num_volumes'] !== 0) {
-				  $content[$i]['progress_percent'] = round(($content[$i]['num_read_volumes'] / $content[$i]['manga_num_volumes']) * 100, 2);
+			    $content[$i]['progress_percent'] = round(($content[$i]['num_read_volumes'] / $content[$i]['manga_num_volumes']) * 100, 2);
+			  } else {
+			    $content[$i]['progress_percent'] = 0;
 			  }
 			}
 			if (!empty($content2['data']['rank'])) {
