@@ -94,24 +94,6 @@ class UserListCSSModel extends MainModel
     }
 
     /**
-     * Default call.
-     *
-     * @param int $whole
-     * @param int $part
-     *
-     * @return int
-     */
-	public function calculate_percentage($whole, $part)
-	{
-		if ($whole == 0) {
-			return 0; // Avoid division by zero
-		}
-
-		$percentage = ($part / $whole) * 100;
-		return round($percentage, 2); // Round to two decimal places
-	}
-
-    /**
      * Get user list.
      *
      * @return array
@@ -245,9 +227,9 @@ class UserListCSSModel extends MainModel
 			  $content[$i]['manga_english'] = str_replace(['"', '[', ']'], '', $content[$i]['manga_english']);
 			}
 			if (!empty($content[$i]['num_watched_episodes'])) {
-			  $content[$i]['progress_percent'] = calculate_percentage($content[$i]['anime_num_episodes'], $content[$i]['num_watched_episodes']);
+			  $content[$i]['progress_percent'] = round(($content[$i]['num_watched_episodes'] / $content[$i]['anime_num_episodes']) * 100, 2);
 			} else {
-			  $content[$i]['progress_percent'] = calculate_percentage($content[$i]['manga_num_volumes'], $content[$i]['num_read_volumes']);
+			  $content[$i]['progress_percent'] = round(($content[$i]['num_read_volumes'] / $content[$i]['manga_num_volumes']) * 100, 2);
 			}
 			if (!empty($content2['data']['rank'])) {
 			  $content[$i]['rank'] = $content2['data']['rank'];
