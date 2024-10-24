@@ -234,7 +234,7 @@ class UserListCSSModel extends MainModel
 			  }
 			} else {
 			  if ($content[$i]['manga_num_volumes'] !== 0) {
-			    $content[$i]['progress_percent'] = round((($content[$i]['num_read_volumes'] / $content[$i]['manga_num_volumes']) * 100 + $content[$i]['num_read_chapters'] / $content[$i]['manga_num_chapters']) * 100) / 2, 2);
+			    $content[$i]['progress_percent'] = round((($content[$i]['num_read_volumes'] / $content[$i]['manga_num_volumes']) * 100 + $content[$i]['num_read_chapters'] / $content[$i]['manga_num_chapters'] * 100) / 2, 2);
 			  } else {
 			    $content[$i]['progress_percent'] = 0;
 			  }
