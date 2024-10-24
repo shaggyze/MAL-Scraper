@@ -97,7 +97,7 @@ class UserListCSSModel extends MainModel
      * Default call.
      *
      * @param int $whole
-     * @param int  $part
+     * @param int $part
      *
      * @return int
      */
@@ -116,7 +116,7 @@ class UserListCSSModel extends MainModel
      *
      * @return array
      */
-    private function getAllInfo()
+    public function getAllInfo()
     {
       $data = [];
       $offset = 0;
