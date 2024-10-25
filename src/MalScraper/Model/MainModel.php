@@ -83,7 +83,7 @@ class MainModel
      */
     public static function getParser($url, $contentDiv, $additionalSetting = false)
     {
-		$html = file_get_html($url);
+		$html = HtmlDomParser::file_get_html($url);
         if (!$html) {
 			// Handle errors, e.g., log the error, display an error message, or retry the request
 		} else {
