@@ -79,19 +79,23 @@ class MainModel
      */
     public static function getParser($url, $contentDiv, $additionalSetting = false)
     {
-        $html = HtmlDomParser::file_get_html($url)->find($contentDiv, 0);
-        $html = !$additionalSetting ? $html : $html->next_sibling();
-        if (!empty($html) && isset($html->outertext)) {
-			$html = $html->outertext;
-			$html = str_replace('&quot;', '\"', $html);
-			$html = str_replace('&lt;', '&l-t;', $html); // handle '<'
-			$html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
-			$html = str_replace('&l-t;', '&lt;', $html);
-			$html = HtmlDomParser::str_get_html($html);
+		$html = file_get_html($url);
+        if (!$html) {
+			// Handle errors, e.g., log the error, display an error message, or retry the request
+		} else {
+			$html = $html->find($contentDiv, 0);
+			$html = !$additionalSetting ? $html : $html->next_sibling();
+			if (!empty($html) && isset($html->outertext)) {
+				$html = $html->outertext;
+				$html = str_replace('&quot;', '\"', $html);
+				$html = str_replace('&lt;', '&l-t;', $html); // handle '<'
+				$html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
+				$html = str_replace('&l-t;', '&lt;', $html);
+				$html = HtmlDomParser::str_get_html($html);
+			}
+			return $html;
 		}
-        return $html;
-    }
-
+	}
     /**
      * Header error check.
      *
