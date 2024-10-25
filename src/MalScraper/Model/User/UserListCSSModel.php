@@ -322,6 +322,8 @@ class UserListCSSModel extends MainModel
 		} else {
 		  break;
 		}
+		} else {
+		  break;
 		}
 	  }
 
