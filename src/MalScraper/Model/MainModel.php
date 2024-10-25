@@ -66,10 +66,13 @@ class MainModel
             return 403;
         }
 
+        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 405 Not Allowed') {
+            return 405;
+        }
+
         if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 418 Unknown') {
             return 418;
         }
-
         return 200;
     }
 
