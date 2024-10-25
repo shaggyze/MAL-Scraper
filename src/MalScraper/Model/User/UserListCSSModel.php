@@ -93,34 +93,6 @@ class UserListCSSModel extends MainModel
         return strval($subdirectory_number);
     }
 
-public function fetchAnimeListData($url) {
-    $ch = curl_init($url);
-
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-
-    // Optional: Implement rate limiting here, e.g., using a sleep function or a dedicated library.
-
-    $response = curl_exec($ch);
-
-    if (curl_errno($ch)) {
-        echo 'Error: ' . curl_error($ch);
-    } else {
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        if ($httpCode == 200) {
-            $content = json_decode($response, true);
-            return $content;
-        } else {
-            echo "Error fetching data: HTTP Status Code " . $httpCode;
-        }
-    }
-
-    return null;
-}
-
-
     /**
      * Get user list.
      *
@@ -133,26 +105,28 @@ public function fetchAnimeListData($url) {
 	  while (true) {
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
-		$content =  fetchAnimeListData($url);
+		$content = file_get_contents($url);
 
-		if ($content) {
-		  $count = count($content);
-		  for ($i = 0; $i < $count; $i++) {
-			if (!empty($content[$i]['anime_id'])) {
-			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
-			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
-			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
-			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}
-			  $content2 = json_decode(file_get_contents($url2), true);
-			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
-			} else {
-			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
-			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
-			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
-			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}
-			  $content2 = json_decode(file_get_contents($url2), true);
-			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
-			}
+		if ($content !== false) {
+			$data = json_decode($content, true);
+			if ($data) {
+			$count = count($content);
+			for ($i = 0; $i < $count; $i++) {
+				if (!empty($content[$i]['anime_id'])) {
+					$subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
+					$url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
+					$url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
+					if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}
+					$content2 = json_decode(file_get_contents($url2), true);
+					if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
+				} else {
+					$subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
+					$url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
+					$url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
+					if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}
+					$content2 = json_decode(file_get_contents($url2), true);
+					if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
+				}
 			if (!empty($content2['data']['synopsis'])) {
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
 			  $synopsis = str_replace(array('nn', "\n", "\t", "\r"), "", $synopsis);
@@ -347,6 +321,7 @@ public function fetchAnimeListData($url) {
 		  $offset += 300;
 		} else {
 		  break;
+		}
 		}
 	  }
 
