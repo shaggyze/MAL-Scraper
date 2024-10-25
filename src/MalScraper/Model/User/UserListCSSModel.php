@@ -93,6 +93,34 @@ class UserListCSSModel extends MainModel
         return strval($subdirectory_number);
     }
 
+public function fetchAnimeListData($url) {
+    $ch = curl_init($url);
+
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
+    // Optional: Implement rate limiting here, e.g., using a sleep function or a dedicated library.
+
+    $response = curl_exec($ch);
+
+    if (curl_errno($ch)) {
+        echo 'Error: ' . curl_error($ch);
+    } else {
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode == 200) {
+            $content = json_decode($response, true);
+            return $content;
+        } else {
+            echo "Error fetching data: HTTP Status Code " . $httpCode;
+        }
+    }
+
+    return null;
+}
+
+
     /**
      * Get user list.
      *
@@ -105,7 +133,7 @@ class UserListCSSModel extends MainModel
 	  while (true) {
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
-		$content = json_decode(file_get_contents($url), true);
+		$content =  fetchAnimeListData($url);
 
 		if ($content) {
 		  $count = count($content);
