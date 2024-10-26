@@ -93,7 +93,6 @@ class UserListCSSModel extends MainModel
         return strval($subdirectory_number);
     }
 
-
     /**
      * Get user list.
      *
