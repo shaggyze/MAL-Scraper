@@ -25,10 +25,6 @@ class Helper
                 return 'Private user list';
             case 404:
                 return 'Page not found';
-			case 405:
-				return 'Not allowed';
-            case 418:
-                return 'Unknown';
             default:
                 return $response;
         }
