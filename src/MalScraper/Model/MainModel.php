@@ -59,15 +59,12 @@ class MainModel
     {
         $file_headers = @get_headers($url) ?: [];
 		$html = HtmlDomParser::file_get_html($url);
-		$title = "";
-		if ($html) {
-			$title = $html->find('title', 0)->plaintext;
-		}
+		$title = $html ? $html->find('title', 0)->plaintext : '';
         if ($file_headers[0] == 'HTTP/1.1 404 Not Found' || $title == '404 Not Found - MyAnimeList.net') {
             return 404;
         }
 
-        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 403 Forbidden' || $title == '403 Forbidden') {
+        if (!$html || empty($file_headers) || $file_headers[0] == 'HTTP/1.1 403 Forbidden' || $title == '403 Forbidden') {
             return 403;
         }
 
