@@ -64,16 +64,16 @@ class MainModel
             return 404;
         }
 
-        if (!$html || empty($file_headers) || $file_headers[0] == 'HTTP/1.1 403 Forbidden' || $title == '403 Forbidden') {
-            return 403;
-        }
-
         if ($file_headers[0] == 'HTTP/1.1 503 Service Unavailable' || $title == 'Service Unavailable') {
             return 503;
         }
 
         if ($file_headers[0] == 'HTTP/1.1 504 Gateway Time-out' || $title == '504 Gateway Time-out') {
             return 504;
+        }
+
+        if (!$html || empty($file_headers) || $file_headers[0] == 'HTTP/1.1 403 Forbidden' || $title == '403 Forbidden') {
+            return 403;
         }
 
         return 200;
