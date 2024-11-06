@@ -1,9 +1,9 @@
 <?php
 /**
- * rl404 - MalScraper.
+ * shaggyze - MalScraper.
  *
  * Unofficial PHP API which scraps and parses page source of MyAnimeList.
- * API Documentation: https://github.com/rl404/MAL-Scraper
+ * API Documentation: https://github.com/shaggyze/MAL-Scraper
  *
  * @author Axel Oktavian Antonio
  *
@@ -159,7 +159,7 @@ class MalScraper
 					} else {
 						$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
 						if (is_array($decoded = json_decode($timestamp, true))) {
-							if ($data == '404') {
+							if ($data === '404') {
 								$result = $data;
 							} else {
 								$data = array_merge($data, $decoded);

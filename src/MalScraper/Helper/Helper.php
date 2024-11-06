@@ -25,6 +25,8 @@ class Helper
                 return 'Private user list';
             case 404:
                 return 'Page not found';
+            case 503:
+                return 'Gateway timeout';
             default:
                 return $response;
         }
