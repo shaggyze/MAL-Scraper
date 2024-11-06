@@ -60,7 +60,7 @@ class MainModel
         $file_headers = @get_headers($url);
 		$html = HtmlDomParser::file_get_html($url);
 		$title = $html->find('title', 0)->plaintext;
-        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 404 Not Found') || $title == '404 Not Found') {
+        if ($file_headers[0] == 'HTTP/1.1 404 Not Found') || $title == '404 Not Found - MyAnimeList.net') {
             return 404;
         }
 
@@ -68,7 +68,7 @@ class MainModel
             return 403;
         }
 
-        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 504 Gateway Time-out') || $title == '504 Gateway Time-out') {
+        if ($file_headers[0] == 'HTTP/1.1 504 Gateway Time-out') || $title == '504 Gateway Time-out') {
             return 504;
         }
 
