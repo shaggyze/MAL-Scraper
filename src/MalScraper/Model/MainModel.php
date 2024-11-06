@@ -1,7 +1,8 @@
 <?php
 
 namespace MalScraper\Model;
-
+ini_set("log_errors", TRUE);
+ini_set("error_log", "error_log");
 define('MAX_FILE_SIZE', 1000000000);
 
 use HtmlDomParser;
@@ -60,6 +61,7 @@ class MainModel
         $file_headers = @get_headers($url) ?: [];
 		$html = HtmlDomParser::file_get_html($url);
 		$title = $html ? $html->find('title', 0)->plaintext : '';
+		error_log('header: ' . $file_headers[0] . 'title: ' $title);
         if ((isset($file_headers[0]) && $file_headers[0] == 'HTTP/1.1 404 Not Found') || $title == '404 Not Found - MyAnimeList.net') {
             return 404;
         }
