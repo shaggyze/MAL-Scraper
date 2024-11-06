@@ -54,7 +54,7 @@ class UserListCSSModel extends MainModel
         $this->_type = $type;
         $this->_status = $status;
 		$this->_genre = $genre;
-        $this->_url = 'https://shaggyze.website/msa/userlist?u='.$user.'&t='.$type.'&st='.$status.'&g='.$genre;
+        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status.'&genre='.$genre;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
@@ -102,30 +102,27 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
-	  /*while (true) {*/
-		$url = 'https://shaggyze.website/msa/userlist?u='.$this->_user.'&t='.$this->_type.'&st='.$this->_status.'&g'.$this->_genre;
-		$url0 = 'https://shaggyze.website/userlist/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
+	  while (true) {
+		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
-		if (!filter_var($url0, FILTER_VALIDATE_URL) || !@file_get_contents($url0)) {$url0 = $url;}
-		$content = json_decode(@file_get_contents($url0), true);
+		$content = json_decode(file_get_contents($url), true);
 
 		if ($content) {
-		  $count = count($content['data']);
-		  $content = $content['data'];
-		  for ($i = 0; $i < $count - 1; $i++) {
+		  $count = count($content);
+		  for ($i = 0; $i < $count; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}
-			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
+			  $content2 = json_decode(file_get_contents($url2), true);
 			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !@file_get_contents($url2)) {$url2 = $url1;}
-			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
+			  $content2 = json_decode(file_get_contents($url2), true);
 			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
 			if (!empty($content2['data']['synopsis'])) {
@@ -230,9 +227,17 @@ class UserListCSSModel extends MainModel
 			  $content[$i]['manga_english'] = str_replace(['"', '[', ']'], '', $content[$i]['manga_english']);
 			}
 			if (!empty($content[$i]['num_watched_episodes'])) {
-				$content[$i]['progress_percent'] = $content[$i]['anime_num_episodes'] !== 0 ? round(($content[$i]['num_watched_episodes'] / $content[$i]['anime_num_episodes']) * 100, 2) : 0;
+			  if ($content[$i]['anime_num_episodes'] !== 0) {
+			    $content[$i]['progress_percent'] = round(($content[$i]['num_watched_episodes'] / $content[$i]['anime_num_episodes']) * 100, 2);
+			  } else {
+			    $content[$i]['progress_percent'] = 0;
+			  }
 			} elseif (!empty($content[$i]['num_read_volumes'])) {
-			  	$content[$i]['progress_percent'] = $content[$i]['manga_num_volumes'] !== 0 ? round(($content[$i]['num_read_volumes'] / $content[$i]['manga_num_volumes']) * 100, 2) : 0;
+			  if ($content[$i]['manga_num_volumes'] !== 0) {
+			    $content[$i]['progress_percent'] = round(($content[$i]['num_read_volumes'] / $content[$i]['manga_num_volumes']) * 100, 2);
+			  } else {
+			    $content[$i]['progress_percent'] = 0;
+			  }
 			} else {
 			    $content[$i]['progress_percent'] = 0;
 			}
@@ -311,11 +316,11 @@ class UserListCSSModel extends MainModel
 
 		  $data = array_merge($data, $content);
 
-		  /*$offset += 300;*/
+		  $offset += 300;
 		} else {
-
+		  break;
 		}
-	  /*}*/
+	  }
 
         return $data;
     }
