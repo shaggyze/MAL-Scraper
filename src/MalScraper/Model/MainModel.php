@@ -61,20 +61,20 @@ class MainModel
         $file_headers = @get_headers($url) ?: [];
 		$html = HtmlDomParser::file_get_html($url);
 		$title = $html ? $html->find('title', 0)->plaintext : '';
-		error_log('header: ' . $file_headers[0] . 'title: ' . $title);
-        if ((isset($file_headers[0]) && $file_headers[0] == 'HTTP/1.1 404 Not Found') || $title == '404 Not Found - MyAnimeList.net') {
+		error_log('header: ' . $file_headers[0] . ' title: ' . $title);
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 404 Not Found') || $title == '404 Not Found - MyAnimeList.net') {
             return 404;
         }
 
-        if ((isset($file_headers[0]) && $file_headers[0] == 'HTTP/1.1 503 Service Unavailable') || $title == 'Service Unavailable') {
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 503 Service Unavailable') || $title == 'Service Unavailable') {
             return 503;
         }
 
-        if ((isset($file_headers[0]) && $file_headers[0] == 'HTTP/1.1 504 Gateway Time-out') || $title == '504 Gateway Time-out') {
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 504 Gateway Time-out') || $title == '504 Gateway Time-out') {
             return 504;
         }
 
-        if ((isset($file_headers[0]) && $file_headers[0] == 'HTTP/1.1 403 Forbidden') || $title == '403 Forbidden' || !$html || empty($file_headers)) {
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 403 Forbidden') || $title == '403 Forbidden' || !$html || empty($file_headers)) {
             return 403;
         }
 
