@@ -27,6 +27,8 @@ class Helper
                 return 'Page not found';
             case 405:
                 return 'Not Allowed';
+            case 500:
+                return 'Internal Server Error';
             case 503:
                 return 'Service Unavailable';
             case 504:

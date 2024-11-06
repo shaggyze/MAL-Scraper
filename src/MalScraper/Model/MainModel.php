@@ -70,12 +70,16 @@ class MainModel
             return 405;
         }
 
-        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 503 Service Unavailable') || $title == 'Service Unavailable') {
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 503 Service Unavailable') || $title == '503 Service Unavailable') {
             return 503;
         }
 
         if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 403 Forbidden') || $title == '403 Forbidden') {
             return 403;
+        }
+
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 500 Internal Server Error') || $title == '500 Internal Server Error') {
+            return 500;
         }
 
         if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 504 Gateway Time-out') || $title == '504 Gateway Time-out' || !$html || empty($file_headers)) {
