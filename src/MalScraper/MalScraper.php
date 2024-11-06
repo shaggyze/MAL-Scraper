@@ -166,7 +166,7 @@ class MalScraper
 								$data = array_merge($data, $decoded);
 							} else {
 								$result = $data;
-								error_log("Error: $data is not an array or 404");
+								//error_log("Error: $data is not an array or 404");
 							}
 						} else {
 							$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
