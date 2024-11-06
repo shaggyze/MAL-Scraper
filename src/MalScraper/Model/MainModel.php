@@ -66,6 +66,10 @@ class MainModel
             return 404;
         }
 
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 404 Not Allowed') || $title == '404 Not Allowed') {
+            return 405;
+        }
+
         if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 503 Service Unavailable') || $title == 'Service Unavailable') {
             return 503;
         }

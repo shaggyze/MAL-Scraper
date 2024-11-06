@@ -25,6 +25,8 @@ class Helper
                 return 'Private user list';
             case 404:
                 return 'Page not found';
+            case 405:
+                return 'Not Allowed';
             case 503:
                 return 'Service Unavailable';
             case 504:
