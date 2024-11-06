@@ -66,7 +66,7 @@ class MainModel
             return 404;
         }
 
-        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 404 Not Allowed') || $title == '404 Not Allowed') {
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 405 Not Allowed') || $title == '405 Not Allowed') {
             return 405;
         }
 
