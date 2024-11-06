@@ -61,7 +61,7 @@ class MainModel
         $file_headers = @get_headers($url) ?: [];
 		$html = HtmlDomParser::file_get_html($url);
 		$title = "";
-		if $html {
+		if ($html) {
 			$title = $html ? $html->find('title', 0)->plaintext : '';
 		}
 		//error_log('header: ' . $file_headers[0] . ' title: ' . $title);
