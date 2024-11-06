@@ -66,6 +66,10 @@ class MainModel
             return 403;
         }
 
+        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 504 Gateway Time-out') {
+            return 504;
+        }
+
         return 200;
     }
 
