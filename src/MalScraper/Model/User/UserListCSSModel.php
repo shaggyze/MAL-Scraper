@@ -112,7 +112,6 @@ class UserListCSSModel extends MainModel
 		if ($content) {
 		  $count = count($content['data']);
 		  $content = $content['data'];
-		  error_log($content['0']['manga_english']);
 		  for ($i = 0; $i < $count - 1; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
@@ -262,9 +261,9 @@ class UserListCSSModel extends MainModel
 			  $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
 			}
 			if (!empty($content[$i]['anime_id'])) {
-			  $content[$i]['anime_image_path'] = Helper::imageUrlReplace($content[$i]['anime_id'], 'anime', $content[$i]['anime_image_path']);
+			  $content[$i]['anime_image_path'] = Helper::imageUrlReplace($content[$i]['anime_id'], 'anime', $content[$i]['anime_image_path'], $this->_user);
 			} else {
-			  $content[$i]['manga_image_path'] = Helper::imageUrlReplace($content[$i]['manga_id'], 'manga', $content[$i]['manga_image_path']);
+			  $content[$i]['manga_image_path'] = Helper::imageUrlReplace($content[$i]['manga_id'], 'manga', $content[$i]['manga_image_path'], $this->_user);
 			}
 			/*if (!empty($content[$i]['genres']) && is_array($content[$i]['genres'])) {
 			  $content[$i]['genres'] = implode(", ", $content[$i]['genres']);
