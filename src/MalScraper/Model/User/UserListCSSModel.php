@@ -107,7 +107,7 @@ class UserListCSSModel extends MainModel
 		$url0 = 'https://shaggyze.website/userlist/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
 
 		if (!filter_var($url0, FILTER_VALIDATE_URL) || !@file_get_contents($url0)) {$url0 = $url;}
-		$content = json_decode(file_get_contents($url0), true);
+		$content = json_decode(@file_get_contents($url0), true);
 
 		if ($content) {
 		  $count = count($content['data']);
