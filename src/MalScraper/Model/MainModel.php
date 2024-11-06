@@ -61,7 +61,7 @@ class MainModel
         $file_headers = @get_headers($url) ?: [];
 		$html = HtmlDomParser::file_get_html($url);
 		$title = $html ? $html->find('title', 0)->plaintext : '';
-		error_log('header: ' . $file_headers[0] . ' title: ' . $title);
+		//error_log('header: ' . $file_headers[0] . ' title: ' . $title);
         if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 404 Not Found') || $title == '404 Not Found - MyAnimeList.net') {
             return 404;
         }
