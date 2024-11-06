@@ -73,7 +73,7 @@ class UserCoverModel
     {
         $list = (new UserList($this->_user, $this->_type, 7, $this->_genre))->getAllInfo();
 
-        $cover = 'No UserList';
+        /*$cover = 'No UserList';*/
 		if (is_array($list)) {
 			$cover = '';
 			foreach ($list as $c) {
