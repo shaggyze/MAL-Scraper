@@ -58,15 +58,17 @@ class MainModel
     public static function getHeader($url)
     {
         $file_headers = @get_headers($url);
-        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 404 Not Found') {
+		$html = HtmlDomParser::file_get_html($url);
+		$title = $html->find('title', 0)->plaintext;
+        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 404 Not Found') || $title == '404 Not Found') {
             return 404;
         }
 
-        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 403 Forbidden') {
+        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 403 Forbidden') || $title == '403 Forbidden') {
             return 403;
         }
 
-        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 504 Gateway Time-out') {
+        if (empty($file_headers) || $file_headers[0] == 'HTTP/1.1 504 Gateway Time-out') || $title == '504 Gateway Time-out') {
             return 504;
         }
 
