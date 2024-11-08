@@ -137,7 +137,7 @@ class CharacterModel extends MainModel
     {
         $html = $this->_parser->find('#content table tr', 0)->find('td', 0)->next_sibling();
 
-        preg_match('/(</h2>).*(<div class="normal_header">)/', $html, $about);
+        preg_match('/(<\/small><\/span><\/h2>).*(<div class="normal_header">)/', $html, $about);
 
         $html = $html->find('div[class=normal_header]', 0);
         $about = str_replace($html->outertext, '', $about[0]);
