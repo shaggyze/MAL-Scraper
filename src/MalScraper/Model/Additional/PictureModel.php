@@ -2,6 +2,7 @@
 
 namespace MalScraper\Model\Additional;
 
+use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
 
 /**
