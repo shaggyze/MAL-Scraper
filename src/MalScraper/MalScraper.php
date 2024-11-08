@@ -176,7 +176,10 @@ class MalScraper
 						}
 					}
 				} else {
-					$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
+					if (is_array($data)) {
+					} else {
+						$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
+					}
 				}
                 $this->_cache->store($cacheName, $data, $this->_cache_time);
                 $result = $data;
