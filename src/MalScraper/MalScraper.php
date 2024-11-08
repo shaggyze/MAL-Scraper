@@ -169,7 +169,10 @@ class MalScraper
 								//error_log("Error: $data is not an array or 404");
 							}
 						} else {
-							$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
+							if (is_array($data)) {
+							} else {
+								$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
+							}
 						}
 					}
 				} else {
