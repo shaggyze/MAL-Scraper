@@ -249,6 +249,7 @@ class UserListCSSModel extends MainModel
 			if (!empty($content2['data']['serialization'])) {
 			  $serializations = $content2['data']['serialization'];
 			  $serializationNames = '';
+			  $serializations = !is_array($serializations) ? [] : $serializations;
 			  foreach ($serializations as $serialization) {
 				$serializationNames .= $serialization['name'] . ', ';
 			  }
