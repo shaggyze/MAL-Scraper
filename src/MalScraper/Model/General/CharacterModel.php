@@ -101,7 +101,7 @@ class CharacterModel extends MainModel
     private function getName($isKanji = false)
     {
         $html = $this->_parser->find('#content table tr', 0);
-        $html = $html->find('td', 0)->next_sibling()->find('div[class=normal_header]', 0);
+        $html = $html->find('td', 0)->next_sibling()->find('h2[class=normal_header]', 0);
 
         $name_kanji = $html->find('small', 0);
         $name_kanji = $name_kanji ? $name_kanji->plaintext : '';
