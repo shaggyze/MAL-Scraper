@@ -196,6 +196,8 @@ class CharacterModel extends MainModel
         $va = [];
         $va_index = 0;
         $html = $this->_parser->find('#content table tr', 0)->find('td', 0)->next_sibling();
+
+		preg_match('/(<div class="normal_header">Voice Actors</div>).*(<div class="normal_header">)/', $html, $html);
         $va_area = $html->find('div[class=normal_header]', 1)->next_sibling();
         if ($va_area->tag == 'table') {
             while (true) {
