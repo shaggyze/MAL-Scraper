@@ -71,7 +71,7 @@ class CharacterModel extends MainModel
         $image = $this->_parser->find('#content table tr', 0);
         $image = $image->find('td', 0)->find('div', 0)->find('a', 0)->find('img', 0);
 
-        return $image ? $image->src : '';
+        return $image ? $image->getAttribute('data-src') : '';
     }
 
     /**
