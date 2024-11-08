@@ -54,7 +54,7 @@ class UserListModel extends MainModel
         $this->_type = $type;
         $this->_status = $status;
 		$this->_genre = $genre;
-        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status.'&genre='.$genre;
+        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
