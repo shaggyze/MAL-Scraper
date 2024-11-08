@@ -267,7 +267,7 @@ class CharacterModel extends MainModel
      */
     private function getVaImage($va_area)
     {
-        $va_image = $va_area->find('img', 0)->src;
+        $va_image = $va_area->find('img', 0)->getAttribute('data-src');
 
         return Helper::imageUrlCleaner($va_image);
     }
