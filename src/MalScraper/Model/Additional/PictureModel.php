@@ -91,7 +91,7 @@ class PictureModel extends MainModel
         if ($picture_table) {
             foreach ($picture_table->find('img') as $each_picture) {
                 if ($each_picture) {
-                    $data[] = $each_picture->src;
+                    $data[] = $each_picture->getAttribute('data-src');
                 }
             }
         }
