@@ -137,11 +137,11 @@ class CharacterModel extends MainModel
     {
         $html = $this->_parser->find('#content table tr', 0)->find('td', 0)->next_sibling();
 
-        preg_match('/(<h2 class="normal_header" style="height: 15px;">).*(<h2 class="normal_header">)/', $html, $about);
+        preg_match('/(<h2 class="normal_header" style="height: 15px;">).*(<div class="normal_header">)/', $html, $about);
 
-        $html = $html->find('h2[class=normal_header]', 0);
+        $html = $html->find('div[class=normal_header]', 0);
         $about = str_replace($html->outertext, '', $about[0]);
-        $about = str_replace('<h2 class="normal_header">', '', $about);
+        $about = str_replace('<div class="normal_header">', '', $about);
 
         preg_match('/(No biography written)/', $about, $temp_about);
         if (!$temp_about) {
