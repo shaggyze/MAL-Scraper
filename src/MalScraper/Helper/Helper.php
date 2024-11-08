@@ -185,7 +185,7 @@ class Helper
 		if ($type == 'anime') {
 			switch ($str) {
 				case '38339':
-					$animeImageUrl = 'https://shaggyze.website/Themes/covers/suzumi_bune.jpg';
+					$animeImageUrl = 'https://shaggyze.website/Themes/covers/suzumi_bune.jepg';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
 				case '1317':
@@ -201,11 +201,11 @@ class Helper
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;*/
 				case '55408':
-					$animeImageUrl = 'https://shaggyze.website/Themes/covers/100_manten_pax_salomena.jpg';
+					$animeImageUrl = 'https://shaggyze.website/Themes/covers/100_manten_pax_salomena.jpeg';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
 				case '43879':
-					$animeImageUrl = 'https://shaggyze.website/Themes/covers/curry_meshi_in_miracle.jpg';
+					$animeImageUrl = 'https://shaggyze.website/Themes/covers/curry_meshi_in_miracle.jpeg';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
 				/*case '57554':
@@ -237,7 +237,7 @@ class Helper
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;*/
 				case '56894':
-					$animeImageUrl = 'https://shaggyze.website/Themes/covers/dragon_ball_daima.jpg';
+					$animeImageUrl = 'https://shaggyze.website/Themes/covers/dragon_ball_daima.jpeg';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
 				case '4772':
