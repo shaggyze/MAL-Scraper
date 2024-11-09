@@ -83,15 +83,17 @@ class AllGenreModel extends MainModel
 
             $link = $each_genre->href;
             $link = explode('/', $link);
-            $id = $link[3];
-            $genre['id'] = $id;
+			if (is_array($link)) {
+				$id = $link[3];
+				$genre['id'] = $id;
 
-            $name = str_replace('_', ' ', $link[4]);
-            $genre['name'] = $name;
+				$name = str_replace('_', ' ', $link[4]);
+				$genre['name'] = $name;
 
-            $genre['count'] = $this->getGenreCount($each_genre);
+				$genre['count'] = $this->getGenreCount($each_genre);
 
-            $data[] = $genre;
+				$data[] = $genre;
+			}
         }
 
         return $data;
