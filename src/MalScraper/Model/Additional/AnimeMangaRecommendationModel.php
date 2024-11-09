@@ -143,7 +143,7 @@ class AnimeMangaRecommendationModel extends MainModel
     private function getRecomText($content_area)
     {
         $text = $content_area->find('.borderClass', 0)->find('.spaceit_pad', 0)->plaintext;
-        $useless_area = $content_area->find('.js-similar-recommendations-button', 0) ? $content_area->find('.js-similar-recommendations-button', 0)->plaintext : null;
+        $useless_area = $content_area->find('.js-similar-recommendations-button', 0) ? $content_area->find('.js-similar-recommendations-button', 0)->plaintext : '';
         $text = str_replace($useless_area, '', $text);
         $text = str_replace('&lt;', '<', $text);
         $text = preg_replace('/\s{2,}/', "\n", $text);
@@ -197,7 +197,7 @@ class AnimeMangaRecommendationModel extends MainModel
     private function getOtherRecom($each_other)
     {
         $text = $each_other->find('.spaceit_pad', 0)->plaintext;
-        $useless_area = $each_other->find('.js-similar-recommendations-button', 0) ? $each_other->find('.js-similar-recommendations-button', 0)->plaintext : null;
+        $useless_area = $each_other->find('.js-similar-recommendations-button', 0) ? $each_other->find('.js-similar-recommendations-button', 0)->plaintext : '';
         $text = str_replace($useless_area, '', $text);
         $text = str_replace('&lt;', '<', $text);
         $text = preg_replace('/\s{2,}/', "\n", $text);
