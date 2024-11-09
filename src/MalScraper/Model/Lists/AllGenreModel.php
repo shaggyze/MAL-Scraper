@@ -83,7 +83,7 @@ class AllGenreModel extends MainModel
 
             $link = $each_genre->href;
             $link = explode('/', $link);
-			if ($link[2] == 'genre' {
+			if ($link[2] == 'genre') {
 				$id = $link[3];
 				$genre['id'] = $id;
 
