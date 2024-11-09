@@ -2,6 +2,7 @@
 
 namespace MalScraper\Model\Additional;
 
+use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
 
 /**
@@ -93,7 +94,7 @@ class CharacterPeoplePictureModel extends MainModel
         if ($picture_table) {
             foreach ($picture_table->find('img') as $each_picture) {
                 if ($each_picture) {
-                    $data[] = $each_picture->src;
+                    $data[] = Helper::imageUrlCleaner($each_picture->getAttribute('data-src'));
                 }
             }
         }
