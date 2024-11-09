@@ -85,7 +85,7 @@ class AllGenreModel extends MainModel
             $link = explode('/', $link);
 				$id = $link[3];
 				$genre['id'] = $id;
-				if (!$link[4]) {$link[4] == ''}
+				if (!$link[4]) {$link[4] == '';}
 				$name = str_replace('_', ' ', $link[4]);
 				$genre['name'] = $name;
 
