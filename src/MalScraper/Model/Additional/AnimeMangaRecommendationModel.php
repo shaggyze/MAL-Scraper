@@ -197,7 +197,7 @@ class AnimeMangaRecommendationModel extends MainModel
     private function getOtherRecom($each_other)
     {
         $text = $each_other->find('.spaceit_pad', 0)->plaintext;
-        $useless_area = $each_other->find('.js-toggle-recommendation-button', 0) ? $each_other->find('.js-toggle-recommendation-button', 0)->plaintext : null;
+        $useless_area = $each_other->find('.js-similar-recommendations-button', 0) ? $each_other->find('.js-similar-recommendations-button', 0)->plaintext : null;
         $text = str_replace($useless_area, '', $text);
         $text = str_replace('&lt;', '<', $text);
         $text = preg_replace('/\s{2,}/', "\n", $text);
