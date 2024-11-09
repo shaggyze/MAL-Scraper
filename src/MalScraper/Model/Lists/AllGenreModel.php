@@ -24,7 +24,7 @@ class AllGenreModel extends MainModel
      *
      * @return void
      */
-    public function __construct($type, $parserArea = '.anime-manga-search .genre-link')
+    public function __construct($type, $parserArea = '.genre-link')
     {
         $this->_type = $type;
         if ($type == 'anime') {
