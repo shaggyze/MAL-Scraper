@@ -24,7 +24,7 @@ class AllGenreModel extends MainModel
      *
      * @return void
      */
-    public function __construct($type, $parserArea = '.genre-link')
+    public function __construct($type, $parserArea = '.anime-manga-search')
     {
         $this->_type = $type;
         if ($type == 'anime') {
@@ -78,7 +78,7 @@ class AllGenreModel extends MainModel
     private function getAllInfo()
     {
         $data = [];
-        foreach ($this->_parser->find('.genre-list a') as $each_genre) {
+        foreach ($this->_parser->find('.genre-name-link') as $each_genre) {
             $genre = [];
 
             $link = $each_genre->href;
