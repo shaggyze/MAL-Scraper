@@ -124,11 +124,10 @@ private function getTitle2()
 foreach ($titleElements as $titleElement) {
     $language = trim($titleElement->innertext);
 
-    // Find the next child node, which should be the text node containing the title
-    $nextElement2 = $titleElement->parent();
-    //while ($nextElement2 && $nextElement2->nodeType != XML_TEXT_NODE) {
-        if ($nextElement2 && $nextElement2->nodeType != XML_TEXT_NODE) {$nextElement2 = $nextElement2->next_sibling();}
-    //}
+    $nextElement2 = $titleElement->next_sibling();
+    while ($nextElement2 && $nextElement2->nodeType != XML_TEXT_NODE) {
+        $nextElement2 = $nextElement2->next_sibling();
+    }
 
     if ($nextElement2) {
         $title = trim($nextElement2->text());
