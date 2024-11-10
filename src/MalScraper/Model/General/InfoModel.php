@@ -117,14 +117,15 @@ error_log($h2Element);
     while ($nextElement) {
         if ($nextElement->tag == 'h2') {
             break;
-        } elseif ($nextElement->tag == 'div' && $nextElement->class == 'spaceit_pad') {
-            $titleElements = $nextElement->find('.dark_text');
+	} elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad') || $nextElement->class == 'js-alternative-titles hide')){
+            $titleElements = $nextElement->find('span.dark_text');
             if (empty($titleElements)) {
                 error_log("No title elements found in spaceit_pad div");
                 break;
             }
             foreach ($titleElements as $titleElement) {
                 $text = trim($titleElement->innertext);
+				error_log($text);
                 if (preg_match('/(.+):(.+)/', $text, $matches)) {
                     $lang = strtolower($matches[1]);
                     $title = trim($matches[2]);
