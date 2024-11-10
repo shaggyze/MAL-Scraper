@@ -144,7 +144,11 @@ private function getTitle2()
             }
         }
 
-        $nextElement = $nextElement->next_sibling();
+        if ($nextElement) {
+            $nextElement = $nextElement->next_sibling();
+        } else {
+            break;
+        }
     }
 
     return $title2;
