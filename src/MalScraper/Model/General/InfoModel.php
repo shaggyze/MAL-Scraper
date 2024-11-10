@@ -135,6 +135,8 @@ foreach ($titleElements as $titleElement) {
         $title = trim($nextElement2->text());
         $title2[$language] = $title;
     } else {
+		$title = "N/A";
+        $title2[$language] = $title;
         error_log("Missing title element for language: $language");
     }
 }
