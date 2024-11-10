@@ -128,7 +128,7 @@ private function getTitle2()
                     $nextElement2 = $titleElement->next_sibling();
                     while ($nextElement2) {
                         if ($nextElement2->nodeType == XML_TEXT_NODE) {
-                            $title = trim($nextElement->text());
+                            $title = trim($nextElement2->text());
                             break;
                         } elseif ($nextElement->tag == 'div') {
                             $title = trim($nextElement2->plaintext);
