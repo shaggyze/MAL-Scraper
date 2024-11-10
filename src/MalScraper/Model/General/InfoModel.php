@@ -138,7 +138,7 @@ private function getTitle2()
                         $title = trim($nextElement->text());
                         $title2[$language] = $title;
                     } else {
-                        error_log("Missing title element for language: $language. HTML context: " . $nextElement->outertext);
+                        error_log("Missing title element for language: $language. HTML context: " . ($nextElement ? $nextElement->outertext : 'No next element found'));
                     }
                 }
             }
