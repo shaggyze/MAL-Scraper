@@ -129,9 +129,10 @@ foreach ($titleElements as $titleElement) {
     while ($nextElement2 && $nextElement2->nodeType != XML_TEXT_NODE) {
         $nextElement2 = $nextElement2->next_sibling();
     }
-		error_log($nextElement2->text());
+
     if ($nextElement2) {
-        $title = trim($nextElement2->text());
+				error_log($nextElement2->text());
+        $title = trim($nextElement2->innertext());
         $title2[$language] = $title;
     } else {
 		$title = "N/A";
