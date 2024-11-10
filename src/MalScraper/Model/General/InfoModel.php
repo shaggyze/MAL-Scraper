@@ -107,12 +107,9 @@ class InfoModel extends MainModel
 private function getTitle2()
 {
     $title2 = [];
-
-    // Find the h2 element containing "Alternative Titles"
 	$h2Element = $this->_parser->find('h2', 0);
 	error_log($h2Element);
-    // Find the following div with the class "spaceit_pad"
-   $nextElement = $h2Element->next_sibling();
+    $nextElement = $h2Element->next_sibling();
 
     while ($nextElement) {
         if ($nextElement->tag == 'h2') {
@@ -124,19 +121,12 @@ private function getTitle2()
                 break;
             }
             foreach ($titleElements as $titleElement) {
-                $text = trim($titleElement->innertext);
-				error_log($text);
-                if (preg_match('/(.+):(.+)/', $text, $matches)) {
-                    $lang = strtolower($matches[1]);
-                    $title = trim($matches[2]);
-                    $title2[$lang] = $title;
-                } else {
-                    if (strpos($text, 'Synonyms:') === 0) {
-                        $title2['synonyms'] = trim(str_replace('Synonyms:', '', $text));
-                    }
-                }
+                $language = trim($titleElement->innertext);
+                $titleElement = $titleElement->next_sibling();
+                $title = trim($titleElement->innertext);
+
+                $title2[$language] = $title;
             }
-		            // Log the $titleElements as a string for debugging
             $titleElementsString = implode(', ', array_map(function($element) {
                 return $element->innertext;
             }, $titleElements));
