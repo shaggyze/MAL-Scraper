@@ -109,7 +109,7 @@ private function getTitle2()
     $title2 = [];
 
     // Find the h2 element containing "Alternative Titles"
-$h2Element = $this->_parser->find('h2:contains("Alternative Titles")', 0);
+$h2Element = $this->_parser->find('h2', 0);
 error_log($h2Element);
 if ($h2Element) {
     // Find the following div with the class "spaceit_pad"
