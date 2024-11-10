@@ -127,6 +127,7 @@ foreach ($titleElements as $titleElement) {
     // Find the next child node, which should be the text node containing the title
     $nextElement2 = $titleElement->parent()->next_sibling();
     while ($nextElement2 && $nextElement2->nodeType != XML_TEXT_NODE) {
+		error_log($nextElement2);
         $nextElement2 = $nextElement2->next_sibling();
     }
 
