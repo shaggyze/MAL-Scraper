@@ -73,6 +73,10 @@ class MainModel
             return 405;
         }
 
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 418 Unknow') || $title == '418 Unknown') {
+            return 418;
+        }
+
         if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 503 Service Unavailable') || $title == '503 Service Unavailable') {
             return 503;
         }

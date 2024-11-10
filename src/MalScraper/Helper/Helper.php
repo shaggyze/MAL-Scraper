@@ -27,6 +27,8 @@ class Helper
                 return 'Page not found';
             case 405:
                 return 'Not Allowed';
+            case 418:
+                return 'Unknown, possible friend only user list';
             case 500:
                 return 'Internal Server Error';
             case 503:
