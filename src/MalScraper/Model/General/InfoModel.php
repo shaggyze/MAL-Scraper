@@ -125,13 +125,13 @@ foreach ($titleElements as $titleElement) {
     $language = trim($titleElement->innertext);
 
     // Find the next child node, which should be the text node containing the title
-    $nextElement = $titleElement->parent()->next_sibling();
-    while ($nextElement && $nextElement->nodeType != XML_TEXT_NODE) {
-        $nextElement = $nextElement->next_sibling();
+    $nextElement2 = $titleElement->parent()->next_sibling();
+    while ($nextElement2 && $nextElement2->nodeType != XML_TEXT_NODE) {
+        $nextElement2 = $nextElement2->next_sibling();
     }
 
-    if ($nextElement) {
-        $title = trim($nextElement->text());
+    if ($nextElement2) {
+        $title = trim($nextElement2->text());
         $title2[$language] = $title;
     } else {
         error_log("Missing title element for language: $language");
