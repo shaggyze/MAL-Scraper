@@ -118,7 +118,7 @@ error_log($h2Element);
         if ($nextElement->tag == 'h2') {
             break;
         } elseif ($nextElement->tag == 'div' && $nextElement->class == 'spaceit_pad') {
-            $titleElements = $nextElement->find('span.dark_text');
+            $titleElements = $nextElement->find('.dark_text');
 error_log($titleElements);
             foreach ($titleElements as $titleElement) {
                 $text = trim($titleElement->innertext);
