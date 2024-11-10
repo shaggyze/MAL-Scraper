@@ -226,7 +226,7 @@ class UserModel extends MainModel
         $mean_score = $a_stat_score->find('div', 1);
         $temp_score = $mean_score->find('span', 0)->plaintext;
 
-        return str_replace($temp_score, '', $mean_score->plaintext);
+        return trim(str_replace($temp_score, '', $mean_score->plaintext));
     }
 
     /**
