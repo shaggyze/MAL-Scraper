@@ -123,12 +123,12 @@ private function getTitle2()
             foreach ($titleElements as $titleElement) {
                 $language = trim($titleElement->innertext);
                 $titleElement = $titleElement->next_sibling();
-                $title = trim($titleElement->text);
+                $title = trim($titleElement->next_sibling()->text);
 
                 $title2[$language] = $title;
             }
             $titleElementsString = implode(', ', array_map(function($element) {
-                return $element->innertext . ': ' . $element->innertext;
+                return $element->innertext . ': ' . $element->next_sibling()->innertext;
             }, $titleElements));
             error_log("Title elements: " . $titleElementsString);
         }
