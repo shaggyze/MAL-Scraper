@@ -109,7 +109,7 @@ private function getTitle2()
     $title2 = [];
 
     // Find the h2 element containing "Alternative Titles"
-$h2Element = $html->find('h2:contains("Alternative Titles")', 0);
+$h2Element = $this->_parser->find('h2:contains("Alternative Titles")', 0);
 
 if ($h2Element) {
     // Find the following div with the class "spaceit_pad"
@@ -124,12 +124,11 @@ if ($h2Element) {
             if (preg_match('/(.+):(.+)/', $text, $matches)) {
                 $lang = strtolower($matches[1]);
                 $title = trim($matches[2]);
-                echo "$lang: $title\n";
+                $title2[$lang] = $title;
             } else {
                 // Handle synonyms or other unstructured text
                 if (strpos($text, 'Synonyms:') === 0) {
-                    $synonyms = trim(str_replace('Synonyms:', '', $text));
-                    echo "Synonyms: $synonyms\n";
+                    $title2['synonyms'] = trim(str_replace('Synonyms:', '', $text));
                 }
             }
         }
@@ -139,6 +138,7 @@ if ($h2Element) {
 } else {
     echo 'The "Alternative Titles" h2 element was not found.';
 }
+    return $title2;
 }
 
     /**
