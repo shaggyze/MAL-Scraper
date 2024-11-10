@@ -81,7 +81,7 @@ class SearchUserModel extends MainModel
      */
     private function getImage($user)
     {
-        return Helper::imageUrlCleaner($user->find('img', 0)->getAttribute('data-src');
+        return Helper::imageUrlCleaner($user->find('img', 0)->getAttribute('data-src'));
     }
 
     /**
