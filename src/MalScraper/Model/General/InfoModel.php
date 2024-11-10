@@ -107,8 +107,12 @@ class InfoModel extends MainModel
 private function getTitle2()
 {
     $title2 = [];
-	$h2Element = $this->_parser->find('h2', 0);
-	error_log($h2Element);
+    $h2Element = $this->_parser->find('h2', 0);
+
+    if (!$h2Element) {
+        return $title2; // Return the default values
+    }
+
     $nextElement = $h2Element->next_sibling();
 
     while ($nextElement) {
@@ -116,25 +120,33 @@ private function getTitle2()
             break;
         } elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
             $titleElements = $nextElement->find('span.dark_text');
-            foreach ($titleElements as $titleElement) {
-                $language = trim($titleElement->innertext);
-                $nextElement = $titleElement->next_sibling();
-                while ($nextElement && $nextElement->nodeType != XML_TEXT_NODE) {
-                    $nextElement = $nextElement->next_sibling();
-                    if (!$nextElement) {
-                        break;
+
+            if (!empty($titleElements)) {
+                foreach ($titleElements as $titleElement) {
+                    $language = trim($titleElement->innertext);
+
+                    // Find the next text node, considering various HTML structures
+                    $nextElement = $titleElement->next_sibling();
+                    while ($nextElement && $nextElement->nodeType != XML_TEXT_NODE) {
+                        $nextElement = $nextElement->next_sibling();
+                        if (!$nextElement) {
+                            break; // Exit the loop if there are no more siblings
+                        }
                     }
-                }
-                if ($nextElement) {
-                    $title = trim($nextElement->text());
-                    $title2[$language] = $title;
-                } else {
-                    error_log("Missing title element for language: $language");
+
+                    if ($nextElement) {
+                        $title = trim($nextElement->text());
+                        $title2[$language] = $title;
+                    } else {
+                        error_log("Missing title element for language: $language. HTML context: " . $nextElement->outertext);
+                    }
                 }
             }
         }
+
         $nextElement = $nextElement->next_sibling();
     }
+
     return $title2;
 }
 
