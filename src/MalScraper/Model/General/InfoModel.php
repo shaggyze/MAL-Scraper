@@ -109,15 +109,15 @@ private function getTitle2()
     $title2 = [];
 
     // Find the h2 element containing "Alternative Titles"
-$h2Element = $this->_parser->find('h2', 0);
-error_log($h2Element);
+	$h2Element = $this->_parser->find('h2', 0);
+	error_log($h2Element);
     // Find the following div with the class "spaceit_pad"
    $nextElement = $h2Element->next_sibling();
 
     while ($nextElement) {
         if ($nextElement->tag == 'h2') {
             break;
-	} elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad') || $nextElement->class == 'js-alternative-titles hide')){
+		} elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
             $titleElements = $nextElement->find('span.dark_text');
             if (empty($titleElements)) {
                 error_log("No title elements found in spaceit_pad div");
@@ -142,9 +142,8 @@ error_log($h2Element);
             }, $titleElements));
             error_log("Title elements: " . $titleElementsString);
         }
-
         $nextElement = $nextElement->next_sibling();
-}
+	}
     return $title2;
 }
 
