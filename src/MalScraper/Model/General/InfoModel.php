@@ -123,7 +123,8 @@ private function getTitle2()
             }
 foreach ($titleElements as $titleElement) {
     $language = trim($titleElement->innertext);
-    $nextElement2 = $titleElement->next_sibling();
+	$nextElement2 = $titleElement->parent()->next_sibling();
+
     if ($nextElement2) {
         $title = trim($nextElement2->text());
         $title2[$language] = $title;
