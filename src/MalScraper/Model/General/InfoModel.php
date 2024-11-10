@@ -115,43 +115,24 @@ private function getTitle2()
         return 'N/A';
     }
 
-    // Find all span elements after the alternative titles section
+    // Find all span elements within the alternative titles section and its children
     $titleElements = $alternativeTitlesSection->find('div.spaceit_pad span.dark_text');
 
-    // Call getTitle3 for each language
-    $title2['english'] = $this->getTitle3($titleElements, 'English');
-    $title2['japanese'] = $this->getTitle3($titleElements, 'Japanese');
-    $title2['synonyms'] = $this->getTitle3($titleElements, 'Synonyms');
-    $title2['french'] = $this->getTitle3($titleElements, 'French');
-	
-    return $title2;
-}
-
-/**
- * Get anime/manga alternative title.
- *
- * @param \simplehtmldom_1_5\simple_html_dom $title_info
- * @param string                             $type
- *
- * @return string
- */
-private function getTitle3($title_info, $type)
-{
-        $text = $title_info;
-    foreach ($title_info as $titleElement) {
+    foreach ($titleElements as $titleElement) {
         $text = trim($titleElement->innertext);
-return $text;
         if (preg_match('/(.+):(.+)/', $text, $matches)) {
             $lang = strtolower($matches[1]);
             $title = trim($matches[2]);
-return $title;
-            if ($lang === strtolower($type)) {
-                return $title;
+            $title2[$lang] = $title;
+        } else {
+            // Handle synonyms or other unstructured text
+            if (strpos($text, 'Synonyms:') === 0) {
+                $title2['synonyms'] = trim(str_replace('Synonyms:', '', $text));
             }
         }
     }
 
-    return $text ? '' : 'N/A 2';
+    return $title2;
 }
 
     /**
