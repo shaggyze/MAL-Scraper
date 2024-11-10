@@ -127,6 +127,9 @@ foreach ($titleElements as $titleElement) {
 
     if ($nextElement2) {
         $title = trim($nextElement2->text());
+        if (strpos($title, $language) === 0) {
+            $title = trim(substr($title, strlen($language)));
+        }
         $title2[$language] = $title;
     } else {
 		$title = 'N/A';
