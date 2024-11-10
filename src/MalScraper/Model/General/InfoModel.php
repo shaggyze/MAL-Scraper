@@ -114,7 +114,7 @@ $h2Element = $html->find('h2:contains("Alternative Titles")', 0);
 if ($h2Element) {
     // Find the following div with the class "spaceit_pad"
     $spaceitPadDiv = $h2Element->next_sibling();
-	error_log(($spaceitPadDiv);
+	error_log($spaceitPadDiv);
     if ($spaceitPadDiv && $spaceitPadDiv->tag == 'div' && $spaceitPadDiv->class == 'spaceit_pad') {
         // Extract information from the spaceit_pad div
         $titleElements = $spaceitPadDiv->find('span.dark_text');
