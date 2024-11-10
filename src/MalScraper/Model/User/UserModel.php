@@ -393,7 +393,7 @@ class UserModel extends MainModel
      *
      * @return array
      */
-    private function getFavorite()
+    /*private function getFavorite()
     {
         $right_area = $this->_parser->find('.container-right', 0);
         $favorite_area = $right_area->find('.user-favorites-outer', 0);
@@ -405,7 +405,7 @@ class UserModel extends MainModel
         $favorite['people'] = $this->getFavList($favorite_area, 'people');
 
         return $favorite;
-    }
+    }/*
 
     /**
      * Get favorite list.
