@@ -121,30 +121,25 @@ private function getTitle2()
                 error_log("No title elements found in spaceit_pad div");
                 break;
             }
-                foreach ($titleElements as $titleElement) {
-                    $language = trim($titleElement->innertext);
+foreach ($titleElements as $titleElement) {
+    $language = trim($titleElement->innertext);
 
-                    // Find the next text node or div element containing the title
-                    $nextElement2 = $titleElement;
-                    while ($nextElement2) {
-                        if ($nextElement2->nodeType == XML_TEXT_NODE) {
-                            $title = trim($nextElement2->text());
-                            break;
-                        } elseif ($nextElement->tag == 'div') {
-                            $title = trim($nextElement2->plaintext);
-                            break;
-                        }
-                        $nextElement2 = $nextElement2->next_sibling();
-                    }
+    // Find the next child node, which should be the text node containing the title
+    $nextElement = $titleElement->parent()->next_sibling();
+    while ($nextElement && $nextElement->nodeType != XML_TEXT_NODE) {
+        $nextElement = $nextElement->next_sibling();
+    }
 
-                    if (isset($title)) {
-                        $title2[$language] = $title;
-                    } else {
-                        error_log("Missing title element for language: $language. HTML context: " . ($nextElement ? $nextElement->outertext : 'No next element found'));
-                    }
+    if ($nextElement) {
+        $title = trim($nextElement->text());
+        $title2[$language] = $title;
+    } else {
+        error_log("Missing title element for language: $language");
+    }
+}
                 }
             $titleElementsString = implode(', ', array_map(function($element) {
-                return $element->innertext . ' ' . $element->outertext;
+                return $element->innertext . ' ' . $element->next_sibling->text;
             }, $titleElements));
             error_log("Title elements: " . $titleElementsString);
         }
