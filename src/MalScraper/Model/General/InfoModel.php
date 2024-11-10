@@ -121,18 +121,28 @@ private function getTitle2()
                 error_log("No title elements found in spaceit_pad div");
                 break;
             }
-            foreach ($titleElements as $titleElement) {
-                $language = trim($titleElement->innertext);
-				$nextElement = $titleElement->next_sibling();
-    if ($nextElement && $nextElement->nodeType == XML_TEXT_NODE) {
-        $title = trim($nextElement->text());
-        $title2[$language] = $title;
-    } else {
-        error_log("Missing title element for language: $language");
-    }
+                foreach ($titleElements as $titleElement) {
+                    $language = trim($titleElement->innertext);
 
-                $title2[$language] = $title;
-            }
+                    // Find the next text node or div element containing the title
+                    $nextElement = $titleElement->next_sibling();
+                    while ($nextElement) {
+                        if ($nextElement->nodeType == XML_TEXT_NODE) {
+                            $title = trim($nextElement->text());
+                            break;
+                        } elseif ($nextElement->tag == 'div') {
+                            $title = trim($nextElement->plaintext);
+                            break;
+                        }
+                        $nextElement = $nextElement->next_sibling();
+                    }
+
+                    if (isset($title)) {
+                        $title2[$language] = $title;
+                    } else {
+                        error_log("Missing title element for language: $language. HTML context: " . ($nextElement ? $nextElement->outertext : 'No next element found'));
+                    }
+                }
             $titleElementsString = implode(', ', array_map(function($element) {
                 return $element->innertext . ': ' . $element->text;
             }, $titleElements));
