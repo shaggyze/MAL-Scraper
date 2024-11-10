@@ -107,56 +107,33 @@ class InfoModel extends MainModel
 private function getTitle2()
 {
     $title2 = [];
-    $h2Element = $this->_parser->find('h2', 0);
-
-    if (!$h2Element) {
-        return $title2; // Return the default values
-    }
-
+	$h2Element = $this->_parser->find('h2', 0);
+	error_log($h2Element);
     $nextElement = $h2Element->next_sibling();
 
     while ($nextElement) {
         if ($nextElement->tag == 'h2') {
             break;
-        } elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
+		} elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
             $titleElements = $nextElement->find('span.dark_text');
-
-            if (!empty($titleElements)) {
-foreach ($titleElements as $titleElement) {
-    $language = trim($titleElement->innertext);
-
-    // Find the next text node or element containing the title
-    $nextElement = $titleElement->next_sibling();
-    while ($nextElement) {
-        if ($nextElement->nodeType == XML_TEXT_NODE) {
-            $title = trim($nextElement->text());
-            $title2[$language] = $title;
-            break;
-        } else if ($nextElement->tag == 'span' || $nextElement->tag == 'div') {
-            // Check if the element contains the title directly
-            $title = trim($nextElement->plaintext);
-            if (!empty($title)) {
-                $title2[$language] = $title;
+            if (empty($titleElements)) {
+                error_log("No title elements found in spaceit_pad div");
                 break;
             }
+            foreach ($titleElements as $titleElement) {
+                $language = trim($titleElement->innertext);
+                $titleElement = $titleElement->next_sibling();
+                $title = trim($titleElement->text);
+
+                $title2[$language] = $title;
+            }
+            $titleElementsString = implode(', ', array_map(function($element) {
+                return $element->innertext . ': ' . $element->innertext;
+            }, $titleElements));
+            error_log("Title elements: " . $titleElementsString);
         }
         $nextElement = $nextElement->next_sibling();
-    }
-
-    if (!isset($title2[$language])) {
-        error_log("Missing title element for language: $language. HTML context: " . ($nextElement ? $nextElement->outertext : 'No next element found'));
-    }
-}
-            }
-        }
-
-        if ($nextElement) {
-            $nextElement = $nextElement->next_sibling();
-        } else {
-            break;
-        }
-    }
-
+	}
     return $title2;
 }
 
