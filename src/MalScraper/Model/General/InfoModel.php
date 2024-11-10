@@ -138,7 +138,7 @@ foreach ($titleElements as $titleElement) {
     }
 }
             $titleElementsString = implode(', ', array_map(function($element) {
-                return $element->innertext . ' ' . $element->next_sibling->text;
+                return $element->innertext . ' ' . $element->text;
             }, $titleElements));
             error_log("Title elements: " . $titleElementsString);
         }
