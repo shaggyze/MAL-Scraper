@@ -104,50 +104,37 @@ class InfoModel extends MainModel
      *
      * @return array
      */
-private function getTitle2()
-{
+private function getTitle2() {
     $title2 = [];
-	$title = '';
-	$h2Element = $this->_parser->find('h2', 0);
-	error_log($h2Element);
-    $nextElement = $h2Element->next_sibling();
 
+    $h2Element = $this->_parser->find('h2', 0);
+    if (!$h2Element) {
+        return $title2;
+    }
+
+    $nextElement = $h2Element->next_sibling();
     while ($nextElement) {
         if ($nextElement->tag == 'h2') {
             break;
-		} elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
-            $titleElements = $nextElement->find('span.dark_text');
-            if (empty($titleElements)) {
-                error_log("No title elements found in spaceit_pad div");
-                break;
-            }
-foreach ($titleElements as $titleElement) {
-    $language = trim($titleElement->innertext);
-	$nextElement2 = $titleElement->parent();
+        }
 
-    if ($nextElement2) {
-        $title = trim($nextElement2->text());
-        if (strpos($title, $language) === 0) {
-            $title = trim(substr($title, strlen($language)));
+        if ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
+            $titleElements = $nextElement->find('span.dark_text');
+            foreach ($titleElements as $titleElement) {
+                $language = trim($titleElement->innertext);
+                $title = trim($titleElement->next_sibling()->text());
+
+                if (strpos($title, $language) === 0) {
+                    $title = trim(substr($title, strlen($language)));
+                }
+
+                $title2[$language] = $title;
+            }
         }
-        $title2[$language] = $title;
-    } else {
-		$title = 'N/A';
-        $title2[$language] = $title;
-        error_log("Missing title element for language: $language");
+
+        $nextElement = $nextElement->next_sibling();
     }
-}
-            $titleElementsString = implode(', ', array_map(function($element) {
-                return $element->innertext . ' ' . $element->text;
-            }, $titleElements));
-            error_log("Title elements: " . $titleElementsString);
-        }
-        if ($nextElement) {
-            $nextElement = $nextElement->next_sibling();
-        } else {
-            break;
-        }
-	}
+
     return $title2;
 }
 
