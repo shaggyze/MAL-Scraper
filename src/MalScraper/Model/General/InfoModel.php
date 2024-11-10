@@ -132,7 +132,7 @@ private function getTitle2()
  
             }
             $titleElementsString = implode(', ', array_map(function($element) {
-                return $element->innertext . ': ' . $element->next_sibling()->innertext;
+                return $element->innertext . ': ' . $element->text;
             }, $titleElements));
             error_log("Title elements: " . $titleElementsString);
         }
