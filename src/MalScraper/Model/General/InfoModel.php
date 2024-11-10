@@ -104,37 +104,41 @@ class InfoModel extends MainModel
      *
      * @return array
      */
-private function getTitle2() {
+private function getTitle2()
+{
     $title2 = [];
-
-    $h2Element = $this->_parser->find('h2', 0);
-    if (!$h2Element) {
-        return $title2;
-    }
-
+	$title = '';
+	$h2Element = $this->_parser->find('h2', 0);
     $nextElement = $h2Element->next_sibling();
     while ($nextElement) {
         if ($nextElement->tag == 'h2') {
             break;
-        }
-
-        if ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
+		} elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
             $titleElements = $nextElement->find('span.dark_text');
-            foreach ($titleElements as $titleElement) {
-                $language = trim($titleElement->innertext);
-                $title = trim($titleElement->next_sibling()->text());
-
-                if (strpos($title, $language) === 0) {
-                    $title = trim(substr($title, strlen($language)));
-                }
-
-                $title2[$language] = $title;
+            if (empty($titleElements)) {
+                break;
             }
+			foreach ($titleElements as $titleElement) {
+				$language = trim($titleElement->innertext);
+				$nextElement2 = $titleElement->parent();
+				if ($nextElement2) {
+					$title = trim($nextElement2->text());
+					if (strpos($title, $language) === 0) {
+						$title = trim(substr($title, strlen($language)));
+					}
+					$title2[$language] = $title;
+				} else {
+					$title = 'N/A';
+					$title2[$language] = $title;
+				}
+			}
         }
-
-        $nextElement = $nextElement->next_sibling();
-    }
-
+        if ($nextElement) {
+            $nextElement = $nextElement->next_sibling();
+        } else {
+            break;
+        }
+	}
     return $title2;
 }
 
