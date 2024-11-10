@@ -574,7 +574,7 @@ class UserModel extends MainModel
             'about'          => $this->getAbout(),
             'anime_stat'     => $this->getStat('anime'),
             'manga_stat'     => $this->getStat('manga'),
-            'favorite'       => $this->getFavorite(),
+            /*'favorite'       => $this->getFavorite(),*/
         ];
 
         return $data;
