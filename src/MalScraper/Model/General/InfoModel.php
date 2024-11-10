@@ -114,7 +114,7 @@ private function getTitle2()
     while ($nextElement) {
         if ($nextElement->tag == 'h2') {
             break;
-        } elseif ($nextElement->tag == 'div' && $nextElement->class == 'spaceit_pad') {
+        } elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
             $titleElements = $nextElement->find('span.dark_text');
             foreach ($titleElements as $titleElement) {
                 $language = trim($titleElement->innertext);
