@@ -107,6 +107,7 @@ class InfoModel extends MainModel
 private function getTitle2()
 {
     $title2 = [];
+	$title = '';
 	$h2Element = $this->_parser->find('h2', 0);
 	error_log($h2Element);
     $nextElement = $h2Element->next_sibling();
