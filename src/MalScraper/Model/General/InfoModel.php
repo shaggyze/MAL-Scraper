@@ -122,25 +122,31 @@ private function getTitle2()
             $titleElements = $nextElement->find('span.dark_text');
 
             if (!empty($titleElements)) {
-                foreach ($titleElements as $titleElement) {
-                    $language = trim($titleElement->innertext);
+foreach ($titleElements as $titleElement) {
+    $language = trim($titleElement->innertext);
 
-                    // Find the next text node, considering various HTML structures
-                    $nextElement = $titleElement->next_sibling();
-                    while ($nextElement && $nextElement->nodeType != XML_TEXT_NODE) {
-                        $nextElement = $nextElement->next_sibling();
-                        if (!$nextElement) {
-                            break; // Exit the loop if there are no more siblings
-                        }
-                    }
+    // Find the next text node or element containing the title
+    $nextElement = $titleElement->next_sibling();
+    while ($nextElement) {
+        if ($nextElement->nodeType == XML_TEXT_NODE) {
+            $title = trim($nextElement->text());
+            $title2[$language] = $title;
+            break;
+        } else if ($nextElement->tag == 'span' || $nextElement->tag == 'div') {
+            // Check if the element contains the title directly
+            $title = trim($nextElement->plaintext);
+            if (!empty($title)) {
+                $title2[$language] = $title;
+                break;
+            }
+        }
+        $nextElement = $nextElement->next_sibling();
+    }
 
-                    if ($nextElement) {
-                        $title = trim($nextElement->text());
-                        $title2[$language] = $title;
-                    } else {
-                        error_log("Missing title element for language: $language. HTML context: " . ($nextElement ? $nextElement->outertext : 'No next element found'));
-                    }
-                }
+    if (!isset($title2[$language])) {
+        error_log("Missing title element for language: $language. HTML context: " . ($nextElement ? $nextElement->outertext : 'No next element found'));
+    }
+}
             }
         }
 
