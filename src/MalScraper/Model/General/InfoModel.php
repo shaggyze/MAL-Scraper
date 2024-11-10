@@ -132,7 +132,7 @@ foreach ($titleElements as $titleElement) {
 
     if ($nextElement2) {
 				error_log($nextElement2->text());
-        $title = trim($nextElement2->innertext());
+        $title = trim($nextElement2->text());
         $title2[$language] = $title;
     } else {
 		$title = "N/A";
