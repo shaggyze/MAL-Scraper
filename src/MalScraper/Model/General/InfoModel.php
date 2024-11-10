@@ -109,33 +109,36 @@ private function getTitle2()
     $title2 = [];
 
     // Find the h2 element containing "Alternative Titles"
-    $alternativeTitlesSection = $this->_parser->find('h2', 0);
+$h2Element = $html->find('h2:contains("Alternative Titles")', 0);
 
-    if (!$alternativeTitlesSection) {
-        return 'N/A';
-    }
-
-    // Find all span elements within the alternative titles section and its children
-    $titleElements = $alternativeTitlesSection->find('span.dark_text');
-		var_dump($titleElements);
+if ($h2Element) {
+    // Find the following div with the class "spaceit_pad"
+    $spaceitPadDiv = $h2Element->next_sibling();
+	error_log(($spaceitPadDiv);
+    if ($spaceitPadDiv && $spaceitPadDiv->tag == 'div' && $spaceitPadDiv->class == 'spaceit_pad') {
+        // Extract information from the spaceit_pad div
+        $titleElements = $spaceitPadDiv->find('span.dark_text');
 		error_log($titleElements);
-    foreach ($titleElements as $titleElement) {
-        $text = trim($titleElement->innertext);
-		var_dump($text);
-		error_log($text);
-        if (preg_match('/(.+):(.+)/', $text, $matches)) {
-            $lang = strtolower($matches[1]);
-            $title = trim($matches[2]);
-            $title2[$lang] = $title;
-        } else {
-            // Handle synonyms or other unstructured text
-            if (strpos($text, 'Synonyms:') === 0) {
-                $title2['synonyms'] = trim(str_replace('Synonyms:', '', $text));
+        foreach ($titleElements as $titleElement) {
+            $text = trim($titleElement->innertext);
+            if (preg_match('/(.+):(.+)/', $text, $matches)) {
+                $lang = strtolower($matches[1]);
+                $title = trim($matches[2]);
+                echo "$lang: $title\n";
+            } else {
+                // Handle synonyms or other unstructured text
+                if (strpos($text, 'Synonyms:') === 0) {
+                    $synonyms = trim(str_replace('Synonyms:', '', $text));
+                    echo "Synonyms: $synonyms\n";
+                }
             }
         }
+    } else {
+        echo 'The "spaceit_pad" div was not found after the h2 element.';
     }
-
-    return $title2;
+} else {
+    echo 'The "Alternative Titles" h2 element was not found.';
+}
 }
 
     /**
