@@ -123,9 +123,9 @@ private function getTitle2()
             }
 foreach ($titleElements as $titleElement) {
     $language = trim($titleElement->innertext);
-    $nextElement = $titleElement->next_sibling();
-    if ($nextElement) {
-        $title = trim($nextElement->text());
+    $nextElement2 = $titleElement->next_sibling();
+    if ($nextElement2) {
+        $title = trim($nextElement2->text());
         $title2[$language] = $title;
     } else {
 		$title = 'N/A';
