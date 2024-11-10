@@ -148,7 +148,11 @@ private function getTitle2()
             }, $titleElements));
             error_log("Title elements: " . $titleElementsString);
         }
-        $nextElement = $nextElement->next_sibling();
+        if ($nextElement) {
+            $nextElement = $nextElement->next_sibling();
+        } else {
+            break;
+        }
 	}
     return $title2;
 }
