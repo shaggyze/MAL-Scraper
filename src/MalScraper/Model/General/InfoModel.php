@@ -125,7 +125,7 @@ private function getTitle2()
                     $language = trim($titleElement->innertext);
 
                     // Find the next text node or div element containing the title
-                    $nextElement2 = $titleElement->next_sibling();
+                    $nextElement2 = $titleElement;
                     while ($nextElement2) {
                         if ($nextElement2->nodeType == XML_TEXT_NODE) {
                             $title = trim($nextElement2->text());
