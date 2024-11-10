@@ -122,10 +122,16 @@ private function getTitle2()
             }
             foreach ($titleElements as $titleElement) {
                 $language = trim($titleElement->innertext);
-                $titleElement = $titleElement->next_sibling();
-                $title = trim($titleElement->innertext);
-
-                $title2[$language] = $title;
+                $nextElement = $titleElement->next_sibling();
+                while ($nextElement && $nextElement->nodeType != XML_TEXT_NODE) {
+                    $nextElement = $nextElement->next_sibling();
+                }
+                if ($nextElement) {
+                    $title = trim($nextElement->text());
+                    $title2[$language] = $title;
+                } else {
+                    error_log("Missing title element for language: $language");
+                }
             }
             $titleElementsString = implode(', ', array_map(function($element) {
                 return $element->innertext;
