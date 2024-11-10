@@ -122,8 +122,12 @@ private function getTitle2()
             }
             foreach ($titleElements as $titleElement) {
                 $language = trim($titleElement->innertext);
-                $titleElement = $titleElement->next_sibling();
-                $title = trim($titleElement->next_sibling()->text);
+    if ($nextElement && $nextElement->nodeType == XML_TEXT_NODE) {
+        $title = trim($nextElement->text());
+        $title2[$language] = $title;
+    } else {
+        error_log("Missing title element for language: $language");
+    }
 
                 $title2[$language] = $title;
             }
