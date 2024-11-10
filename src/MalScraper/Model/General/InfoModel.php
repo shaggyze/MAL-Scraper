@@ -129,7 +129,7 @@ private function getTitle2()
         error_log("Missing title element for language: $language");
     }
 
-                $title2[$language] = $title;
+ 
             }
             $titleElementsString = implode(', ', array_map(function($element) {
                 return $element->innertext . ': ' . $element->next_sibling()->innertext;
