@@ -119,7 +119,10 @@ error_log($h2Element);
             break;
         } elseif ($nextElement->tag == 'div' && $nextElement->class == 'spaceit_pad') {
             $titleElements = $nextElement->find('.dark_text');
-error_log($titleElements);
+            if (empty($titleElements)) {
+                error_log("No title elements found in spaceit_pad div");
+                break;
+            }
             foreach ($titleElements as $titleElement) {
                 $text = trim($titleElement->innertext);
                 if (preg_match('/(.+):(.+)/', $text, $matches)) {
@@ -132,6 +135,11 @@ error_log($titleElements);
                     }
                 }
             }
+		            // Log the $titleElements as a string for debugging
+            $titleElementsString = implode(', ', array_map(function($element) {
+                return $element->innertext;
+            }, $titleElements));
+            error_log("Title elements: " . $titleElementsString);
         }
 
         $nextElement = $nextElement->next_sibling();
