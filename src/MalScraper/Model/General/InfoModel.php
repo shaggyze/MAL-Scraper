@@ -117,9 +117,12 @@ private function getTitle2()
 
     // Find all span elements within the alternative titles section and its children
     $titleElements = $alternativeTitlesSection->find('div.spaceit_pad span.dark_text');
-
+		var_dump($titleElements);
+		error_log($titleElements);
     foreach ($titleElements as $titleElement) {
         $text = trim($titleElement->innertext);
+		var_dump($text);
+		error_log($text);
         if (preg_match('/(.+):(.+)/', $text, $matches)) {
             $lang = strtolower($matches[1]);
             $title = trim($matches[2]);
