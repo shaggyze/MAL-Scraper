@@ -125,7 +125,7 @@ class InfoModel extends MainModel
 					$nextElement2 = $titleElement->parent();
 					if ($nextElement2) {
 						$title = trim($nextElement2->text());
-						if (strpos($title, $language) === 0) {
+						if (strpos(strtolower($title), $language) === 0) {
 							$title = trim(substr($title, strlen($language)));
 						}
 						$title2[$language] = $title;
