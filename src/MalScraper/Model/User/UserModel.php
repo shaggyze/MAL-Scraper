@@ -71,7 +71,7 @@ class UserModel extends MainModel
         $image = $this->_parser->find('.container-left .user-profile', 0);
         $image = $image->find('.user-image img', 0);
 
-        return $image ? Helper::imageUrlCleaner($image->src) : '';
+        return $image ? Helper::imageUrlCleaner($image->getAttribute('data-src')) : '';
     }
 
     /**
@@ -320,7 +320,7 @@ class UserModel extends MainModel
      */
     private function getHistoryImage($each_history)
     {
-        $image = $each_history->find('img', 0)->src;
+        $image = $each_history->find('img', 0)->getAttribute('data-src');
 
         return Helper::imageUrlCleaner($image);
     }
