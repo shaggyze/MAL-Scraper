@@ -124,7 +124,7 @@ private function getTitle2()
 foreach ($titleElements as $titleElement) {
     $language = trim($titleElement->innertext);
     $nextElement = $titleElement->next_sibling();
-    if ($nextElement && $nextElement->nodeType == XML_TEXT_NODE) {
+    if ($nextElement) {
         $title = trim($nextElement->text());
         $title2[$language] = $title;
     } else {
