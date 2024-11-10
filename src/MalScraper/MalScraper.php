@@ -1,6 +1,6 @@
 <?php
 /**
- * shaggyze - MalScraper.
+ * rl404 & shaggyze - MalScraper.
  *
  * Unofficial PHP API which scraps and parses page source of MyAnimeList.
  * API Documentation: https://github.com/shaggyze/MAL-Scraper

@@ -73,7 +73,7 @@ class MainModel
             return 405;
         }
 
-        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 418 Unknow') || $title == '418 Unknown') {
+        if ((isset($file_headers[0]) && $file_headers[0] === 'HTTP/1.1 418 Unknown') || $title == '418 Unknown') {
             return 418;
         }
 
