@@ -114,32 +114,27 @@ private function getTitle2()
     while ($nextElement) {
         if ($nextElement->tag == 'h2') {
             break;
-		} elseif ($nextElement->tag == 'div' && ($nextElement->class == 'spaceit_pad' || $nextElement->class == 'js-alternative-titles hide')) {
+        } elseif ($nextElement->tag == 'div' && $nextElement->class == 'spaceit_pad') {
             $titleElements = $nextElement->find('span.dark_text');
-            if (empty($titleElements)) {
-                error_log("No title elements found in spaceit_pad div");
-                break;
+            foreach ($titleElements as $titleElement) {
+                $language = trim($titleElement->innertext);
+                $nextElement = $titleElement->next_sibling();
+                while ($nextElement && $nextElement->nodeType != XML_TEXT_NODE) {
+                    $nextElement = $nextElement->next_sibling();
+                    if (!$nextElement) {
+                        break;
+                    }
+                }
+                if ($nextElement) {
+                    $title = trim($nextElement->text());
+                    $title2[$language] = $title;
+                } else {
+                    error_log("Missing title element for language: $language");
+                }
             }
-foreach ($titleElements as $titleElement) {
-    $language = trim($titleElement->innertext);
-    $nextElement = $titleElement;
-    while ($nextElement && $nextElement->nodeType != XML_TEXT_NODE) {
-        $nextElement = $nextElement->next_sibling();
-    }
-    if ($nextElement) {
-        $title = trim($nextElement->text());
-        $title2[$language] = $title;
-    } else {
-        error_log("Missing title element for language: $language");
-    }
-}
-            $titleElementsString = implode(', ', array_map(function($element) {
-                return $element->innertext;
-            }, $titleElements));
-            error_log("Title elements: " . $titleElementsString);
         }
         $nextElement = $nextElement->next_sibling();
-	}
+    }
     return $title2;
 }
 
