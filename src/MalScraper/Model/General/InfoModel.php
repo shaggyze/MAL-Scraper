@@ -388,15 +388,15 @@ class InfoModel extends MainModel
     private function getRelated()
     {
         $related = [];
-        $related_area = $this->_parser->find('.anime_detail_related_anime', 0);
+        $related_area = $this->_parser->find('.entries-tile', 0);
         if ($related_area) {
-            foreach ($related_area->find('tr') as $rel) {
-                $rel_type = $rel->find('td', 0)->plaintext;
+            foreach ($related_area->find('div[class^=content]') as $rel) {
+                $rel_type = $rel->find('div[class^=relation]', 0)->plaintext;
                 $rel_type = trim(strtolower(str_replace(':', '', $rel_type)));
 
                 $each_rel = [];
                 $each_rel_index = 0;
-                $rel_anime = $rel->find('td', 1);
+                $rel_anime = $rel->find('div[class^=image]', 1);
                 foreach ($rel_anime->find('a') as $r) {
                     $each_rel[$each_rel_index] = $this->getRelatedDetail($r);
                     $each_rel_index++;
