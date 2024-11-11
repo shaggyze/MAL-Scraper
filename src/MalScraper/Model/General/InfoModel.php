@@ -722,9 +722,11 @@ class InfoModel extends MainModel
 		if ($episode) {
 			$episode = $episode->find('span', 0)->plaintext;
 			$episode = str_replace(['(', 'eps ', ')'], '', $episode);
+
+			return trim($episode);
 		}
 
-        return trim($episode);
+        return '';
     }
 
     /**
