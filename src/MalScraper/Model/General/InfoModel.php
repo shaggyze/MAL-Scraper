@@ -599,26 +599,22 @@ class InfoModel extends MainModel
     private function getSong()
     {
         $song = [];
-		$song_index = 0;
         $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs opnening"]', 0);
         if ($song_area) {
             foreach ($song_area->find('td') as $each_song) {
                 $each_song = trim(preg_replace('/\s+/', ' ', $each_song->plaintext));
 				if (strpos($each_song, ' by ') !== false) {
-					$song_index++;
-					$song['openings'][$song_index] = $each_song;
+					$song['openings'][] = $each_song;
 				}
             }
         }
 
-		$song_index = 0;
         $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs ending"]', 0);
         if ($song_area) {
             foreach ($song_area->find('td') as $each_song) {
                 $each_song = trim(preg_replace('/\s+/', ' ', $each_song->plaintext));
 				if (strpos($each_song, ' by ') !== false) {
-					$song_index++;
-					$song['endings'][$song_index] = $each_song;
+					$song['endings'][] = $each_song;
 				}
             }
         }
