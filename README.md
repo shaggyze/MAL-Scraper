@@ -11,11 +11,11 @@
 
 _Mal-Scraper_ is an unofficial PHP API which scraps and parses page source of [MyAnimeList](https://myanimelist.net/).
 
-Well, it is created to help people get MyAnimeList data without relying on MyAnimeList since they disabled/closed their API. It's working as long as the web is up and we can get its page source.
+Well, it is created to help people get MyAnimeList data without relying on MyAnimeList. It's working as long as the web is up and we can get its page source.
 
 _Mal-Scraper_ is using [Sunra's](https://github.com/sunra/php-simple-html-dom-parser) HTML DOM parser and inspired by [Kylart's](https://github.com/Kylart/MalScraper) and [Jikan's](https://github.com/jikan-me/jikan) API.
 
-For those who want the **REST API** one, please come [here](https://github.com/rl404/MAL-Scraper-API).
+For those who want the **REST API** one, please come [here](https://github.com/shaggyze/MAL-Scraper-API).
 
 ### Features
 - Get general information of anime, manga, character (from anime and manga), people (voice actor, author, staff, etc), review or recommendation
