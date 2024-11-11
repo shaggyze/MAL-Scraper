@@ -632,21 +632,20 @@ class InfoModel extends MainModel
     private function getReview()
     {
         $review = [];
-        $review_area = $this->_parser->find('.js-scrollfix-bottom-rel', 0);
-        $review_area = $review_area->find('table tr', 1);
-        $review_area = $review_area->find('.borderDark');
+        $review_area = $this->_parser->find('div[class*="review-element js-review-element"]', 0);
+        $review_area = $review_area->find('div[class="update_at"]');
         foreach ($review_area as $each_review) {
             $tmp = [];
 
-            $top_area = $each_review->find('.spaceit', 0);
+            $top_area = $each_review->find('div[class="thumb"]', 0);
             $bottom_area = $top_area->next_sibling();
             $very_bottom_area = $bottom_area->next_sibling();
 
             $tmp['id'] = $this->getReviewId($very_bottom_area);
-            $tmp['username'] = $this->getReviewUser($top_area);
+            $tmp['username'] = $each_review->find('div[class="username"]')->plaintext;
             $tmp['image'] = $this->getReviewImage($top_area);
             $tmp['helpful'] = $this->getReviewHelpful($top_area);
-            $tmp['date'] = $this->getReviewDate($top_area);
+            $tmp['date'] =  $each_review->find('div[class="update_at"]')->plaintext;
             if ($this->_type == 'anime') {
                 $tmp['episode'] = $this->getReviewEpisode($top_area);
             } else {
@@ -700,7 +699,7 @@ class InfoModel extends MainModel
     private function getReviewImage($top_area)
     {
         $image = $top_area->find('table', 0);
-        $image = $image->find('td', 0)->find('img', 0)->src;
+        $image = $image->find('td', 0)->find('img', 0)->getAttribute('data-src');
 
         return Helper::imageUrlCleaner($image);
     }
