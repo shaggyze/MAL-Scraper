@@ -397,6 +397,8 @@ class InfoModel extends MainModel
                 $each_rel = [];
                 $each_rel_index = 0;
                 $rel_anime = $rel->find('div[class^=image]', 0);
+				error_log($rel);
+				error_log($rel_anime);
                 foreach ($rel_anime->find('a') as $r) {
                     $each_rel[$each_rel_index] = $this->getRelatedDetail($r);
                     $each_rel_index++;
