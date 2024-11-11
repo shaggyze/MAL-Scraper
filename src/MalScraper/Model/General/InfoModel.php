@@ -633,7 +633,6 @@ class InfoModel extends MainModel
     {
         $review = [];
         $review_area = $this->_parser->find('div[class*="review-element js-review-element"]', 0);
-        $review_area = $review_area->find('div[class="update_at"]');
         foreach ($review_area as $each_review) {
             $tmp = [];
 
