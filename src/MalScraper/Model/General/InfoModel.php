@@ -396,7 +396,7 @@ class InfoModel extends MainModel
 				$rel_type = preg_replace('/\([^)]+\)/', '', $rel_type);
                 $each_rel = [];
                 $each_rel_index = 0;
-                $rel_anime = $related_area->find('div[class^=image]', 0);
+                $rel_anime = $rel->find('div[class^=title]', 0);
                 foreach ($rel_anime->find('a') as $r) {
                     $each_rel[$each_rel_index] = $this->getRelatedDetail($r);
                     $each_rel_index++;
@@ -443,7 +443,7 @@ class InfoModel extends MainModel
         $separated_anime_link = explode('/', $rel_anime_link);
 
         $related['mal_id'] = $separated_anime_link[4];
-        $related['title'] = $separated_anime_link[5];
+        $related['title'] = $r->plaintext;
         $related['type'] = $separated_anime_link[3];
 		$related['url'] = $rel_anime_link;
 
