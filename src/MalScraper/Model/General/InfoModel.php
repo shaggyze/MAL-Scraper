@@ -397,7 +397,6 @@ class InfoModel extends MainModel
                 $each_rel = [];
                 $each_rel_index = 0;
                 $rel_anime = $related_area->find('div[class^=image]', 0);
-				error_log($rel_anime);
                 foreach ($rel_anime->find('a') as $r) {
                     $each_rel[$each_rel_index] = $this->getRelatedDetail($r);
                     $each_rel_index++;
@@ -407,6 +406,24 @@ class InfoModel extends MainModel
             }
         }
 
+        $related_area = $this->_parser->find('.entries-table', 0);
+		if ($related_area) {
+            foreach ($related_area->find('tr') as $rel) {
+                $rel_type = $rel->find('td', 0)->plaintext;
+                $rel_type = trim(strtolower(str_replace('                   ', '', $rel_type)));
+
+                $each_rel = [];
+                $each_rel_index = 0;
+                $rel_anime = $related_area->find('li', 0);
+				error_log($rel_anime);
+                foreach ($rel_anime->find('a') as $r) {
+                    $each_rel[$each_rel_index] = $this->getRelatedDetail($r);
+                    $each_rel_index++;
+                }
+
+                $related[$rel_type] = $each_rel;
+            }
+        }
         return $related;
     }
 
@@ -423,9 +440,10 @@ class InfoModel extends MainModel
         $rel_anime_link = $r->href;
         $separated_anime_link = explode('/', $rel_anime_link);
 
-        $related['id'] = $separated_anime_link[4];
+        $related['mal_id'] = $separated_anime_link[4];
         $related['title'] = $separated_anime_link[5];
         $related['type'] = $separated_anime_link[3];
+		$related['url'] = $rel_anime_link;
 
         return $related;
     }
