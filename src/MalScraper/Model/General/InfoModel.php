@@ -421,8 +421,8 @@ class InfoModel extends MainModel
 						$each_rel[$each_rel_index] = $this->getRelatedDetail($r);
 						$each_rel_index++;
 					}
-					$related[$rel_type] = $each_rel;
-				}    
+				}
+                $related[$rel_type] = $each_rel;
             }
         }
         return $related;
