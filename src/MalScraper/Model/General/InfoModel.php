@@ -599,21 +599,23 @@ class InfoModel extends MainModel
     private function getSong()
     {
         $song = [];
+		$song_index = 0;
         $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs opnening"]', 0);
-		error_log($song_area);
         if ($song_area) {
             foreach ($song_area->find('span.theme-song-title') as $each_song) {
-                $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext));
-				error_log($each_song);
-                $song['opening'][] = $each_song;
+                $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext . $each_song->next_sibling()->plaintext . ' ' . $each_song->next_sibling()->next_sibling()->plaintext));
+				$song_index++;
+                $song['openings'][$song_index]] = $each_song;
             }
         }
 
+		$song_index = 0;
         $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs ending"]', 0);
         if ($song_area) {
             foreach ($song_area->find('span.theme-song-title') as $each_song) {
-                $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext));
-                $song['closing'][] = $each_song;
+                $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext . $each_song->next_sibling()->plaintext . ' ' . $each_song->next_sibling()->next_sibling()->plaintext));
+				$song_index++;
+                $song['endings'][$song_index]] = $each_song;
             }
         }
 
