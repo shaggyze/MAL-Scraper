@@ -697,8 +697,7 @@ class InfoModel extends MainModel
      */
     private function getReviewImage($top_area)
     {
-        $image = $top_area->find('table', 0);
-        $image = $image->find('td', 0)->find('img', 0)->getAttribute('data-src');
+        $image = $top_area->find('img', 0)->getAttribute('data-src');
 
         return Helper::imageUrlCleaner($image);
     }
