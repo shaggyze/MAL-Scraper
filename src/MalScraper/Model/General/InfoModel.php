@@ -605,7 +605,7 @@ class InfoModel extends MainModel
             foreach ($song_area->find('span.theme-song-title') as $each_song) {
                 $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext . $each_song->next_sibling()->plaintext . ' ' . $each_song->next_sibling()->next_sibling()->plaintext));
 				$song_index++;
-                $song['openings'][$song_index]] = $each_song;
+                $song['openings'][$song_index] = $each_song;
             }
         }
 
@@ -615,7 +615,7 @@ class InfoModel extends MainModel
             foreach ($song_area->find('span.theme-song-title') as $each_song) {
                 $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext . $each_song->next_sibling()->plaintext . ' ' . $each_song->next_sibling()->next_sibling()->plaintext));
 				$song_index++;
-                $song['endings'][$song_index]] = $each_song;
+                $song['endings'][$song_index] = $each_song;
             }
         }
 
