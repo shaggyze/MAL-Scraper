@@ -636,7 +636,7 @@ class InfoModel extends MainModel
         foreach ($review_area as $each_review) {
             $tmp = [];
 
-            $top_area = $each_review->find('div[class="thumb"]');
+            $top_area = $each_review->find('div[class="thumb"]', 0);
             $bottom_area = $top_area->next_sibling();
             $very_bottom_area = $bottom_area->next_sibling();
 
