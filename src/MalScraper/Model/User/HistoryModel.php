@@ -86,7 +86,7 @@ class HistoryModel extends MainModel
      */
     private function getTitle($name_area)
     {
-        return $name_area->find('a', 0)->plaintext;
+        return trim($name_area->find('a', 0)->plaintext);
     }
 
     /**
