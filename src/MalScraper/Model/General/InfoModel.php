@@ -800,7 +800,7 @@ class InfoModel extends MainModel
                 $tmp = [];
 
                 $tmp['id'] = $this->getRecomId($each_recom);
-                $tmp['title'] = $this->getRecomTitle($each_recom);
+                $tmp['name'] = $this->getRecomTitle($each_recom);
                 $tmp['image'] = $this->getRecomImage($each_recom);
                 $tmp['user'] = $this->getRecomUser($each_recom);
 
@@ -886,11 +886,11 @@ class InfoModel extends MainModel
             'video'     => $this->getVideo(),
             'synopsis'  => $this->getSynopsis(),
             'score'     => $this->getScore(),
-            'voter'     => $this->getVoter(),
+            'scored_by'     => $this->getVoter(),
             'rank'      => $this->getRank(),
             'popularity'=> $this->getPopularity(),
             'members'   => $this->getMembers(),
-            'favorite'  => $this->getFavorite(),
+            'favorites'  => $this->getFavorite(),
         ];
 
         $data = array_merge($data, $this->getOtherInfo());
