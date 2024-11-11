@@ -668,7 +668,7 @@ class InfoModel extends MainModel
      */
     private function getReviewId($very_bottom_area)
     {
-        $id = $very_bottom_area->find('a', 0)->href;
+        $id = $very_bottom_area->find('a', 1)->href;
         $id = explode('?id=', $id);
 
         return $id[0];
