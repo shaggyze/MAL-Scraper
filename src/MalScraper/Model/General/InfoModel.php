@@ -642,16 +642,16 @@ class InfoModel extends MainModel
 
             $tmp['id'] = $this->getReviewId($each_review->find('div[class="showless"]', 0));
             $tmp['username'] = $each_review->find('div[class="username"]', 0)->plaintext;
-            $tmp['image'] = $this->getReviewImage($top_area);
-            $tmp['helpful'] = $this->getReviewHelpful($top_area);
-            $tmp['date'] =  $each_review->find('div[class="update_at"]', 0)->plaintext;
+            $tmp['image'] = $this->getReviewImage($each_review->find('div[class="thumb"]', 0));
+            //$tmp['helpful'] = $this->getReviewHelpful($top_area);
+            $tmp['date'] =  $this->getReviewDate($each_review->find('div[class="update_at"]', 0));
             if ($this->_type == 'anime') {
-                $tmp['episode'] = $this->getReviewEpisode($top_area);
+                //$tmp['episode'] = $this->getReviewEpisode($top_area);
             } else {
-                $tmp['chapter'] = $this->getReviewEpisode($top_area);
+                //$tmp['chapter'] = $this->getReviewEpisode($top_area);
             }
-            $tmp['score'] = $this->getReviewScore($bottom_area);
-            $tmp['review'] = $this->getReviewText($bottom_area);
+            //$tmp['score'] = $this->getReviewScore($bottom_area);
+            $tmp['review'] = $this->getReviewText($each_review->find('div[class="text"]', 0));
 
             $review[] = $tmp;
         }
@@ -724,10 +724,8 @@ class InfoModel extends MainModel
      *
      * @return array
      */
-    private function getReviewDate($top_area)
+    private function getReviewDate($date)
     {
-        $date = $top_area->find('div div', 0);
-
         return [
             'date' => $date->plaintext,
             'time' => $date->title,
