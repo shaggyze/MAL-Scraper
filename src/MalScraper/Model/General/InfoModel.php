@@ -414,7 +414,7 @@ class InfoModel extends MainModel
 
                 $each_rel = [];
                 $each_rel_index = 0;
-                $rel_anime = $rel_type->find('ul', 0);
+                $rel_anime = $rel->find('ul', 0);
 				foreach ($rel_anime->find('li') as $ra) {
 					error_log($rel_anime);
 					foreach ($ra->find('a') as $r) {
