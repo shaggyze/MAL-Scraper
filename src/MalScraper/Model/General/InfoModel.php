@@ -719,8 +719,10 @@ class InfoModel extends MainModel
      */
     private function getReviewEpisode($episode)
     {
-        $episode = $episode->find('span', 0)->plaintext;
-        $episode = str_replace(['(', 'eps ', ')'], '', $episode);
+		if ($episode) {
+			$episode = $episode->find('span', 0)->plaintext;
+			$episode = str_replace(['(', 'eps ', ')'], '', $episode);
+		}
 
         return trim($episode);
     }
