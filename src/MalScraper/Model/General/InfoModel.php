@@ -408,18 +408,17 @@ class InfoModel extends MainModel
         $related_area = $this->_parser->find('.entries-table', 0);
 		if ($related_area) {
             foreach ($related_area->find('tr') as $rel) {
-                $rel_type = $rel->find('td', 0)->plaintext;
-                $rel_type = trim(str_replace(': ', '', $rel_type));
+                $rel_type = trim(str_replace(': ', '', $rel->find('td', 0)->plaintext));
 
                 $each_rel = [];
                 $each_rel_index = 0;
                 $rel_anime = $rel->find('ul', 0);
 				foreach ($rel_anime->find('li') as $ra) {
-					error_log($rel_anime);
 					foreach ($ra->find('a') as $r) {
 						$each_rel[$each_rel_index] = $this->getRelatedDetail($r);
 						$each_rel_index++;
 					}
+
 					$related[$rel_type] = $each_rel;
 				}
 
