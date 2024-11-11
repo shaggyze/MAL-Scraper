@@ -442,7 +442,7 @@ class InfoModel extends MainModel
         $rel_anime_link = $r->href;
         $separated_anime_link = explode('/', $rel_anime_link);
 
-        $related['mal_id'] = $separated_anime_link[4];
+        $related['id'] = $separated_anime_link[4];
         $related['title'] = trim($r->plaintext);
         $related['type'] = $separated_anime_link[3];
 		$related['url'] = $rel_anime_link;
@@ -883,7 +883,7 @@ class InfoModel extends MainModel
             'id'        => $this->getId(),
             'cover'     => $this->getCover(),
             'title'     => $this->getTitle(),
-            'title2'    => $this->getTitle2(),
+            'titles'    => $this->getTitle2(),
             'video'     => $this->getVideo(),
             'synopsis'  => $this->getSynopsis(),
             'score'     => $this->getScore(),
@@ -897,7 +897,7 @@ class InfoModel extends MainModel
         $data = array_merge($data, $this->getOtherInfo());
 
         $data2 = [
-            'related'        => $this->getRelated(),
+            'relations'        => $this->getRelated(),
             'character'      => $this->getCharacter(),
             'staff'          => $this->getStaff(),
             'song'           => $this->getSong(),
