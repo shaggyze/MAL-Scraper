@@ -411,7 +411,7 @@ class InfoModel extends MainModel
                 $rel_type = trim(str_replace(': ', '', $rel->find('td', 0)->plaintext));
 
                 $each_rel = [];
-                $each_rel_index = 0;
+                $each_rel_index = 1;
                 $rel_anime = $rel->find('ul[class^=entries]', 0);
 				foreach ($rel_anime->find('li') as $ra) {
 					foreach ($ra->find('a') as $r) {
