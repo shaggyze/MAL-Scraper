@@ -416,7 +416,7 @@ class InfoModel extends MainModel
 					error_log($ra);
 					foreach ($ra->find('li') as $r2) {
 						error_log($r2);
-						$each_rel2[$each_rel_index2] = $this->getRelatedDetail($r2->find('a'));
+						$each_rel2[$each_rel_index2] = $this->getRelatedDetail($r2->find('a', 0));
 						$each_rel_index2++;
 					}
 
