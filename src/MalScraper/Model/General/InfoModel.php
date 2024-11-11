@@ -424,7 +424,7 @@ class InfoModel extends MainModel
         $separated_anime_link = explode('/', $rel_anime_link);
 
         $related['id'] = $separated_anime_link[4];
-        $related['title'] = $separated_anime_link[5]
+        $related['title'] = $separated_anime_link[5];
         $related['type'] = $separated_anime_link[3];
 
         return $related;
