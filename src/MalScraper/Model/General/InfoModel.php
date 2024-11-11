@@ -121,11 +121,11 @@ class InfoModel extends MainModel
 					break;
 				}
 				foreach ($titleElements as $titleElement) {
-					$language = trim(strtolower($titleElement->innertext));
+					$language = trim($titleElement->innertext);
 					$nextElement2 = $titleElement->parent();
 					if ($nextElement2) {
 						$title = trim($nextElement2->text());
-						if (strpos(strtolower($title), $language) === 0) {
+						if (strpos($title, $language) === 0) {
 							$title = trim(substr($title, strlen($language)));
 						}
 						$title2[$language] = $title;
@@ -442,8 +442,8 @@ class InfoModel extends MainModel
         $separated_anime_link = explode('/', $rel_anime_link);
 
         $related['id'] = $separated_anime_link[4];
-        $related['name'] = trim($r->plaintext);
         $related['type'] = $separated_anime_link[3];
+        $related['name'] = trim($r->plaintext);
 		$related['url'] = $rel_anime_link;
 
         return $related;
