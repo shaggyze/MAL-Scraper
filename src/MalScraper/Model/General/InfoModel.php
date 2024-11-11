@@ -645,7 +645,7 @@ class InfoModel extends MainModel
             } else {
                 $tmp['chapter'] = $this->getReviewEpisode($each_review->find('div[class="tag preliminary"]', 0));
             }
-            $tmp['score'] = $this->getReviewScore($each_review->find('div[class="num"]', 0));
+            $tmp['score'] = $this->getReviewScore($each_review->find('span[class="num"]', 0));
             $tmp['review'] = $this->getReviewText($each_review->find('div[class="text"]', 0));
 
             $review[] = $tmp;
@@ -719,8 +719,8 @@ class InfoModel extends MainModel
      */
     private function getReviewEpisode($episode)
     {
-        $episode = $episode->plaintext;
-        $episode = str_replace(['Preliminary ', 'eps'], '', $episode);
+        $episode = $episode->find('span', 0)->plaintext;
+        $episode = str_replace(['(', 'eps ', ')'], '', $episode);
 
         return trim($episode);
     }
