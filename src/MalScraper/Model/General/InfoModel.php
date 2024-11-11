@@ -632,11 +632,11 @@ class InfoModel extends MainModel
     private function getReview()
     {
         $review = [];
-        $review_area = $this->_parser->find('div[class*="review-element js-review-element"]', 0);
+        $review_area = $this->_parser->find('div[class*="review-element js-review-element"]');
         foreach ($review_area as $each_review) {
             $tmp = [];
 
-            $top_area = $each_review->find('div[class="thumb"]', 0);
+            $top_area = $each_review->find('div[class="thumb"]');
             $bottom_area = $top_area->next_sibling();
             $very_bottom_area = $bottom_area->next_sibling();
 
