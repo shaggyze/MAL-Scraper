@@ -413,16 +413,13 @@ class InfoModel extends MainModel
                 $each_rel2 = [];
                 $each_rel_index2 = 0;
 				foreach ($rel2->find('ul[class^=entries]') as $ra) {
-					error_log($ra);
 					foreach ($ra->find('li') as $r2) {
-						error_log($r2);
 						$each_rel2[$each_rel_index2] = $this->getRelatedDetail($r2->find('a', 0));
 						$each_rel_index2++;
 					}
 
 					$related[$rel_type2][] = $each_rel2;
 				}
-
             }
         }
 
