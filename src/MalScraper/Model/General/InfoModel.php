@@ -410,18 +410,19 @@ class InfoModel extends MainModel
 		if ($related_area) {
             foreach ($related_area->find('tr') as $rel) {
                 $rel_type = $rel->find('td', 0)->plaintext;
-                $rel_type = trim(strtolower(str_replace(': ', '', $rel_type)));
+                $rel_type = trim(str_replace(': ', '', $rel_type));
 
                 $each_rel = [];
                 $each_rel_index = 0;
                 $rel_anime = $related_area->find('li', 0);
-				error_log($rel_anime);
-                foreach ($rel_anime->find('a') as $r) {
-                    $each_rel[$each_rel_index] = $this->getRelatedDetail($r);
-                    $each_rel_index++;
-                }
-
-                $related[$rel_type] = $each_rel;
+				foreach ($related_area->find('li') as $ra) {
+					error_log($rel_anime);
+					foreach ($ra->find('a') as $r) {
+						$each_rel[$each_rel_index] = $this->getRelatedDetail($r);
+						$each_rel_index++;
+					}
+					$related[$rel_type] = $each_rel;
+				}    
             }
         }
         return $related;
