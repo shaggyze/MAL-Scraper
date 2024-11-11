@@ -414,15 +414,16 @@ class InfoModel extends MainModel
 
                 $each_rel = [];
                 $each_rel_index = 0;
-                $rel_anime = $related_area->find('li', 0);
-				foreach ($related_area->find('li') as $ra) {
+                $rel_anime = $rel_type->find('ul', 0);
+				foreach ($rel_anime->find('li') as $ra) {
 					error_log($rel_anime);
 					foreach ($ra->find('a') as $r) {
 						$each_rel[$each_rel_index] = $this->getRelatedDetail($r);
 						$each_rel_index++;
 					}
+					$related[$rel_type] = $each_rel;
 				}
-                $related[$rel_type] = $each_rel;
+
             }
         }
         return $related;
