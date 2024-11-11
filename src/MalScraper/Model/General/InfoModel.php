@@ -602,7 +602,7 @@ class InfoModel extends MainModel
         $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs opnening"]', 0);
         if ($song_area) {
             foreach ($song_area->find('td') as $each_song) {
-				$each_song = urlencode($each_song->plaintext);
+				$each_song = $each_song->plaintext;
 				$each_song = trim(preg_replace('/\s+/', ' ', $each_song));
 				if (strpos($each_song, ' by ') !== false) {
 					$song['openings'][] = $each_song;
