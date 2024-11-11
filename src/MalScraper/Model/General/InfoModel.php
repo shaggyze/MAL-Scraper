@@ -636,21 +636,16 @@ class InfoModel extends MainModel
         foreach ($review_area as $each_review) {
             $tmp = [];
 
-            $top_area = $each_review->find('div[class="thumb"]', 0);
-            $bottom_area = $top_area->next_sibling();
-            $very_bottom_area = $bottom_area->next_sibling();
-
             $tmp['id'] = $this->getReviewId($each_review->find('div[class="open"]', 0));
             $tmp['username'] = $this->getReviewUser($each_review->find('div[class="username"]', 0));
             $tmp['image'] = $this->getReviewImage($each_review->find('div[class="thumb"]', 0));
-            //$tmp['helpful'] = $this->getReviewHelpful($top_area);
             $tmp['date'] =  $this->getReviewDate($each_review->find('div[class="update_at"]', 0));
             if ($this->_type == 'anime') {
-                //$tmp['episode'] = $this->getReviewEpisode($top_area);
+                $tmp['episode'] = $this->getReviewEpisode($each_review->find('div[class="tag preliminary"]', 0));
             } else {
-                //$tmp['chapter'] = $this->getReviewEpisode($top_area);
+                $tmp['chapter'] = $this->getReviewEpisode($each_review->find('div[class="tag preliminary"]', 0));
             }
-            //$tmp['score'] = $this->getReviewScore($bottom_area);
+            $tmp['score'] = $this->getReviewScore($each_review->find('div[class="num"]', 0));
             $tmp['review'] = $this->getReviewText($each_review->find('div[class="text"]', 0));
 
             $review[] = $tmp;
@@ -662,13 +657,13 @@ class InfoModel extends MainModel
     /**
      * Get review user.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $very_bottom_area
+     * @param \simplehtmldom_1_5\simple_html_dom $id
      *
      * @return string
      */
-    private function getReviewId($very_bottom_area)
+    private function getReviewId($id)
     {
-        $id = $very_bottom_area->find('a', 0)->href;
+        $id = $id->find('a', 0)->href;
         $id = explode('?id=', $id);
 
         return $id[1];
@@ -689,36 +684,21 @@ class InfoModel extends MainModel
     /**
      * Get review image.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $top_area
+     * @param \simplehtmldom_1_5\simple_html_dom $image
      *
      * @return string
      */
-    private function getReviewImage($top_area)
+    private function getReviewImage($image)
     {
-        $image = $top_area->find('img', 0)->getAttribute('data-src');
+        $image = $image->find('img', 0)->getAttribute('data-src');
 
         return Helper::imageUrlCleaner($image);
     }
 
     /**
-     * Get review helful.
-     *
-     * @param \simplehtmldom_1_5\simple_html_dom $top_area
-     *
-     * @return string
-     */
-    private function getReviewHelpful($top_area)
-    {
-        $helpful = $top_area->find('table', 0);
-        $helpful = $helpful->find('td', 1)->find('strong', 0)->plaintext;
-
-        return trim($helpful);
-    }
-
-    /**
      * Get review date.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $top_area
+     * @param \simplehtmldom_1_5\simple_html_dom $date
      *
      * @return array
      */
@@ -733,14 +713,14 @@ class InfoModel extends MainModel
     /**
      * Get review episode seen.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $top_area
+     * @param \simplehtmldom_1_5\simple_html_dom $episode
      *
      * @return string
      */
-    private function getReviewEpisode($top_area)
+    private function getReviewEpisode($episode)
     {
-        $episode = $top_area->find('div div', 1)->plaintext;
-        $episode = str_replace(['episodes seen', 'chapters read'], '', $episode);
+        $episode = $episode->plaintext;
+        $episode = str_replace(['Preliminary ', 'eps'], '', $episode);
 
         return trim($episode);
     }
@@ -748,21 +728,13 @@ class InfoModel extends MainModel
     /**
      * Get review score.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $bottom_area
+     * @param \simplehtmldom_1_5\simple_html_dom $score
      *
      * @return array
      */
-    private function getReviewScore($bottom_area)
+    private function getReviewScore($score)
     {
-        $score = [];
-        $score_area = $bottom_area->find('table', 0);
-        if ($score_area) {
-            foreach ($score_area->find('tr') as $each_score) {
-                $score_type = strtolower($each_score->find('td', 0)->plaintext);
-                $score_value = $each_score->find('td', 1)->plaintext;
-                $score[$score_type] = $score_value;
-            }
-        }
+        $score = $score->plaintext;
 
         return $score;
     }
@@ -770,16 +742,12 @@ class InfoModel extends MainModel
     /**
      * Get review text.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $bottom_area
+     * @param \simplehtmldom_1_5\simple_html_dom $text
      *
      * @return string
      */
-    private function getReviewText($bottom_area)
+    private function getReviewText($text)
     {
-        $useless_area_1 = $bottom_area->find('div', 0)->plaintext;
-        $useless_area_2 = $bottom_area->find('div[id^=revhelp_output]', 0)->plaintext;
-        $useless_area_3 = $bottom_area->find('a[id^=reviewToggle]', 0) ? $bottom_area->find('a[id^=reviewToggle]', 0)->plaintext : null;
-        $text = str_replace([$useless_area_1, $useless_area_2, $useless_area_3], '', $bottom_area->plaintext);
         $text = str_replace('&lt;', '<', $text);
 
         return trim(preg_replace('/\h+/', ' ', $text));
