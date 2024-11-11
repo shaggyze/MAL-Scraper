@@ -401,7 +401,7 @@ class InfoModel extends MainModel
                     $each_rel_index++;
                 }
 
-                $related["relation"][$rel_type] = $each_rel;
+                $related['relation'][$rel_type] = $each_rel;
             }
         }
 
@@ -419,7 +419,7 @@ class InfoModel extends MainModel
 						$each_rel_index++;
 					}
 
-					$related["entry"][$rel_type] = $each_rel;
+					$related['relation'][$rel_type] = $each_rel;
 				}
 
             }
@@ -441,10 +441,10 @@ class InfoModel extends MainModel
         $rel_anime_link = $r->href;
         $separated_anime_link = explode('/', $rel_anime_link);
 
-        $related['id'] = $separated_anime_link[4];
-        $related['title'] = trim($r->plaintext);
-        $related['type'] = $separated_anime_link[3];
-		$related['url'] = $rel_anime_link;
+        $related['entry']['id'] = $separated_anime_link[4];
+        $related['entry']['title'] = trim($r->plaintext);
+        $related['entry']['type'] = $separated_anime_link[3];
+		$related['entry']['url'] = $rel_anime_link;
 
         return $related;
     }
