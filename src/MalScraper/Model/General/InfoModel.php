@@ -410,7 +410,7 @@ class InfoModel extends MainModel
 		if ($related_area) {
             foreach ($related_area->find('tr') as $rel) {
                 $rel_type = $rel->find('td', 0)->plaintext;
-                $rel_type = trim(strtolower(str_replace('                   ', '', $rel_type)));
+                $rel_type = trim(strtolower(str_replace(': ', '', $rel_type)));
 
                 $each_rel = [];
                 $each_rel_index = 0;
