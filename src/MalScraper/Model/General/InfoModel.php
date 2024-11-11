@@ -641,10 +641,10 @@ class InfoModel extends MainModel
             $very_bottom_area = $bottom_area->next_sibling();
 
             $tmp['id'] = $this->getReviewId($each_review->find('div[class="showless"]', 0));
-            $tmp['username'] = $each_review->find('div[class="username"]')->plaintext;
+            $tmp['username'] = $each_review->find('div[class="username"]', 0)->plaintext;
             $tmp['image'] = $this->getReviewImage($top_area);
             $tmp['helpful'] = $this->getReviewHelpful($top_area);
-            $tmp['date'] =  $each_review->find('div[class="update_at"]')->plaintext;
+            $tmp['date'] =  $each_review->find('div[class="update_at"]', 0)->plaintext;
             if ($this->_type == 'anime') {
                 $tmp['episode'] = $this->getReviewEpisode($top_area);
             } else {
@@ -671,7 +671,7 @@ class InfoModel extends MainModel
         $id = $very_bottom_area->find('a', 0)->href;
         $id = explode('?id=', $id);
 
-        return $id[1];
+        return $id[0];
     }
 
     /**
