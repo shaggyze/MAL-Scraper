@@ -110,8 +110,8 @@ class InfoModel extends MainModel
 	{
 		$title2 = [];
 		$title = '';
-		$nextElement = $this->_parser->find('h2', 1);
-
+		$h2Element = $this->_parser->find('h2', 0);
+		$nextElement = $h2Element->next_sibling();
 		while ($nextElement) {
 			if ($nextElement->tag == 'h2') {
 				break;
