@@ -602,8 +602,9 @@ class InfoModel extends MainModel
         $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs opnening"]', 0);
         if ($song_area) {
             foreach ($song_area->find('td') as $each_song) {
-    $each_song = mb_convert_encoding($each_song->plaintext, 'UTF-8', 'auto');
-    $each_song = trim(preg_replace('/\s+/', ' ', $each_song));
+$each_song = trim(preg_replace('/\s+/', ' ', mb_convert_encoding($each_song->plaintext, 'UTF-8', 'auto')));
+$each_song = preg_replace('/\xa0/|/\?/', '', $each_song);
+//$each_song = preg_replace('/\?/', '', $each_song);
 				$each_song = preg_replace('/\xa0/', '', $each_song);
 				if (strpos($each_song, ' by ') !== false) {
 					$song['openings'][] = $each_song;
@@ -614,9 +615,9 @@ class InfoModel extends MainModel
         $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs ending"]', 0);
         if ($song_area) {
             foreach ($song_area->find('td') as $each_song) {
-    $each_song = mb_convert_encoding($each_song->plaintext, 'UTF-8', 'auto');
-    $each_song = trim(preg_replace('/\s+/', ' ', $each_song));
-				$each_song = preg_replace('/\xa0/', '', $each_song);
+$each_song = trim(preg_replace('/\s+/', ' ', mb_convert_encoding($each_song->plaintext, 'UTF-8', 'auto')));
+$each_song = preg_replace('/\xa0/|/\?/', '', $each_song);
+//$each_song = preg_replace('/\?/', '', $each_song);
 				if (strpos($each_song, ' by ') !== false) {
 					$song['endings'][] = $each_song;
 				}
