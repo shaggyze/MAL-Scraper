@@ -600,9 +600,11 @@ class InfoModel extends MainModel
     {
         $song = [];
         $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs opnening"]', 0);
+		error_log($song_area);
         if ($song_area) {
             foreach ($song_area->find('span.theme-song-title') as $each_song) {
                 $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext));
+				error_log($each_song);
                 $song['opening'][] = $each_song;
             }
         }
@@ -897,11 +899,11 @@ class InfoModel extends MainModel
 
         $data2 = [
             'relations'        => $this->getRelated(),
-            'character'      => $this->getCharacter(),
+            'characters'      => $this->getCharacter(),
             'staff'          => $this->getStaff(),
-            'theme'           => $this->getSong(),
-            'review'         => $this->getReview(),
-            'recommendation' => $this->getRecommendation(),
+            'songs'           => $this->getSong(),
+            'reviews'         => $this->getReview(),
+            'recommendations' => $this->getRecommendation(),
         ];
 
         $data = array_merge($data, $data2);
