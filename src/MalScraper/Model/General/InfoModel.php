@@ -599,17 +599,17 @@ class InfoModel extends MainModel
     private function getSong()
     {
         $song = [];
-        $song_area = $this->_parser->find('div[class*="theme-songs opnening"]', 0);
+        $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs opnening"]', 0);
         if ($song_area) {
-            foreach ($song_area->find('span.theme-song') as $each_song) {
+            foreach ($song_area->find('span.theme-song-title') as $each_song) {
                 $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext));
                 $song['opening'][] = $each_song;
             }
         }
 
-        $song_area = $this->_parser->find('div[class*="theme-songs ending"]', 0);
+        $song_area = $this->_parser->find('div[class*="theme-songs js-theme-songs ending"]', 0);
         if ($song_area) {
-            foreach ($song_area->find('span.theme-song') as $each_song) {
+            foreach ($song_area->find('span.theme-song-title') as $each_song) {
                 $each_song = trim(preg_replace('/#\d*:\s/', '', $each_song->plaintext));
                 $song['closing'][] = $each_song;
             }
@@ -899,7 +899,7 @@ class InfoModel extends MainModel
             'relations'        => $this->getRelated(),
             'character'      => $this->getCharacter(),
             'staff'          => $this->getStaff(),
-            'song'           => $this->getSong(),
+            'theme'           => $this->getSong(),
             'review'         => $this->getReview(),
             'recommendation' => $this->getRecommendation(),
         ];
