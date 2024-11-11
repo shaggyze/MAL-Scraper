@@ -401,7 +401,7 @@ class InfoModel extends MainModel
                     $each_rel_index++;
                 }
 
-                $related['relation'][$rel_type]['entry'] = $each_rel;
+                $related['relation'][$rel_type]['entry'][] = $each_rel;
             }
         }
 
@@ -419,7 +419,7 @@ class InfoModel extends MainModel
 						$each_rel_index++;
 					}
 
-					$related['relation'][$rel_type]['entry'] = $each_rel;
+					$related['relation'][$rel_type]['entry'][] = $each_rel;
 				}
 
             }
