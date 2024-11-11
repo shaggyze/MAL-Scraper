@@ -752,7 +752,7 @@ class InfoModel extends MainModel
      */
     private function getReviewText($text)
     {
-        $text = str_replace('&lt;', '<', $text);
+        $text = str_replace('&lt;', '<', $text->plaintext);
 
         return trim(preg_replace('/\h+/', ' ', $text));
     }
