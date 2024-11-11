@@ -392,7 +392,7 @@ class InfoModel extends MainModel
         if ($related_area) {
             foreach ($related_area->find('div[class^=content]') as $rel) {
                 $rel_type = $rel->find('div[class^=relation]', 0)->plaintext;
-                $rel_type = trim(strtolower(str_replace(':', '', $rel_type)));
+                $rel_type = trim(strtolower(str_replace('                   ', '', $rel_type)));
 
                 $each_rel = [];
                 $each_rel_index = 0;
@@ -423,9 +423,9 @@ class InfoModel extends MainModel
         $rel_anime_link = $r->href;
         $separated_anime_link = explode('/', $rel_anime_link);
 
-        $related['id'] = $separated_anime_link[2];
-        $related['title'] = $r->plaintext;
-        $related['type'] = $separated_anime_link[1];
+        $related['id'] = $separated_anime_link[4];
+        $related['title'] = $separated_anime_link[5]
+        $related['type'] = $separated_anime_link[3];
 
         return $related;
     }
