@@ -721,7 +721,7 @@ class InfoModel extends MainModel
     {
 		if ($episode) {
 			$episode = $episode->find('span', 0)->plaintext;
-			$episode = str_replace(['(', 'eps ', ')'], '', $episode);
+			$episode = str_replace(['(', ' eps', ')'], '', $episode);
 
 			return trim($episode);
 		}
@@ -740,7 +740,7 @@ class InfoModel extends MainModel
     {
         $score = $score->plaintext;
 
-        return $score;
+        return trim($score);
     }
 
     /**
