@@ -391,10 +391,8 @@ class InfoModel extends MainModel
         $related_area = $this->_parser->find('.entries-tile', 0);
         if ($related_area) {
             foreach ($related_area->find('div[class^=content]') as $rel) {
-                $rel_type = $rel->find('div[class^=relation]', 0)->plaintext;
-                $rel_type = trim(str_replace('                   ', '', $rel_type));
-				$rel_type = preg_replace('/\([^)]+\)/', '', $rel_type);
-                $each_rel = [];
+				$rel_type = preg_replace('/\s+|\([^)]+\)/', ' ', $rel->find('div[class^=relation]', 0)->plaintext);
+				$each_rel = [];
                 $each_rel_index = 0;
                 $rel_anime = $rel->find('div[class^=title]', 0);
                 foreach ($rel_anime->find('a') as $r) {
@@ -426,6 +424,7 @@ class InfoModel extends MainModel
 
             }
         }
+
         return $related;
     }
 
