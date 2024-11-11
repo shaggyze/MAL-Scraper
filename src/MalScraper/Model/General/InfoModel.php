@@ -443,7 +443,7 @@ class InfoModel extends MainModel
         $separated_anime_link = explode('/', $rel_anime_link);
 
         $related['mal_id'] = $separated_anime_link[4];
-        $related['title'] = $r->plaintext;
+        $related['title'] = trim($r->plaintext);
         $related['type'] = $separated_anime_link[3];
 		$related['url'] = $rel_anime_link;
 
