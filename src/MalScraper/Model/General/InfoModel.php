@@ -396,7 +396,7 @@ class InfoModel extends MainModel
 				$each_rel = [];
                 $each_rel_index = 0;
                 $rel_anime = $rel->find('div[class^=title]', 0);
-                foreach ($rel_anime->find('a', 0) as $r) {
+                foreach ($rel_anime->find('a') as $r) {
                     $each_rel[$each_rel_index] = $this->getRelatedDetail($r);
                     $each_rel_index++;
                 }
@@ -412,10 +412,9 @@ class InfoModel extends MainModel
 
                 $each_rel2 = [];
                 $each_rel_index2 = 0;
-                $rel_anime2 = $rel2->find('ul[class^=entries]', 0);
-				foreach ($rel_anime2->find('li') as $ra) {
-					foreach ($ra->find('a', 0) as $r2) {
-						$each_rel2[$each_rel_index2] = $this->getRelatedDetail($r2);
+				foreach ($rel2->find('ul[class^=entries]') as $ra) {
+					foreach ($ra->find('li') as $r2) {
+						$each_rel2[$each_rel_index2] = $this->getRelatedDetail($r2->find('a'));
 						$each_rel_index2++;
 					}
 
