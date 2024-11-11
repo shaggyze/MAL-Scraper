@@ -641,7 +641,7 @@ class InfoModel extends MainModel
             $very_bottom_area = $bottom_area->next_sibling();
 
             $tmp['id'] = $this->getReviewId($each_review->find('div[class="open"]', 0));
-            $tmp['username'] = $each_review->find('div[class="username"]', 0)->plaintext;
+            $tmp['username'] = $this->getReviewUser($each_review->find('div[class="username"]', 0));
             $tmp['image'] = $this->getReviewImage($each_review->find('div[class="thumb"]', 0));
             //$tmp['helpful'] = $this->getReviewHelpful($top_area);
             $tmp['date'] =  $this->getReviewDate($each_review->find('div[class="update_at"]', 0));
@@ -677,15 +677,13 @@ class InfoModel extends MainModel
     /**
      * Get review id.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $top_area
+     * @param \simplehtmldom_1_5\simple_html_dom $user
      *
      * @return string
      */
-    private function getReviewUser($top_area)
+    private function getReviewUser($user)
     {
-        $user = $top_area->find('table', 0);
-
-        return $user->find('td', 1)->find('a', 0)->plaintext;
+        return trim($user->plaintext);
     }
 
     /**
