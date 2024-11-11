@@ -640,7 +640,7 @@ class InfoModel extends MainModel
             $bottom_area = $top_area->next_sibling();
             $very_bottom_area = $bottom_area->next_sibling();
 
-            $tmp['id'] = $this->getReviewId($each_review->find('div[class="showless"]'));
+            $tmp['id'] = $this->getReviewId($each_review->find('div[class="showless"]', 0));
             $tmp['username'] = $each_review->find('div[class="username"]')->plaintext;
             $tmp['image'] = $this->getReviewImage($top_area);
             $tmp['helpful'] = $this->getReviewHelpful($top_area);
