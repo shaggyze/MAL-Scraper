@@ -396,7 +396,7 @@ class InfoModel extends MainModel
 				$each_rel = [];
                 $each_rel_index = 0;
                 $rel_anime = $rel->find('div[class^=title]', 0);
-                foreach ($rel_anime->find('a', 1) as $r) {
+                foreach ($rel_anime->find('a', 0) as $r) {
                     $each_rel[$each_rel_index] = $this->getRelatedDetail($r);
                     $each_rel_index++;
                 }
@@ -405,21 +405,21 @@ class InfoModel extends MainModel
             }
         }
 
-        $related_area = $this->_parser->find('.entries-table', 0);
-		if ($related_area) {
-            foreach ($related_area->find('tr') as $rel) {
+        $related_area2 = $this->_parser->find('.entries-table', 0);
+		if ($related_area2) {
+            foreach ($related_area2->find('tr') as $rel2) {
                 $rel_type = trim(str_replace(': ', '', $rel->find('td', 0)->plaintext));
 
-                $each_rel = [];
-                $each_rel_index = 0;
-                $rel_anime = $rel->find('ul[class^=entries]', 0);
-				foreach ($rel_anime->find('li') as $ra) {
-					foreach ($ra->find('a', 1) as $r) {
-						$each_rel[$each_rel_index] = $this->getRelatedDetail($r);
-						$each_rel_index++;
+                $each_rel2 = [];
+                $each_rel_index2 = 0;
+                $rel_anime2 = $rel2->find('ul[class^=entries]', 0);
+				foreach ($rel_anime2->find('li') as $ra) {
+					foreach ($ra->find('a', 0) as $r2) {
+						$each_rel2[$each_rel_index] = $this->getRelatedDetail($r2);
+						$each_rel_index2++;
 					}
 
-					$related[$rel_type][] = $each_rel;
+					$related[$rel_type][] = $each_rel2;
 				}
 
             }
