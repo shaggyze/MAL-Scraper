@@ -271,7 +271,7 @@ class InfoModel extends MainModel
     private function getExternal()
     {
         $external = [];
-		$external_index = 0
+		$external_index = 0;
         $external_area = $this->_parser->find('.caption', 0);
         if ($external_area) {
             foreach ($external_area->find('a') as $each_external) {
