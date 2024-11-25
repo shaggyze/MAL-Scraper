@@ -849,13 +849,15 @@ class InfoModel extends MainModel
     {
         $external = [];
 		$external_index = 0;
-        $external_area = $this->_parser->find('.external_links', 0);
+        $external_area = $this->_parser->find('h2', 3);
         if ($external_area) {
-            foreach ($external_area->find('a') as $each_external) {
-                $external[$external_index]['name'] = trim($each_external->plaintext);
-                $external[$external_index]['url'] = $each_external->href;
-                $external_index++;
-            }
+		    foreach ($external_area->find('.external_links') as $each_external) {
+				foreach ($each_external->find('a') as $each_link) {
+					$external[$external_index]['name'] = trim($each_link->plaintext);
+					$external[$external_index]['url'] = $each_link->href;
+					$external_index++;
+				}
+			}
 
             return $external;
         }
@@ -881,7 +883,6 @@ class InfoModel extends MainModel
             'popularity'=> $this->getPopularity(),
             'members'   => $this->getMembers(),
             'favorites'  => $this->getFavorite(),
-            'external'  => $this->getExternal(),
         ];
 
         $data = array_merge($data, $this->getOtherInfo());
@@ -893,6 +894,7 @@ class InfoModel extends MainModel
             'songs'           => $this->getSong(),
             'reviews'         => $this->getReview(),
             'recommendations' => $this->getRecommendation(),
+            'external'  => $this->getExternal(),
         ];
 
         $data = array_merge($data, $data2);
