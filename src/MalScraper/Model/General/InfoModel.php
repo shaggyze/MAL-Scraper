@@ -146,7 +146,7 @@ class InfoModel extends MainModel
 		if ($retTitle == "") {
 			return $title2;
 		} else {
-			return "";
+			return "N/A";
 		}
 	}
 
