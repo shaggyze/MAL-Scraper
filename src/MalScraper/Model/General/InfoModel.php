@@ -121,7 +121,7 @@ class InfoModel extends MainModel
 					break;
 				}
 				foreach ($titleElements as $titleElement) {
-					$language = trim($titleElement->innertext);
+					$language = trim(str_replace(':', '', $titleElement->innertext));
 					$nextElement2 = $titleElement->parent();
 					if ($nextElement2) {
 						$title = trim($nextElement2->text());
@@ -901,19 +901,24 @@ class InfoModel extends MainModel
     private function getAllInfo()
     {
         $data = [
-            'id'            => $this->getId(),
-            'cover'         => $this->getCover(),
-            'title'         => $this->getTitle(),
-            'titles'        => $this->getTitle2(""),
-            'title_english' => $this->getTitle2("English"),
-            'video'         => $this->getVideo(),
-            'synopsis'      => $this->getSynopsis(),
-            'score'         => $this->getScore(),
-            'scored_by'     => $this->getVoter(),
-            'rank'          => $this->getRank(),
-            'popularity'    => $this->getPopularity(),
-            'members'       => $this->getMembers(),
-            'favorites'     => $this->getFavorite(),
+            'id'             => $this->getId(),
+            'cover'          => $this->getCover(),
+            'title'          => $this->getTitle(),
+            'titles'         => $this->getTitle2(""),
+            'title_english'  => $this->getTitle2("English"),
+            'title_japanese' => $this->getTitle2("Japanese"),
+            'title_synonyms' => $this->getTitle2("Synonyms"),
+            'title_german'   => $this->getTitle2("German"),
+            'title_spanish'  => $this->getTitle2("Spanish"),
+            'title_french'   => $this->getTitle2("French"),
+            'video'          => $this->getVideo(),
+            'synopsis'       => $this->getSynopsis(),
+            'score'          => $this->getScore(),
+            'scored_by'      => $this->getVoter(),
+            'rank'           => $this->getRank(),
+            'popularity'     => $this->getPopularity(),
+            'members'        => $this->getMembers(),
+            'favorites'      => $this->getFavorite(),
         ];
 
         $data = array_merge($data, $this->getOtherInfo());
