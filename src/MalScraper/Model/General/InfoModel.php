@@ -905,7 +905,7 @@ class InfoModel extends MainModel
             'cover'         => $this->getCover(),
             'title'         => $this->getTitle(),
             'titles'        => $this->getTitle2(""),
-            'title_english' => $this->getTitle2("English"),
+            'title_english' => $this->getTitle2("English:"),
             'video'         => $this->getVideo(),
             'synopsis'      => $this->getSynopsis(),
             'score'         => $this->getScore(),
