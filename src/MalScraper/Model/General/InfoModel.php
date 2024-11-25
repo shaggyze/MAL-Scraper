@@ -106,7 +106,7 @@ class InfoModel extends MainModel
      *
      * @return array
      */
-	private function getTitle2()
+	private function getTitle2($retTitle)
 	{
 		$title2 = [];
 		$title = '';
@@ -129,6 +129,7 @@ class InfoModel extends MainModel
 							$title = trim(substr($title, strlen($language)));
 						}
 						$title2[$language] = $title;
+						if ($retTitle == $language) return $title
 					} else {
 						$title = 'N/A';
 						$title2[$language] = $title;
@@ -900,33 +901,34 @@ class InfoModel extends MainModel
     private function getAllInfo()
     {
         $data = [
-            'id'        => $this->getId(),
-            'cover'     => $this->getCover(),
-            'title'     => $this->getTitle(),
-            'titles'    => $this->getTitle2(),
-            'video'     => $this->getVideo(),
-            'synopsis'  => $this->getSynopsis(),
-            'score'     => $this->getScore(),
+            'id'            => $this->getId(),
+            'cover'         => $this->getCover(),
+            'title'         => $this->getTitle(),
+            'titles'        => $this->getTitle2(),
+            'title_english' => $this->getTitle2("English"),
+            'video'         => $this->getVideo(),
+            'synopsis'      => $this->getSynopsis(),
+            'score'         => $this->getScore(),
             'scored_by'     => $this->getVoter(),
-            'rank'      => $this->getRank(),
-            'popularity'=> $this->getPopularity(),
-            'members'   => $this->getMembers(),
-            'favorites'  => $this->getFavorite(),
+            'rank'          => $this->getRank(),
+            'popularity'    => $this->getPopularity(),
+            'members'       => $this->getMembers(),
+            'favorites'     => $this->getFavorite(),
         ];
 
         $data = array_merge($data, $this->getOtherInfo());
 
         $data2 = [
-            'relations'        => $this->getRelated(),
+            'relations'       => $this->getRelated(),
             'characters'      => $this->getCharacter(),
-            'staff'          => $this->getStaff(),
+            'staff'           => $this->getStaff(),
             'songs'           => $this->getSong(),
             'reviews'         => $this->getReview(),
             'recommendations' => $this->getRecommendation(),
-            'external'  => $this->getExternal(),
-			'streaming'  => $this->getStreaming(),
+            'external'        => $this->getExternal(),
+			'streaming'       => $this->getStreaming(),
         ];
-
+ 
         $data = array_merge($data, $data2);
 
         return $data;
