@@ -121,7 +121,7 @@ class InfoModel extends MainModel
 					break;
 				}
 				foreach ($titleElements as $titleElement) {
-					$language = trim(str_replace(':', '', $titleElement->innertext));
+					$language = trim(str_replace(': ', '', $titleElement->innertext));
 					$nextElement2 = $titleElement->parent();
 					if ($nextElement2) {
 						$title = trim($nextElement2->text());
