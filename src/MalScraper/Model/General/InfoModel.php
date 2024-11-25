@@ -129,7 +129,7 @@ class InfoModel extends MainModel
 							$title = trim(substr($title, strlen($language)));
 						}
 						$title2[$language] = $title;
-						if ($retTitle == $language) return $title;
+						if ($retTitle == $language) {return $title;}
 					} else {
 						$title = 'N/A';
 						$title2[$language] = $title;
