@@ -143,11 +143,7 @@ class InfoModel extends MainModel
 			}
 		}
 
-		if ($retTitle == "") {
-			return $title2;
-		} else {
-			return "N/A";
-		}
+		if ($retTitle == "") {return $title2;}
 	}
 
     /**
