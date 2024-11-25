@@ -264,6 +264,27 @@ class InfoModel extends MainModel
     }
 
     /**
+     * Get anime/manga relation.
+     *
+     * @return array
+     */
+    private function getExternal()
+    {
+        $external = [];
+		$external_index = 0
+        $external_area = $this->_parser->find('.caption', 0);
+        if ($external_area) {
+            foreach ($external_area->find('a') as $each_external) {
+                $external[$external_index]['name'] = trim($each_external->plaintext);
+                $external[$external_index]['url'] = $each_external->href;
+                $external_index++;
+            }
+
+            return $external;
+        }
+    }
+
+    /**
      * Get anime/manga detail info.
      *
      * @return array
@@ -860,6 +881,7 @@ class InfoModel extends MainModel
             'popularity'=> $this->getPopularity(),
             'members'   => $this->getMembers(),
             'favorites'  => $this->getFavorite(),
+            'external'  => $this->getExternal(),
         ];
 
         $data = array_merge($data, $this->getOtherInfo());
