@@ -850,15 +850,14 @@ class InfoModel extends MainModel
         $external = [];
 		$external_index = 0;
 		$external_area = $this->_parser->find('div.leftside', 0);
-        //$other_info = (count($more_info->find('h2')) > 2) ? $more_info->find('h2', 1) : $more_info->find('h2', 0);
-        //$external_area = $this->_parser->find('h2', 0);
         if ($external_area) {
 		    foreach ($external_area->find('.external_links') as $each_external) {
 				foreach ($each_external->find('a') as $each_link) {
-					if (!trim($each_link->plaintext) == 'More links') {
-					$external[$external_index]['name'] = trim($each_link->plaintext);
-					$external[$external_index]['url'] = $each_link->href;
-					$external_index++;
+					if (trim($each_link->plaintext) == 'More links') {
+					} else {
+						$external[$external_index]['name'] = trim($each_link->plaintext);
+						$external[$external_index]['url'] = $each_link->href;
+						$external_index++;
 					}
 				}
 			}
@@ -877,15 +876,14 @@ class InfoModel extends MainModel
         $streaming = [];
 		$streaming_index = 0;
 		$streaming_area = $this->_parser->find('div.leftside', 0);
-        //$other_info = (count($more_info->find('h2')) > 2) ? $more_info->find('h2', 1) : $more_info->find('h2', 0);
-        //$streaming_area = $this->_parser->find('h2', 0);
         if ($streaming_area) {
-		    foreach ($streaming_area->find('.streaming_links') as $each_streaming) {
+		    foreach ($streaming_area->find('.broadcast') as $each_streaming) {
 				foreach ($each_streaming->find('a') as $each_link) {
-					if (!trim($each_link->plaintext) == 'More links') {
-					$streaming[$streaming_index]['name'] = trim($each_link->plaintext);
-					$streaming[$streaming_index]['url'] = $each_link->href;
-					$streaming_index++;
+					if (trim($each_link->plaintext) == 'More links') {
+					} else {
+						$streaming[$streaming_index]['name'] = trim($each_link->plaintext);
+						$streaming[$streaming_index]['url'] = $each_link->href;
+						$streaming_index++;
 					}
 				}
 			}
@@ -893,6 +891,7 @@ class InfoModel extends MainModel
             return $streaming;
         }
     }
+
     /**
      * Get anime/manga all information.
      *
