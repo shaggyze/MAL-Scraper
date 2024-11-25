@@ -106,7 +106,7 @@ class InfoModel extends MainModel
      *
      * @return array
      */
-	private function getTitle2($retTitle = "")
+	private function getTitle2($retTitle)
 	{
 		$title2 = [];
 		$title = '';
@@ -904,7 +904,7 @@ class InfoModel extends MainModel
             'id'            => $this->getId(),
             'cover'         => $this->getCover(),
             'title'         => $this->getTitle(),
-            'titles'        => $this->getTitle2(),
+            'titles'        => $this->getTitle2(""),
             'title_english' => $this->getTitle2("English"),
             'video'         => $this->getVideo(),
             'synopsis'      => $this->getSynopsis(),
