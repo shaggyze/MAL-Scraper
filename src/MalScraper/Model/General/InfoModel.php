@@ -106,7 +106,7 @@ class InfoModel extends MainModel
      *
      * @return array
      */
-	private function getTitle2($retTitle)
+	private function getTitle2($retTitle = "")
 	{
 		$title2 = [];
 		$title = '';
