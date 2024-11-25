@@ -849,7 +849,9 @@ class InfoModel extends MainModel
     {
         $external = [];
 		$external_index = 0;
-        $external_area = $this->_parser->find('h2', 4);
+		$external_area = $this->_parser->find('div.leftside', 0);
+        //$other_info = (count($more_info->find('h2')) > 2) ? $more_info->find('h2', 1) : $more_info->find('h2', 0);
+        //$external_area = $this->_parser->find('h2', 0);
         if ($external_area) {
 		    foreach ($external_area->find('.external_links') as $each_external) {
 				foreach ($each_external->find('a') as $each_link) {
