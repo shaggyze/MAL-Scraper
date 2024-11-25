@@ -849,7 +849,7 @@ class InfoModel extends MainModel
     {
         $external = [];
 		$external_index = 0;
-        $external_area = $this->_parser->find('h2', 3);
+        $external_area = $this->_parser->find('h2', 4);
         if ($external_area) {
 		    foreach ($external_area->find('.external_links') as $each_external) {
 				foreach ($each_external->find('a') as $each_link) {
