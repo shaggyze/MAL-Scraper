@@ -227,13 +227,13 @@ class UserListCSSModel extends MainModel
 			  $content[$i]['manga_english'] = str_replace(['"', '[', ']'], '', $content[$i]['manga_english']);
 			}
 			if (!empty($content2['data']['anime_title_de'])) {
-			  if ($content2['data']['anime_title_de'] !== 'null')
+			  if ($content2['data']['anime_title_de'] !== 'null') {
 			    $content[$i]['anime_title_de'] = str_replace(['"', '[', ']'], '', $content2['data']['anime_title_de']);
 			  } else {
 			    $content[$i]['demographic'] = 'N/A';
 			  }
 			} else {
-			  if ($content2['data']['manga_title_de'] !== 'null')
+			  if ($content2['data']['manga_title_de'] !== 'null') {
 			    $content[$i]['manga_title_de'] = str_replace(['"', '[', ']'], '', $content2['data']['manga_title_de']);
 			  } else {
 			    $content[$i]['manga_title_de'] = 'N/A';
