@@ -233,7 +233,7 @@ class UserListCSSModel extends MainModel
 				if ($content[$i]['anime_title_eng'] !== 'N/A') {
 			      $content[$i]['anime_title_de'] = $content[$i]['anime_title_eng'];
 				} else {
-				  $content[$i]['anime_title_de'] = $content[$i]['anime_title']
+				  $content[$i]['anime_title_de'] = $content[$i]['anime_title'];
 				}
 			  }
 			} else {
@@ -243,7 +243,7 @@ class UserListCSSModel extends MainModel
 			    if ($content[$i]['manga_english'] !== 'N/A') {
 			      $content[$i]['manga_title_de'] = $content[$i]['manga_english'];
 				} else {
-				  $content[$i]['manga_title_de'] = $content[$i]['manga_title']
+				  $content[$i]['manga_title_de'] = $content[$i]['manga_title'];
 				}
 			  }
 			}
