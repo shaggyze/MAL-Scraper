@@ -234,6 +234,7 @@ class UserListCSSModel extends MainModel
 			      $content[$i]['anime_title_de'] = $content[$i]['anime_title_eng'];
 				} else {
 				  $content[$i]['anime_title_de'] = $content[$i]['anime_title'];
+				  $content[$i]['anime_title_eng'] = $content[$i]['anime_title'];
 				}
 			  }
 			} else {
@@ -244,6 +245,7 @@ class UserListCSSModel extends MainModel
 			      $content[$i]['manga_title_de'] = $content[$i]['manga_english'];
 				} else {
 				  $content[$i]['manga_title_de'] = $content[$i]['manga_title'];
+				  $content[$i]['manga_english'] = $content[$i]['manga_title'];
 				}
 			  }
 			}
