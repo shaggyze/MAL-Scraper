@@ -226,6 +226,11 @@ class UserListCSSModel extends MainModel
 			} else {
 			  $content[$i]['manga_english'] = str_replace(['"', '[', ']'], '', $content[$i]['manga_english']);
 			}
+			if (!empty($content2['data']['anime_title_de'])) {
+			  $content[$i]['anime_title_de'] = str_replace(['"', '[', ']'], '', $content2['data']['anime_title_de']);
+			} else {
+			  $content[$i]['manga_title_de'] = str_replace(['"', '[', ']'], '', $content2['data']['manga_title_de']);
+			}
 			if (!empty($content[$i]['num_watched_episodes'])) {
 			  if ($content[$i]['anime_num_episodes'] !== 0) {
 			    $content[$i]['progress_percent'] = round(($content[$i]['num_watched_episodes'] / $content[$i]['anime_num_episodes']) * 100, 2);
