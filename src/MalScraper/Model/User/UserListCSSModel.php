@@ -116,12 +116,14 @@ class UserListCSSModel extends MainModel
 			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
+			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
 			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
+			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
 			if (!empty($content2['data']['synopsis'])) {
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
@@ -228,7 +230,7 @@ class UserListCSSModel extends MainModel
 			  if ($content2['data']['title_german'] !== null) {
 			    $content[$i]['anime_title_de'] = str_replace(['"', '[', ']'], '', $content2['data']['title_german']);
 			  } else {
-				if ($content[$i]['anime_title_eng'] !== '') {
+				if ($content[$i]['anime_title_eng'] !== 'N/A') {
 			      $content[$i]['anime_title_de'] = $content[$i]['anime_title_eng'];
 				} else {
 				  $content[$i]['anime_title_de'] = $content[$i]['anime_title'];
@@ -238,18 +240,17 @@ class UserListCSSModel extends MainModel
 			  if ($content2['data']['title_german'] !== null) {
 			    $content[$i]['manga_title_de'] = str_replace(['"', '[', ']'], '', $content2['data']['title_german']);
 			  } else {
-			    if ($content[$i]['manga_english'] !== '') {
+			    if ($content[$i]['manga_english'] !== 'N/A') {
 			      $content[$i]['manga_title_de'] = $content[$i]['manga_english'];
 				} else {
 				  $content[$i]['manga_title_de'] = $content[$i]['manga_title'];
-				  
 				}
 			  }
 			}
-			if ($content[$i]['anime_title_eng'] == '') {
+			if ($content[$i]['anime_title_eng'] == 'N/A') {
 			  $content[$i]['anime_title_eng'] = $content[$i]['anime_title'];
 			}
-			if ($content[$i]['manga_english'] == '') {
+			if ($content[$i]['manga_english'] == 'N/A') {
 			  $content[$i]['manga_english'] = $content[$i]['manga_title'];
 			}
 			if (!empty($content[$i]['num_watched_episodes'])) {
