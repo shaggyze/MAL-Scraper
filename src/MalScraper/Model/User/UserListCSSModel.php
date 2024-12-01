@@ -247,11 +247,14 @@ class UserListCSSModel extends MainModel
 				}
 			  }
 			}
-			if ($content[$i]['anime_title_eng'] == 'N/A') {
-			  $content[$i]['anime_title_eng'] = $content[$i]['anime_title'];
-			}
-			if ($content[$i]['manga_english'] == 'N/A') {
-			  $content[$i]['manga_english'] = $content[$i]['manga_title'];
+			if (!empty($content[$i]['anime_id'])) {
+			  if ($content[$i]['anime_title_eng'] == 'N/A') {
+			    $content[$i]['anime_title_eng'] = $content[$i]['anime_title'];
+			  }
+			} else {
+			  if ($content[$i]['manga_english'] == 'N/A') {
+			    $content[$i]['manga_english'] = $content[$i]['manga_title'];
+			  }
 			}
 			if (!empty($content[$i]['num_watched_episodes'])) {
 			  if ($content[$i]['anime_num_episodes'] !== 0) {
