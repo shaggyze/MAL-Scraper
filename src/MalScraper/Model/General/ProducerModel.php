@@ -110,7 +110,7 @@ class ProducerModel extends MainModel
      */
     private function getAnimeId($name_area)
     {
-        $anime_id = $name_area->find('p a', 0)->href;
+        $anime_id = $name_area->find('.genre-name-link', 0)->href;
         $anime_id = explode('/', $anime_id);
 
         return $anime_id[4];
