@@ -134,11 +134,11 @@ class ProducerModel extends MainModel
      * @param \simplehtmldom_1_5\simple_html_dom $producer_area
      *
      * @return array
-     *
+     */
     private function getAnimeProducer($producer_area)
     {
         $producer = [];
-        $producer_area = $producer_area->find('span[class=producer]', 0);
+        $producer_area = $producer_area->find('span', 0);
         foreach ($producer_area->find('a') as $each_producer) {
             $temp_prod = [];
 
@@ -332,7 +332,7 @@ class ProducerModel extends MainModel
             $result = [];
 
             $name_area = $each_anime->find('div[class=title]', 0);
-            $producer_area = $each_anime->find('div[class=prodsrc]', 0);
+            $producer_area = $each_anime->find('div[class="breadcrumb ml12 mt4"]', 0);
             $info_area = $each_anime->find('.information', 0);
 
             $result['image'] = $this->getAnimeImage($each_anime);
