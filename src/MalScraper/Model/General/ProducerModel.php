@@ -125,7 +125,7 @@ class ProducerModel extends MainModel
      */
     private function getAnimeTitle($name_area)
     {
-        return $name_area->find('p a', 0)->plaintext;
+        return $name_area->find('a', 0)->plaintext;
     }
 
     /**
@@ -134,7 +134,7 @@ class ProducerModel extends MainModel
      * @param \simplehtmldom_1_5\simple_html_dom $producer_area
      *
      * @return array
-     */
+     *
     private function getAnimeProducer($producer_area)
     {
         $producer = [];
@@ -201,7 +201,7 @@ class ProducerModel extends MainModel
      * @param \simplehtmldom_1_5\simple_html_dom $producer_area
      *
      * @return string
-     */
+     *
     private function getAnimeSource($producer_area)
     {
         $source = $producer_area->find('span[class=source]', 0)->plaintext;
