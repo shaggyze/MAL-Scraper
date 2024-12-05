@@ -25,10 +25,10 @@ class FriendModel extends MainModel
      *
      * @return void
      */
-    public function __construct($user, $parserArea = '#content')
+    public function __construct($user, $page = 1, $parserArea = '#content')
     {
         $this->_user = $user;
-        $this->_url = $this->_myAnimeListUrl.'/profile/'.$user.'/friends';
+        $this->_url = $this->_myAnimeListUrl.'/profile/'.$user.'/friends?p='.$page;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);

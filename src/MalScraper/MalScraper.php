@@ -651,9 +651,9 @@ class MalScraper
      *
      * @return array
      */
-    private function getUserFriend($user)
+    private function getUserFriend($user, $page = 1)
     {
-        return (new Friend($user))->getAllInfo();
+        return (new Friend($user, $page))->getAllInfo();
     }
 
     /**
