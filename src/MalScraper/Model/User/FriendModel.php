@@ -143,7 +143,7 @@ class FriendModel extends MainModel
     private function getAllInfo()
     {
         $friend = [];
-		$friend['has_next_page'] = hasNextPage();
+		$friend['has_next_page'] = $this->hasNextPage();
 		$friend_area = $this->_parser->find('.boxlist-container', 0);
         if ($friend_area) {
             foreach ($friend_area->find('.boxlist') as $f) {
