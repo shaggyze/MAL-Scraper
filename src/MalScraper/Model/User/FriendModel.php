@@ -118,6 +118,24 @@ class FriendModel extends MainModel
     }
 
     /**
+     * Has next page.
+     *
+     * @return bool
+     */
+    private function hasNextPage()
+    {
+        $has_next_page = $this->_parser->find('.mt16', 0);
+		if ($has_next_page) {$has_next_page = trim($has_next_page->plaintext);}
+		if ($has_next_page == 'Next') {
+			$has_next_page = 'true';
+		} else {
+			$has_next_page = 'false';
+		}
+
+        return $has_next_page;
+    }
+
+    /**
      * Get user friend list.
      *
      * @return array
@@ -125,15 +143,9 @@ class FriendModel extends MainModel
     private function getAllInfo()
     {
         $friend = [];
-        $parent_area = $this->_parser->find('.mt16', 0);
-		if ($parent_area) {$parent_area = trim($parent_area->plaintext);}
+		$friend['has_next_page'] = hasNextPage();
 		$friend_area = $this->_parser->find('.boxlist-container', 0);
         if ($friend_area) {
-			if ($parent_area == 'Next') {
-				$friend['has_next_page'] = 'true';
-			} else {
-				$friend['has_next_page'] = 'false';
-			}
             foreach ($friend_area->find('.boxlist') as $f) {
 				$f_dump = [];
                 $g = $f->find('.di-tc', 0);
