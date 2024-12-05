@@ -129,7 +129,7 @@ class FriendModel extends MainModel
 		$friend_area = $this->_parser->find('.boxlist-container', 0);
         if ($friend_area) {
 			$f_dump = [];
-			if $parent_area = 'Next' {
+			if ($parent_area = 'Next') {
 				$f_dump['has_next_page'] = 'true';
 			} else {
 				$f_dump['has_next_page'] = 'false';
