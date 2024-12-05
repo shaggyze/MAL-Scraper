@@ -129,12 +129,13 @@ class FriendModel extends MainModel
         if ($friend_area) {
             foreach ($friend_area->find('.boxlist') as $f) {
                 $f_dump = [];
-                $f = $f->find('.di-tc', 0);
-
+                $f = $f->find('di-tc', 0);
+                $g = $f->find('di-tc va-t pl8 data', 0);
+				
                 $f_dump['image'] = $this->getImage($f);
-                $f_dump['name'] = $this->getName($f);
-                $f_dump['last_online'] = $this->getLastOnline($f);
-                $f_dump['friend_since'] = $this->getFriendSince($f);
+                $f_dump['name'] = $this->getName($g);
+                $f_dump['last_online'] = $this->getLastOnline($g);
+                $f_dump['friend_since'] = $this->getFriendSince($g);
 
                 $friend[] = $f_dump;
             }
