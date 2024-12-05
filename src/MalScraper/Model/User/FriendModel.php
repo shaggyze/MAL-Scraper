@@ -125,7 +125,7 @@ class FriendModel extends MainModel
     private function getAllInfo()
     {
         $friend = [];
-        $parent_area = $this->_parser->find('mt4 mb8', 0)->plaintext);
+        $parent_area = $this->_parser->find('mt4 mb8', 0)->plaintext;
 		$friend_area = $this->_parser->find('.boxlist-container', 0);
         if ($friend_area) {
 			$f_dump = [];
