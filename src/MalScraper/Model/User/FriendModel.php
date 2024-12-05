@@ -128,7 +128,7 @@ class FriendModel extends MainModel
         $parent_area = $this->_parser->find('mt4 mb8', 0)->plaintext;
 		$friend_area = $this->_parser->find('.boxlist-container', 0);
         if ($friend_area) {
-			if ($parent_area = 'Next') {
+			if ($parent_area == 'Next') {
 				$friend['has_next_page'] = 'true';
 			} else {
 				$friend['has_next_page'] = 'false';
