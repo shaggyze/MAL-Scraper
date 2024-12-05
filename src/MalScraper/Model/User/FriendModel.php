@@ -128,14 +128,13 @@ class FriendModel extends MainModel
         $parent_area = $this->_parser->find('mt4 mb8', 0)->plaintext;
 		$friend_area = $this->_parser->find('.boxlist-container', 0);
         if ($friend_area) {
-			$f_dump = [];
 			if ($parent_area = 'Next') {
-				$f_dump['has_next_page'] = 'true';
+				$friend['has_next_page'] = 'true';
 			} else {
-				$f_dump['has_next_page'] = 'false';
+				$friend['has_next_page'] = 'false';
 			}
             foreach ($friend_area->find('.boxlist') as $f) {
-
+				$f_dump = [];
                 $g = $f->find('.di-tc', 0);
                 $h = $f->find('.data', 0);
 				
