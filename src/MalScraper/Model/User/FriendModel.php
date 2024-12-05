@@ -133,7 +133,8 @@ class FriendModel extends MainModel
                 $h = $f->find('.data', 0);
 				
                 $f_dump['image'] = $this->getImage($g);
-                $f_dump['name'] = $this->getName($h);
+                $f_dump['username'] = $this->getName($h);
+				$f_dump['url'] = 'https://myanimelist.net/profile/'.$this->getName($h);
                 $f_dump['last_online'] = $this->getLastOnline($h);
                 $f_dump['friend_since'] = $this->getFriendSince($h);
 
