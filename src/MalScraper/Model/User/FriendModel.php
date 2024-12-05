@@ -128,7 +128,6 @@ class FriendModel extends MainModel
         $parent_area = $this->_parser->find('.mt16', 0);
 		if ($parent_area) {$parent_area = trim($parent_area->plaintext);}
 		$friend_area = $this->_parser->find('.boxlist-container', 0);
-		error_log($parent_area);
         if ($friend_area) {
 			if ($parent_area == 'Next') {
 				$friend['has_next_page'] = 'true';
