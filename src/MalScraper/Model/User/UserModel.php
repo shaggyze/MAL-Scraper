@@ -349,7 +349,7 @@ class UserModel extends MainModel
      */
     private function getHistoryTitle($history_data_area)
     {
-        return trim($history_data_area->find('a', 0)->plaintext);
+        return $history_data_area->find('a', 0)->plaintext;
     }
 
     /**

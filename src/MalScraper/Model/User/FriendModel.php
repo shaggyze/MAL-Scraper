@@ -70,7 +70,7 @@ class FriendModel extends MainModel
      */
     private function getImage($f)
     {
-        return Helper::imageUrlCleaner($f->find('a img', 0)->src);
+        return Helper::imageUrlCleaner($f->find('a img', 0)->getAttribute('data-src'));
     }
 
     /**
@@ -125,11 +125,11 @@ class FriendModel extends MainModel
     private function getAllInfo()
     {
         $friend = [];
-        $friend_area = $this->_parser->find('.majorPad', 0);
+        $friend_area = $this->_parser->find('.boxlist-container', 0);
         if ($friend_area) {
-            foreach ($friend_area->find('.friendHolder') as $f) {
+            foreach ($friend_area->find('.boxlist') as $f) {
                 $f_dump = [];
-                $f = $f->find('.friendBlock', 0);
+                $f = $f->find('.di-tc', 0);
 
                 $f_dump['image'] = $this->getImage($f);
                 $f_dump['name'] = $this->getName($f);
