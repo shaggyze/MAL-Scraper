@@ -97,7 +97,7 @@ class FriendModel extends MainModel
      */
     private function getLastOnline($f)
     {
-        $last_online = $f->find('strong', 0)->parent()->parent()->next_sibling();
+        $last_online = $f->find('.fn-grey2', 0)->parent()->parent()->next_sibling();
 
         return trim($last_online->plaintext);
     }
@@ -111,7 +111,7 @@ class FriendModel extends MainModel
      */
     private function getFriendSince($f)
     {
-        $friend_since = $f->find('strong', 0)->parent()->parent()->next_sibling()->next_sibling();
+        $friend_since = $f->find('.fn-grey2', 0)->parent()->parent()->next_sibling()->next_sibling();
         $friend_since = str_replace('Friends since', '', $friend_since->plaintext);
 
         return trim($friend_since);
