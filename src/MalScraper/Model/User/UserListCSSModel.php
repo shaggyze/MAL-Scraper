@@ -5,6 +5,13 @@ namespace MalScraper\Model\User;
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
 
+$te_all = 0;
+$te_cwr = 0;
+$te_c = 0;
+$te_oh = 0;
+$te_d = 0;
+$te_ptwr = 0;
+
 /**
  * UserListModel class.
  */
@@ -102,12 +109,7 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
-	  $te_all = 0;
-	  $te_cwr = 0;
-	  $te_c = 0;
-	  $te_oh = 0;
-	  $te_d = 0;
-	  $te_ptwr = 0;
+
 	  while (true) {
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
