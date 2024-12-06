@@ -233,7 +233,6 @@ class UserListCSSModel extends MainModel
 			} else {
 			  $content[$i]['manga_english'] = str_replace(['"', '[', ']'], '', $content[$i]['manga_english']);
 			}
-			
 			if (!empty($content[$i]['anime_id'])) {
 			  if (isset($content2['data']['title_german']) && $content2['data']['title_german'] !== null) {
 			    $content[$i]['anime_title_de'] = str_replace(['"', '[', ']'], '', $content2['data']['title_german']);
@@ -254,7 +253,6 @@ class UserListCSSModel extends MainModel
 				  $content[$i]['manga_title_de'] = $content[$i]['manga_title'];
 				}
 			  }
-			}
 			}
 			if (!empty($content[$i]['anime_id'])) {
 			  if ($content[$i]['anime_title_eng'] == 'N/A') {
