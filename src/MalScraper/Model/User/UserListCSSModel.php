@@ -309,6 +309,12 @@ class UserListCSSModel extends MainModel
 			} else {
 			  $content[$i]['manga_image_path'] = Helper::imageUrlReplace($content[$i]['manga_id'], 'manga', $content[$i]['manga_image_path'], $this->_user);
 			}
+			switch ($content[$i]['status']) {
+			  case 7:
+			    $All++;
+			    $content[$i]['total_entries_all'] = $All;
+			    break;
+			}
 		  $content[$i]['\a'] = "-a";
 		  }
 
