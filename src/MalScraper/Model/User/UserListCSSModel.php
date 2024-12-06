@@ -319,53 +319,32 @@ class UserListCSSModel extends MainModel
 			} else {
 			  $content[$i]['manga_image_path'] = Helper::imageUrlReplace($content[$i]['manga_id'], 'manga', $content[$i]['manga_image_path'], $this->_user);
 			}
-			error_log(trim($content[$i]['status']));
-			switch (trim($content[$i]['status'])) {
-			  case '1':
+			switch ($content[$i]['status']) {
+			  case 1:
 			    $te_cwr++;
 				$te_all++;
-				if (!isset($content[$i]['total_entries_cwr'])) {
-				  $content[$i]['total_entries_cwr'] = 0;
-				}
 				$content[$i]['total_entries_cwr'] = $te_cwr;
 			    $content[$i]['total_entries_all'] = $te_all;
-			    break;
-			  case '2':
+			  case 2:
 			    $te_c++;
 				$te_all++;
-				if (!isset($content[$i]['total_entries_c'])) {
-				  $content[$i]['total_entries_c'] = 0;
-				}
 				$content[$i]['total_entries_c'] = $te_c;
 			    $content[$i]['total_entries_all'] = $te_all;
-			    break;
-			  case '3':
+			  case 3:
 			    $te_oh++;
 				$te_all++;
-				if (!isset($content[$i]['total_entries_oh'])) {
-				  $content[$i]['total_entries_oh'] = 0;
-				}
 				$content[$i]['total_entries_oh'] = $te_oh;
 			    $content[$i]['total_entries_all'] = $te_all;
-			    break;
-			  case '4':
+			  case 4:
 			    $te_d++;
 				$te_all++;
-				if (!isset($content[$i]['total_entries_d'])) {
-				  $content[$i]['total_entries_d'] = 0;
-				}
 				$content[$i]['total_entries_d'] = $te_d;
 			    $content[$i]['total_entries_all'] = $te_all;
-			    break;
-			  case '6':
+			  case 6:
 			    $te_ptwr++;
 				$te_all++;
-				if (!isset($content[$i]['total_entries_ptwr'])) {
-				  $content[$i]['total_entries_ptwr'] = 0;
-				}
 				$content[$i]['total_entries_ptwr'] = $te_ptwr;
 			    $content[$i]['total_entries_all'] = $te_all;
-			    break;
 			}
 		  $content[$i]['\a'] = "-a";
 		  }
