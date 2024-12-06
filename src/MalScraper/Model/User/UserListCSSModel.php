@@ -102,7 +102,12 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
-	  $All = 0;
+	  $te_all = 0;
+	  $te_cwr = 0;
+	  $te_c = 0;
+	  $te_oh = 0;
+	  $te_d = 0;
+	  $te_ptwr = 0;
 	  while (true) {
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
@@ -312,24 +317,34 @@ class UserListCSSModel extends MainModel
 			}
 			switch ($content[$i]['status']) {
 			  case 1:
-			    $All++;
-			    $content[$i]['total_entries_all'] = $All;
+			    $te_cwr++;
+				$te_all++;
+				$content[$i]['total_entries_cwr'] = $te_cwr;
+			    $content[$i]['total_entries_all'] = $te_all;
 			    break;
 			  case 2:
-			    $All++;
-			    $content[$i]['total_entries_all'] = $All;
+			    $te_c++;
+				$te_all++;
+				$content[$i]['total_entries_c'] = $te_c;
+			    $content[$i]['total_entries_all'] = $te_all;
 			    break;
 			  case 3:
-			    $All++;
-			    $content[$i]['total_entries_all'] = $All;
+			    $te_oh++;
+				$te_all++;
+				$content[$i]['total_entries_oh'] = $te_oh;
+			    $content[$i]['total_entries_all'] = $te_all;
 			    break;
 			  case 4:
-			    $All++;
-			    $content[$i]['total_entries_all'] = $All;
+			    $te_d++;
+				$te_all++;
+				$content[$i]['total_entries_d'] = $te_d;
+			    $content[$i]['total_entries_all'] = $te_all;
 			    break;
 			  case 6:
-			    $All++;
-			    $content[$i]['total_entries_all'] = $All;
+			    $te_ptwr++;
+				$te_all++;
+				$content[$i]['total_entries_ptwr'] = $te_ptwr;
+			    $content[$i]['total_entries_all'] = $te_all;
 			    break;
 			}
 		  $content[$i]['\a'] = "-a";
