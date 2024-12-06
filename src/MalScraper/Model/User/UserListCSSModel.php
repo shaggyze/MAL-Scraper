@@ -323,29 +323,25 @@ class UserListCSSModel extends MainModel
 			if ($content[$i]['status'] == 1) {
 			    $te_cwr += 1;
 				$te_all += 1;
-				$content[$i]['total_entries_cwr'] = $te_cwr;
-			    $content[$i]['total_entries_all'] = $te_all;
 			} elseif ($content[$i]['status'] == 2) {
 			    $te_c += 1;
 				$te_all += 1;
-				$content[$i]['total_entries_c'] = $te_c;
-			    $content[$i]['total_entries_all'] = $te_all;
 			} elseif ($content[$i]['status'] == 3) {
 			    $te_oh += 1;
 				$te_all += 1;
-				$content[$i]['total_entries_oh'] = $te_oh;
-			    $content[$i]['total_entries_all'] = $te_all;
 			} elseif ($content[$i]['status'] == 4) {
 			    $te_d += 1;
 				$te_all += 1;
-				$content[$i]['total_entries_d'] = $te_d;
-			    $content[$i]['total_entries_all'] = $te_all;
 			} elseif ($content[$i]['status'] == 6) {
 			    $te_ptwr += 1;
 				$te_all += 1;
-				$content[$i]['total_entries_ptwr'] = $te_ptwr;
-			    $content[$i]['total_entries_all'] = $te_all;
 			}
+		  $content[$i]['total_entries_cwr'] = $te_cwr;
+		  $content[$i]['total_entries_c'] = $te_c;
+		  $content[$i]['total_entries_oh'] = $te_oh;
+		  $content[$i]['total_entries_d'] = $te_d;
+		  $content[$i]['total_entries_ptwr'] = $te_ptwr;
+		  $content[$i]['total_entries_all'] = $te_all;
 		  $content[$i]['\a'] = "-a";
 		  }
 
