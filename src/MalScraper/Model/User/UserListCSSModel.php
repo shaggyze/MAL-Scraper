@@ -102,6 +102,7 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
+	  $All = 0;
 	  while (true) {
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
