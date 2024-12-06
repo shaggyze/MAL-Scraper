@@ -319,27 +319,27 @@ class UserListCSSModel extends MainModel
 			} else {
 			  $content[$i]['manga_image_path'] = Helper::imageUrlReplace($content[$i]['manga_id'], 'manga', $content[$i]['manga_image_path'], $this->_user);
 			}
-			if ($content[$i]['status']) == 1) {
+			if ($content[$i]['status'] == 1) {
 			    $te_cwr++;
 				$te_all++;
 				$content[$i]['total_entries_cwr'] = $te_cwr;
 			    $content[$i]['total_entries_all'] = $te_all;
-			} else if ($content[$i]['status']) == 2) {
+			} elseif ($content[$i]['status'] == 2) {
 			    $te_c++;
 				$te_all++;
 				$content[$i]['total_entries_c'] = $te_c;
 			    $content[$i]['total_entries_all'] = $te_all;
-			} else if ($content[$i]['status']) == 3) {
+			} elseif ($content[$i]['status'] == 3) {
 			    $te_oh++;
 				$te_all++;
 				$content[$i]['total_entries_oh'] = $te_oh;
 			    $content[$i]['total_entries_all'] = $te_all;
-			} else if ($content[$i]['status']) == 4) {
+			} elseif ($content[$i]['status'] == 4) {
 			    $te_d++;
 				$te_all++;
 				$content[$i]['total_entries_d'] = $te_d;
 			    $content[$i]['total_entries_all'] = $te_all;
-			} else if ($content[$i]['status']) == 6) {
+			} elseif ($content[$i]['status'] == 6) {
 			    $te_ptwr++;
 				$te_all++;
 				$content[$i]['total_entries_ptwr'] = $te_ptwr;
