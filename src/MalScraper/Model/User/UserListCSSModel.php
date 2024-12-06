@@ -5,13 +5,6 @@ namespace MalScraper\Model\User;
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
 
-$te_all = 0;
-$te_cwr = 0;
-$te_c = 0;
-$te_oh = 0;
-$te_d = 0;
-$te_ptwr = 0;
-
 /**
  * UserListModel class.
  */
@@ -109,6 +102,12 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
+	  $te_all = 0;
+	  $te_cwr = 0;
+	  $te_c = 0;
+	  $te_oh = 0;
+	  $te_d = 0;
+	  $te_ptwr = 0;
 
 	  while (true) {
 		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
@@ -322,28 +321,28 @@ class UserListCSSModel extends MainModel
 			  $content[$i]['manga_image_path'] = Helper::imageUrlReplace($content[$i]['manga_id'], 'manga', $content[$i]['manga_image_path'], $this->_user);
 			}
 			if ($content[$i]['status'] == 1) {
-			    $te_cwr = $te_cwr + 1;
-				$te_all = $te_all + 1;
+			    $te_cwr += 1;
+				$te_all += 1;
 				$content[$i]['total_entries_cwr'] = $te_cwr;
 			    $content[$i]['total_entries_all'] = $te_all;
 			} elseif ($content[$i]['status'] == 2) {
-			    $te_c = $te_c + 1;
-				$te_all = $te_all + 1;
+			    $te_c += 1;
+				$te_all += 1;
 				$content[$i]['total_entries_c'] = $te_c;
 			    $content[$i]['total_entries_all'] = $te_all;
 			} elseif ($content[$i]['status'] == 3) {
-			    $te_oh = $te_oh + 1;
-				$te_all = $te_all + 1;
+			    $te_oh += 1;
+				$te_all += 1;
 				$content[$i]['total_entries_oh'] = $te_oh;
 			    $content[$i]['total_entries_all'] = $te_all;
 			} elseif ($content[$i]['status'] == 4) {
-			    $te_d = $te_d + 1;
-				$te_all = $te_all + 1;
+			    $te_d += 1;
+				$te_all += 1;
 				$content[$i]['total_entries_d'] = $te_d;
 			    $content[$i]['total_entries_all'] = $te_all;
 			} elseif ($content[$i]['status'] == 6) {
-			    $te_ptwr = $te_ptwr + 1;
-				$te_all = $te_all + 1;
+			    $te_ptwr += 1;
+				$te_all += 1;
 				$content[$i]['total_entries_ptwr'] = $te_ptwr;
 			    $content[$i]['total_entries_all'] = $te_all;
 			}
