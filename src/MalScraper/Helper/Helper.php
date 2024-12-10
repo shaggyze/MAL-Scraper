@@ -219,7 +219,7 @@ class Helper
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;*/
 				case '56715':
-					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
+					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1217/138638l.webp';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
 				/*case '55569':
@@ -227,7 +227,7 @@ class Helper
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;*/
 				case '55826':
-					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1217/138638l.jpg';
+					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1217/138638l.webp';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
 				/*case '52420':
@@ -250,9 +250,13 @@ class Helper
 					$animeImageUrl = 'https://shaggyze.website/Themes/covers/majo_no_furo_life.webp';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
+				case '42976'
+					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1467/116489l.webp';
+					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
+					return $animeImageUrl;
 				case '513':
 					if ($user === "ShaggyZE" || $user === "johneaston") {
-						$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1539/129891l.jpg';
+						$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1539/129891l.webp';
 						error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 						return $animeImageUrl;
 					}
