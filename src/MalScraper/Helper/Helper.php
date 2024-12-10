@@ -250,7 +250,7 @@ class Helper
 					$animeImageUrl = 'https://shaggyze.website/Themes/covers/majo_no_furo_life.webp';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
-				case '42976'
+				case '42976':
 					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1467/116489l.webp';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
