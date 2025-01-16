@@ -187,7 +187,7 @@ class Helper
 		if ($type == 'anime') {
 			switch ($str) {
 				case '38339':
-					$animeImageUrl = 'https://shaggyze.website/Themes/covers/suzumi_bune.jepg';
+					$animeImageUrl = 'https://shaggyze.website/Themes/covers/suzumi_bune.jpeg';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
 				case '1317':
