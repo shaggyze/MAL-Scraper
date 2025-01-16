@@ -194,10 +194,10 @@ class Helper
 					$animeImageUrl = 'https://shaggyze.website/Themes/covers/eyeshield_21__maboroshi_no_golden_bowl.png';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;
-				case '54757':
+				/*case '54757':
 					$animeImageUrl = 'https://shaggyze.website/Themes/covers/3-nen_z-gumi_ginpachi-sensei.webp';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
-					return $animeImageUrl;
+					return $animeImageUrl;*/
 				/*case '58755':
 					$animeImageUrl = 'https://shaggyze.website/Themes/covers/5-toubun_no_hanayome.png';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
@@ -226,10 +226,10 @@ class Helper
 					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1236/136294l.jpg';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 					return $animeImageUrl;*/
-				case '55826':
+				/*case '55826':
 					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1217/138638l.webp';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
-					return $animeImageUrl;
+					return $animeImageUrl;*/
 				/*case '52420':
 					$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1818/127729l.jpg';
 					error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
