@@ -339,7 +339,8 @@ class UserListCSSModel extends MainModel
 		  $content[$i]['total_entries_ptwr'] = $te_ptwr;
 		  $content[$i]['total_entries_all'] = $te_all;
 		  $content[$i]['\a'] = "-a";
-		  $content[$i]['\'] = "-\";
+		  $slash = "%5C";
+		  $content[$i][$slash] = "-" . $slash;
 		  }
 
 		  $data = array_merge($data, $content);
