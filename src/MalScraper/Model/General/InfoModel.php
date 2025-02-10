@@ -124,7 +124,7 @@ class InfoModel extends MainModel
 					$language = trim($titleElement->innertext);
 					$nextElement2 = $titleElement->parent();
 					if ($nextElement2) {
-						$title = trim(str_replace($language . ': ', '', $nextElement2->text()));
+						$title = trim(str_replace('', '', $nextElement2->text()));
 						if (strpos($title, $language) === 0) {
 							$title = trim(substr($title, strlen($language)));
 						}
