@@ -69,7 +69,7 @@ class UserModel extends MainModel
 
     private function getUserId()
     {
-    $element = $this->_parser->find('#contentWrapper > div:nth-child(1) > h1 > a', 0);
+    $element = $this->_parser->find('.header-right .mt4 .mr0', 0);
 
     if ($element) {
         $href = $element->href;
