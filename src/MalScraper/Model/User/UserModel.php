@@ -60,6 +60,39 @@ class UserModel extends MainModel
     {
         return $this->_user;
     }
+	
+    /**
+     * Get userid.
+     *
+     * @return string
+     */
+
+    private function getUserId()
+    {
+    $element = $this->_parser->find('#contentWrapper > div:nth-child(1) > h1 > a', 0);
+
+    if ($element) {
+        $href = $element->href;
+        
+        // Use parse_url and parse_str to extract the id
+        $urlParts = parse_url($href);
+        if (isset($urlParts['query'])) {
+            parse_str($urlParts['query'], $queryParameters);
+            if (isset($queryParameters['id'])) {
+                return $queryParameters['id'];
+            }
+        }
+        
+        // Alternatively, use a regular expression:
+        /*
+        if (preg_match('/&id=(\d+)/', $href, $matches)) {
+            return $matches[1];
+        }
+        */
+    }
+
+    return null; // Return null if the element or id is not found
+    }
 
     /**
      * Get user image.
@@ -558,6 +591,7 @@ class UserModel extends MainModel
     {
         $data = [
             'username'       => $this->getUsername(),
+            'userid'         => $this->getUserid(),
             'image'          => $this->getImage(),
             'last_online'    => $this->getStatus('Last Online'),
             'gender'         => $this->getStatus('Gender'),
