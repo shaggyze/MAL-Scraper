@@ -84,11 +84,11 @@ class UserModel extends MainModel
         }
         
         // Alternatively, use a regular expression:
-        /*
+
         if (preg_match('/&id=(\d+)/', $href, $matches)) {
             return $matches[1];
         }
-        */
+
     }
 
     return null; // Return null if the element or id is not found
