@@ -25,7 +25,7 @@ class UserModel extends MainModel
      *
      * @return void
      */
-    public function __construct($user, $parserArea = '#content')
+    public function __construct($user, $parserArea = '#contentWrapper')
     {
         $this->_user = $user;
         $this->_url = $this->_myAnimeListUrl.'/profile/'.$user;
