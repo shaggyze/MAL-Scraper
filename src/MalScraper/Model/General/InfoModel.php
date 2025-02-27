@@ -961,7 +961,7 @@ if (is_array($image_urls)) {
         $data = [
             'id'             => $this->getId(),
             'cover'          => $this->getCover(),
-			'images'         => $this->getImages{},
+			'images'         => $this->getImages(),
             'title'          => $this->getTitle(),
             'titles'         => $this->getTitle2(""),
             'title_english'  => $this->getTitle2("English"),
