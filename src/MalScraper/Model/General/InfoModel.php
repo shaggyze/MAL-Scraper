@@ -108,8 +108,8 @@ private function getImages()
     }
 
     $pics_url = $pics_anchor->href;
-	if (strpos($pics_url, "https://myanimelist.net/") !== 0) {
-		$pics_url = "https://myanimelist.net/" . $pics_url;
+	if (strpos($pics_url, "https://myanimelist.net") !== 0) {
+		$pics_url = "https://myanimelist.net" . $pics_url;
 	}
     // Fetch the HTML content of the pics page
     $html = file_get_contents($pics_url);
