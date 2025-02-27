@@ -94,15 +94,20 @@ class InfoModel extends MainModel
  */
 private function getImages()
 {
-    $pics_url = $this->_parser->find('#horiznav_nav > ul > li:nth-child(12) > a', 0);
+    // Find the anchor tag with the inner text "Pictures"
+    $pics_anchor = null;
+    foreach ($this->_parser->find('#horiznav_nav > ul > li > a') as $element) {
+        if (trim($element->plaintext) === 'Pictures') {
+            $pics_anchor = $element;
+            break;
+        }
+    }
 
-    if (!$pics_url) {
+    if (!$pics_anchor) {
         return 'N/A';
     }
 
-    // Assuming $pics_url is an element with an 'href' attribute
-    $pics_url = $pics_url->href;
-
+    $pics_url = $pics_anchor->href;
     // Fetch the HTML content of the pics page
     $html = file_get_contents($pics_url);
 
