@@ -104,7 +104,7 @@ private function getImages()
     }
 
     if (!$pics_anchor) {
-        return 'N/A';
+        return null;
     }
 
     $pics_url = $pics_anchor->href;
@@ -112,14 +112,14 @@ private function getImages()
     $html = file_get_contents($pics_url);
 
     if ($html === false) {
-        return 'Failed to fetch pictures page.';
+        return null;
     }
 
     // Parse the fetched HTML
     $doc = HtmlDomParser::str_get_html($html); // Assuming you're using Simple HTML DOM Parser
 
     if (!$doc) {
-        return 'Failed to parse pictures page.';
+        return null;
     }
 
     $image_urls = [];
