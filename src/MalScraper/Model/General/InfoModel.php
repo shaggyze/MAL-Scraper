@@ -85,6 +85,64 @@ class InfoModel extends MainModel
 		return Helper::imageUrlCleaner($animeImage->getAttribute('data-src'));
 	}
 
+
+/**
+ * Get anime/manga covers.
+ *
+ * @return array|string
+ */
+private function getImages()
+{
+    $pics_url = $this->_parser->find('#horiznav_nav > ul > li:nth-child(12) > a', 0);
+
+    if (!$pics_url) {
+        return 'N/A';
+    }
+
+    // Assuming $pics_url is an element with an 'href' attribute
+    $pics_url = $pics_url->href;
+
+    // Fetch the HTML content of the pics page
+    $html = file_get_contents($pics_url);
+
+    if ($html === false) {
+        return 'Failed to fetch pictures page.';
+    }
+
+    // Parse the fetched HTML
+    $doc = str_get_html($html); // Assuming you're using Simple HTML DOM Parser
+
+    if (!$doc) {
+        return 'Failed to parse pictures page.';
+    }
+
+    $image_urls = [];
+    $image_elements = $doc->find('div.picSurround a'); // Find all 'a' tags inside 'div.picSurround'
+
+    foreach ($image_elements as $element) {
+        if (isset($element->href)) {
+            $image_urls[] = $element->href;
+        }
+    }
+
+    return $image_urls;
+}
+
+// Example usage (assuming you have a way to set $this->_parser)
+/*
+$parser = new simple_html_dom();
+$parser->load_file('your_page_url.html'); // replace with you page url
+$this->_parser = $parser;
+
+$image_urls = $this->getPics();
+
+if (is_array($image_urls)) {
+    print_r($image_urls);
+} else {
+    echo $image_urls;
+}
+*/
+
     /**
      * Get anime/manga title.
      *
@@ -903,6 +961,7 @@ class InfoModel extends MainModel
         $data = [
             'id'             => $this->getId(),
             'cover'          => $this->getCover(),
+			'images'         => $this->getImages{},
             'title'          => $this->getTitle(),
             'titles'         => $this->getTitle2(""),
             'title_english'  => $this->getTitle2("English"),
