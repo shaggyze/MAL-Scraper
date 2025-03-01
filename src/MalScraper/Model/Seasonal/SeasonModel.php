@@ -317,7 +317,7 @@ class SeasonModel extends MainModel
             $result['source'] = $this->getSource($producer_area);
             $result['genre'] = $this->getGenre($each_anime);
             $result['synopsis'] = $this->getSynopsis($each_anime);
-            $result['licensor'] = $this->getLicensor($each_anime);
+            //$result['licensor'] = $this->getLicensor($each_anime);
             $result['type'] = $this->getType($info_area);
             $result['airing_start'] = $this->getAiring($info_area);
             $result['member'] = $this->getMember($info_area);
