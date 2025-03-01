@@ -228,6 +228,12 @@ class SeasonModel extends MainModel
 				$theme[] = $each_theme->plaintext;
 			}
 		}
+		$theme_area2 = $each_anime->find('div[class=property]', 3);
+		if ($theme_area2) {
+			foreach ($theme_area2->find('a') as $each_theme) {
+				$theme[] = $each_theme->plaintext;
+			}
+		}
 		return $theme;
 	}
 
