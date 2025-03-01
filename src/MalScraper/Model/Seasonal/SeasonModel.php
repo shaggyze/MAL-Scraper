@@ -179,7 +179,7 @@ class SeasonModel extends MainModel
      */
     private function getSource($producer_area)
     {
-        return trim($producer_area->find('span[class=source]', 0)->plaintext);
+        return trim($producer_area->find('span[class=item]', 1)->plaintext);
     }
 
     /**
@@ -209,7 +209,7 @@ class SeasonModel extends MainModel
      */
     private function getSynopsis($each_anime)
     {
-        $synopsis = $each_anime->find('div[class="synopsis js-synopsis"]', 0)->plaintext;
+        $synopsis = $each_anime->find('div[class="synopsis js-synopsis"] p', 0)->plaintext;
         preg_match('/(No synopsis)/', $synopsis, $temp_synopsis);
         if (!$temp_synopsis) {
             $synopsis = trim(preg_replace("/([\s])+/", ' ', $synopsis));
@@ -226,7 +226,7 @@ class SeasonModel extends MainModel
      * @param \simplehtmldom_1_5\simple_html_dom $each_anime
      *
      * @return array
-     */
+     *
     private function getLicensor($each_anime)
     {
         $temp_licensor = $each_anime->find('div[class="synopsis js-synopsis"] .licensors', 0)->getAttribute('data-licensors');
