@@ -241,7 +241,7 @@ class SeasonModel extends MainModel
      * @param \simplehtmldom_1_5\simple_html_dom $info_area
      *
      * @return string
-     */
+     *
     private function getType($info_area)
     {
         $type = $info_area->find('.info', 0)->plaintext;
@@ -318,10 +318,10 @@ class SeasonModel extends MainModel
             $result['genre'] = $this->getGenre($each_anime);
             $result['synopsis'] = $this->getSynopsis($each_anime);
             //$result['licensor'] = $this->getLicensor($each_anime);
-            $result['type'] = $this->getType($info_area);
+            //$result['type'] = $this->getType($info_area);
             $result['airing_start'] = $this->getAiring($producer_area);
             $result['member'] = $this->getMember($info_area);
-            $result['score'] = $this->getScore($info_area);
+            //$result['score'] = $this->getScore($info_area);
 
             $data[] = $result;
         }
