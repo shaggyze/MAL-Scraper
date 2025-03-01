@@ -177,9 +177,9 @@ class SeasonModel extends MainModel
      *
      * @return string
      */
-    private function getSource($producer_area)
+    private function getSource($each_anime)
     {
-        return trim($producer_area->find('span[class=item]', 1)->plaintext);
+        return trim($each_anime->find('span[class=item]', 1)->plaintext);
     }
 
     /**
@@ -314,7 +314,7 @@ class SeasonModel extends MainModel
             $result['title'] = $this->getTitle($name_area);
             $result['producer'] = $this->getProducer($producer_area);
             $result['episode'] = $this->getEpisode($producer_area);
-            $result['source'] = $this->getSource($producer_area);
+            $result['source'] = $this->getSource($each_anime);
             $result['genre'] = $this->getGenre($each_anime);
             $result['synopsis'] = $this->getSynopsis($each_anime);
             //$result['licensor'] = $this->getLicensor($each_anime);
