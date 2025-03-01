@@ -222,7 +222,7 @@ class SeasonModel extends MainModel
 	private function getThemeDemographic($each_anime)
 	{
 		$theme = [];
-		$theme_area = $each_anime->find('div[class=property]', 1);
+		$theme_area = $each_anime->find('div[class=property]', 2);
 		if ($theme_area) {
 			foreach ($theme_area->find('a') as $each_theme) {
 				$theme[] = $each_theme->plaintext;
