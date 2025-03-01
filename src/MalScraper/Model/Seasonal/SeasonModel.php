@@ -112,7 +112,13 @@ class SeasonModel extends MainModel
      */
 	private function getStudio($each_anime)
 	{
-		return trim($each_anime->find('span[class=item]', 2)->plaintext);
+		$studio = [];
+		$studio_area = trim($each_anime->find('span[class=item]', 2)->plaintext);
+		foreach ($theme_area->find('a') as $each_studio) {
+			$studio[] = $each_studio;
+		}
+
+		return $studio;
 	}
 
     /**
