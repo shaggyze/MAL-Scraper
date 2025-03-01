@@ -211,7 +211,18 @@ class SeasonModel extends MainModel
 
         return $genre;
     }
-
+	
+    /**
+     * Get demographic.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
+     *
+     * @return string
+     */
+	private function getDemographic($each_anime)
+	{
+		return trim($each_anime->find('span[class=item]', 4)->plaintext);
+	}
     /**
      * Get synopsis.
      *
@@ -250,16 +261,16 @@ class SeasonModel extends MainModel
     /**
      * Get type.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $info_area
+     * @param \simplehtmldom_1_5\simple_html_dom $name_area
      *
      * @return string
-     *
-    private function getType($info_area)
+     */
+    private function getType($name_area)
     {
-        $type = $info_area->find('.info', 0)->plaintext;
-        $type = explode('-', $type);
+        $id = $name_area->find('h2 a', 0)->href;
+        $parsed_char_id = explode('/', $id);
 
-        return trim($type[0]);
+        return $parsed_char_id[3];
     }
 
     /**
@@ -328,9 +339,10 @@ class SeasonModel extends MainModel
             $result['episode'] = $this->getEpisode($producer_area);
             $result['source'] = $this->getSource($each_anime);
             $result['genre'] = $this->getGenre($each_anime);
+            $result['demographic'] = $this->getDemographic($each_anime);
             $result['synopsis'] = $this->getSynopsis($each_anime);
             //$result['licensor'] = $this->getLicensor($each_anime);
-            //$result['type'] = $this->getType($info_area);
+            $result['type'] = $this->getType($name_area);
             $result['airing_start'] = $this->getAiring($producer_area);
             $result['member'] = $this->getMember($each_anime);
             $result['score'] = $this->getScore($each_anime);
