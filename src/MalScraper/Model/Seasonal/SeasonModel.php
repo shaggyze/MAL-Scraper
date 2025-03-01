@@ -85,7 +85,7 @@ class SeasonModel extends MainModel
      */
     private function getId($name_area)
     {
-        $id = $name_area->find('p a', 0)->href;
+        $id = $name_area->find('h2 a', 0)->href;
         $parsed_char_id = explode('/', $id);
 
         return $parsed_char_id[4];
