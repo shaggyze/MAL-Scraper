@@ -100,7 +100,7 @@ class SeasonModel extends MainModel
      */
     private function getTitle($name_area)
     {
-        return $name_area->find('p a', 0)->plaintext;
+        return $name_area->find('h2 a', 0)->plaintext;
     }
 
     /**
