@@ -164,7 +164,7 @@ class SeasonModel extends MainModel
     {
 		$producer_area = $producer_area->find('div[class=info]', 0);
 
-        $episode = $producer_area->find('span', 4)->plaintext;
+        $episode = $producer_area->find('span span', 0)->plaintext;
         $episode = trim(str_replace(['eps', 'ep'], '', $episode));
 
         return $episode == '?' ? '' : $episode;
