@@ -271,9 +271,9 @@ class SeasonModel extends MainModel
      *
      * @return string
      */
-    private function getMember($info_area)
+    private function getMember($each_anime)
     {
-        $member = $info_area->find('div[class="scormem-item member"]', 0)->plaintext;
+        $member = $each_anime->find('span[class="js-members"]', 0)->plaintext;
 
         return trim(str_replace(',', '', $member));
     }
@@ -285,9 +285,9 @@ class SeasonModel extends MainModel
      *
      * @return string
      */
-    private function getScore($info_area)
+    private function getScore($each_anime)
     {
-        $score = $info_area->find('div[class="scormem-item score score-label score-na"]', 0)->plaintext;
+        $score = $each_anime->find('span[class="js-score"]', 0)->plaintext;
 
         return trim(str_replace('N/A', '', $score));
     }
@@ -320,8 +320,8 @@ class SeasonModel extends MainModel
             //$result['licensor'] = $this->getLicensor($each_anime);
             //$result['type'] = $this->getType($info_area);
             $result['airing_start'] = $this->getAiring($producer_area);
-            $result['member'] = $this->getMember($info_area);
-            //$result['score'] = $this->getScore($info_area);
+            $result['member'] = $this->getMember($each_anime);
+            $result['score'] = $this->getScore($each_anime);
 
             $data[] = $result;
         }
