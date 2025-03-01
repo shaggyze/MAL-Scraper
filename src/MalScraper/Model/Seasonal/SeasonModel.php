@@ -223,9 +223,11 @@ class SeasonModel extends MainModel
 	{
 		$theme = [];
 		$theme_area = $each_anime->find('span[class=item]', 4);
-		foreach ($theme_area->find('a') as $each_theme) {
-            $theme[] = $each_theme->plaintext;
-        }
+		if ($theme_area) {
+			foreach ($theme_area->find('a') as $each_theme) {
+				$theme[] = $each_theme->plaintext;
+			}
+		}
 		return $theme;
 	}
 
