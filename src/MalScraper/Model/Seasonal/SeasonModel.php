@@ -259,7 +259,7 @@ class SeasonModel extends MainModel
      */
     private function getAiring($info_area)
     {
-        $airing_start = $info_area->find('.info .remain-time', 0)->plaintext;
+        $airing_start = $info_area->find('.info span', 0)->plaintext;
 
         return trim(str_replace(['?', ' ,'], ['', ','], $airing_start));
     }
@@ -273,7 +273,7 @@ class SeasonModel extends MainModel
      */
     private function getMember($info_area)
     {
-        $member = $info_area->find('.scormem span[class^=member]', 0)->plaintext;
+        $member = $info_area->find('div[class="scormem-item member"]', 0)->plaintext;
 
         return trim(str_replace(',', '', $member));
     }
@@ -287,7 +287,7 @@ class SeasonModel extends MainModel
      */
     private function getScore($info_area)
     {
-        $score = $info_area->find('.scormem .score', 0)->plaintext;
+        $score = $info_area->find('div[class="scormem-item score score-label score-na"]', 0)->plaintext;
 
         return trim(str_replace('N/A', '', $score));
     }
