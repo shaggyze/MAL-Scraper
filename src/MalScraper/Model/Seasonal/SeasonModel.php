@@ -162,7 +162,9 @@ class SeasonModel extends MainModel
      */
     private function getEpisode($producer_area)
     {
-        $episode = $producer_area->find('div[class=eps]', 0)->plaintext;
+		$producer_area = $producer_area->find('div[class=info]', 0);
+
+        $episode = $producer_area->find('span', 4)->plaintext;
         $episode = trim(str_replace(['eps', 'ep'], '', $episode));
 
         return $episode == '?' ? '' : $episode;
