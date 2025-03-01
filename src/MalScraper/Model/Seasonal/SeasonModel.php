@@ -110,9 +110,9 @@ class SeasonModel extends MainModel
      *
      * @return string
      */
-	privare function getStudio($each_anime)
+	private function getStudio($each_anime)
 	{
-		        return trim($each_anime->find('span[class=item]', 2)->plaintext);
+		return trim($each_anime->find('span[class=item]', 2)->plaintext);
 	}
 
     /**
