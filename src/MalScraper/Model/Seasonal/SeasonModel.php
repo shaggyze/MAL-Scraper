@@ -104,6 +104,18 @@ class SeasonModel extends MainModel
     }
 
     /**
+     * Get studio.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
+     *
+     * @return string
+     */
+	privare function getStudion($each_anime)
+	{
+		        return trim($each_anime->find('span[class=item]', 2)->plaintext);
+	}
+
+    /**
      * Get producer.
      *
      * @param \simplehtmldom_1_5\simple_html_dom $producer_area
@@ -312,7 +324,7 @@ class SeasonModel extends MainModel
             $result['image'] = $this->getImage($each_anime);
             $result['id'] = $this->getId($name_area);
             $result['title'] = $this->getTitle($name_area);
-            $result['producer'] = $this->getProducer($producer_area);
+            $result['studio'] = $this->getStudio($each_anime);
             $result['episode'] = $this->getEpisode($producer_area);
             $result['source'] = $this->getSource($each_anime);
             $result['genre'] = $this->getGenre($each_anime);
