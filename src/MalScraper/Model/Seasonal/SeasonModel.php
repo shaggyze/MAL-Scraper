@@ -356,7 +356,7 @@ class SeasonModel extends MainModel
             $result['theme_demographic'] = $this->getThemeDemographic($each_anime);
             $result['synopsis'] = $this->getSynopsis($each_anime);
             //$result['licensor'] = $this->getLicensor($each_anime);
-            $result['type'] = $this->getType($name_area);
+            //$result['type'] = $this->getType($name_area);
             $result['airing_start'] = $this->getAiring($producer_area);
             $result['member'] = $this->getMember($each_anime);
             $result['score'] = $this->getScore($each_anime);
