@@ -219,10 +219,14 @@ class SeasonModel extends MainModel
      *
      * @return string
      */
-	private function getDemographic($each_anime)
+	private function getThemeDemographic($each_anime)
 	{
-		$demographic = $each_anime->find('span[class=item]', 4);
-		return !$demographic ? 'null' : trim($demographic->plaintext);
+		$theme = [];
+		$theme_area = $each_anime->find('span[class=item]', 4);
+		foreach ($theme_area->find('a') as $each_theme) {
+            $theme[] = $each_theme->plaintext;
+        }
+		return $theme;
 	}
 
     /**
@@ -341,7 +345,7 @@ class SeasonModel extends MainModel
             $result['episode'] = $this->getEpisode($producer_area);
             $result['source'] = $this->getSource($each_anime);
             $result['genre'] = $this->getGenre($each_anime);
-            $result['demographic'] = $this->getDemographic($each_anime);
+            $result['theme_demographic'] = $this->getThemeDemographic($each_anime);
             $result['synopsis'] = $this->getSynopsis($each_anime);
             //$result['licensor'] = $this->getLicensor($each_anime);
             $result['type'] = $this->getType($name_area);
