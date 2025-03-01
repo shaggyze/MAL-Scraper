@@ -221,8 +221,10 @@ class SeasonModel extends MainModel
      */
 	private function getDemographic($each_anime)
 	{
-		return trim($each_anime->find('span[class=item]', 4)->plaintext);
+		$demographic = trim($each_anime->find('span[class=item]', 4)->plaintext);
+		return !$demographic ? 'null' : $demographic;
 	}
+
     /**
      * Get synopsis.
      *
