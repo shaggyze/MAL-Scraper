@@ -114,7 +114,7 @@ class SeasonModel extends MainModel
 	{
 		$studio = [];
 		$studio_area = $each_anime->find('div[class=property]', 0);
-		foreach ($theme_area->find('a') as $each_studio) {
+		foreach ($studio_area->find('a') as $each_studio) {
 			$studio[] = $each_studio->plaintext;
 		}
 
