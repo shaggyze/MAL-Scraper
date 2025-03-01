@@ -113,7 +113,7 @@ class SeasonModel extends MainModel
     private function getProducer($producer_area)
     {
         $producer = [];
-        $temp_producer = $producer_area->find('span[class=producer]', 0);
+        $temp_producer = $producer_area->find('span[class=item]', 0);
         foreach ($temp_producer->find('a') as $each_producer) {
             $temp_prod = [];
 
