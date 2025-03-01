@@ -197,7 +197,7 @@ class SeasonModel extends MainModel
      */
     private function getSource($each_anime)
     {
-        return trim(str_replace('Source', '', $each_anime->find('div[class=property]', 1)->plaintext));
+        return trim(str_replace('Source:', '', $each_anime->find('div[class=property]', 1)->plaintext));
     }
 
     /**
