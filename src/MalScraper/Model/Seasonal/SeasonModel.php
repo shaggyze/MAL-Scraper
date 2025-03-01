@@ -257,9 +257,9 @@ class SeasonModel extends MainModel
      *
      * @return string
      */
-    private function getAiring($info_area)
+    private function getAiring($producer_area)
     {
-        $airing_start = $info_area->find('.info span', 0)->plaintext;
+        $airing_start = $producer_area->find('.info span', 0)->plaintext;
 
         return trim(str_replace(['?', ' ,'], ['', ','], $airing_start));
     }
@@ -319,7 +319,7 @@ class SeasonModel extends MainModel
             $result['synopsis'] = $this->getSynopsis($each_anime);
             //$result['licensor'] = $this->getLicensor($each_anime);
             $result['type'] = $this->getType($info_area);
-            $result['airing_start'] = $this->getAiring($info_area);
+            $result['airing_start'] = $this->getAiring($producer_area);
             $result['member'] = $this->getMember($info_area);
             $result['score'] = $this->getScore($info_area);
 
