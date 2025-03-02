@@ -352,20 +352,25 @@ class SeasonModel extends MainModel
             $producer_area = $each_anime->find('div[class=prodsrc]', 0);
             $info_area = $each_anime->find('.information', 0);
 
-            $result['image'] = $this->getImage($each_anime);
             $result['id'] = $this->getId($name_area);
+            $result['cover'] = $this->getImage($each_anime);
             $result['title'] = $this->getTitle($name_area);
-            $result['studio'] = $this->getStudio($each_anime);
+            $result['synopsis'] = $this->getSynopsis($each_anime);
+            $result['score'] = $this->getScore($each_anime);
+            $result['member'] = $this->getMember($each_anime);
+            //$result['type'] = $this->getType($name_area);
             $result['episode'] = $this->getEpisode($producer_area);
+			$result['airing_start'] = $this->getAiring($producer_area);
+            $result['studio'] = $this->getStudio($each_anime);
             $result['source'] = $this->getSource($each_anime);
             $result['genre'] = $this->getGenre($each_anime);
             $result['theme_demographic'] = $this->getThemeDemographic($each_anime);
-            $result['synopsis'] = $this->getSynopsis($each_anime);
+
             //$result['licensor'] = $this->getLicensor($each_anime);
-            //$result['type'] = $this->getType($name_area);
-            $result['airing_start'] = $this->getAiring($producer_area);
-            $result['member'] = $this->getMember($each_anime);
-            $result['score'] = $this->getScore($each_anime);
+
+
+
+
 
             $data[] = $result;
         }
