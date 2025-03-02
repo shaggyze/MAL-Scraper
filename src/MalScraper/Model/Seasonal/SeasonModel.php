@@ -344,7 +344,7 @@ class SeasonModel extends MainModel
     {
         $data = [];
 
-        $anime_table = $this->_parser->find('div[class="js-anime-category-producer seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-1"]');
+        $anime_table = $this->_parser->find('div[class="js-anime-category-producer seasonal-anime js-seasonal-anime js-anime-type-all"]');
         foreach ($anime_table as $each_anime) {
             $result = [];
 
