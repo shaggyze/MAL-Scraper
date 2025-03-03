@@ -41,7 +41,7 @@ class SeasonModel extends MainModel
      * @return void
      */
 
-    public function __construct($year = false, $season = false, $nonseasonal = false, $parserArea = '#content .js-categories-seasonal')
+    public function __construct($year = false, $season = false, $nonseasonal = false, $parserArea = '#content .seasonal-anime-list')
     {
         $this->_year = !$year ? date('Y') : $year;
         $this->_season = !$season ? Helper::getCurrentSeason() : $season;
