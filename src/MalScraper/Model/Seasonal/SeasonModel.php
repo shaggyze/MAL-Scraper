@@ -41,7 +41,7 @@ class SeasonModel extends MainModel
      * @return void
      */
 
-    public function __construct($year = false, $season = false, $nonseasonal = false, $parserArea = '#content .seasonal-anime-list')
+    public function __construct($year = false, $season = false, $nonseasonal = false, $parserArea = '#content')
     {
         $this->_year = !$year ? date('Y') : $year;
         $this->_season = !$season ? Helper::getCurrentSeason() : $season;
@@ -354,9 +354,9 @@ class SeasonModel extends MainModel
 		$nonseasonal = $this->_nonseasonal;
         $data = [];
 		if ($nonseasonal === true) {
-			$anime_table = $this->_parser->find('div[class="js-anime-type-all"]');
+			$anime_table = $this->_parser->find('div[class="js-anime-type-all"]', 0);
 		} else {
-			$anime_table = $this->_parser->find('div[class="seasonal-anime"]');
+			$anime_table = $this->_parser->find('div[class="seasonal-anime"]', 0);
 		}
         foreach ($anime_table as $each_anime) {
             $result = [];
