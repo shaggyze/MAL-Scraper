@@ -46,7 +46,7 @@ class SeasonModel extends MainModel
         $this->_year = !$year ? date('Y') : $year;
         $this->_season = !$season ? Helper::getCurrentSeason() : $season;
         $this->_url = $this->_myAnimeListUrl.'/anime/season/'.$this->_year.'/'.$this->_season;
-		$this->_nonseasonal = $nonseasonal == "true" ? True : $nonseasonal;
+		$this->_nonseasonal = $nonseasonal == "true" || "1" ? True : $nonseasonal;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
