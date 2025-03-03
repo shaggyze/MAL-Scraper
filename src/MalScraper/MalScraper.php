@@ -577,9 +577,9 @@ class MalScraper
      *
      * @return array
      */
-    private function getSeason($year = false, $season = false)
+    private function getSeason($year = false, $season = false, $nonseasonal = false)
     {
-        return (new Season($year, $season))->getAllInfo();
+        return (new Season($year, $season, $nonseasonal))->getAllInfo();
     }
 
     /**
