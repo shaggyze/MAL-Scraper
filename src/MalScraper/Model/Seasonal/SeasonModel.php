@@ -350,7 +350,7 @@ class SeasonModel extends MainModel
      */
     private function getAllInfo()
     {
-		$nonseasonal = $this->_nonseasonal
+		$nonseasonal = $this->_nonseasonal;
         $data = [];
 		if ($nonseasonal) {
 			$anime_table = $this->_parser->find('div[class="js-anime-type-all"]');
