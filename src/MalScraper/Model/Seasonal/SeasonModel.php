@@ -25,6 +25,13 @@ class SeasonModel extends MainModel
     private $_season;
 
     /**
+     * Show nonseasonal. true or false.
+     *
+     * @var string
+     */
+    private $_nonseasonal;
+
+    /**
      * Default constructor.
      *
      * @param string|int $year
@@ -33,11 +40,13 @@ class SeasonModel extends MainModel
      *
      * @return void
      */
+	 $
     public function __construct($year = false, $season = false, $nonseasonal = false, $parserArea = '#content .seasonal-anime-list')
     {
         $this->_year = !$year ? date('Y') : $year;
         $this->_season = !$season ? Helper::getCurrentSeason() : $season;
         $this->_url = $this->_myAnimeListUrl.'/anime/season/'.$this->_year.'/'.$this->_season;
+		$this->_nonseasonal = !$nonseasonal ? false : $nonseasonal;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
