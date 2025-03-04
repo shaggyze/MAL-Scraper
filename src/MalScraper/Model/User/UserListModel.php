@@ -48,13 +48,14 @@ class UserListModel extends MainModel
      *
      * @return void
      */
-    public function __construct($user, $type, $status, $genre, $parserArea = '#content')
+    public function __construct($user, $type, $status, $genre, $order, $parserArea = '#content')
     {
         $this->_user = $user;
         $this->_type = $type;
         $this->_status = $status;
 		$this->_genre = $genre;
-        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status;
+		$this->_order = $order;
+        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status.'&genre='.$genre.'&order='.$order;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
@@ -103,7 +104,7 @@ class UserListModel extends MainModel
       $data = [];
       $offset = 0;
 	  while (true) {
-		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
+		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre.'&order='.$this->_order;
 
 		$content = json_decode(file_get_contents(htmlspecialchars_decode($url)), true);
 		
