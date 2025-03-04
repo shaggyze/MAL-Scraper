@@ -27,23 +27,31 @@ class UserListModel extends MainModel
     /**
      * Anime/manga status.
      *
-     * @var string
+     * @var int
      */
     private $_status;
 
     /**
      * Anime/manga genre.
      *
-     * @var string
+     * @var int
      */
     private $_genre;
+
+    /**
+     * Anime/manga order.
+     *
+     * @var int
+     */
+    private $_order;
     /**
      * Default constructor.
      *
      * @param string $user
      * @param string $type
-     * @param string $status
-     * @param string $genre
+     * @param int $status
+     * @param int $genre
+     * @param int $order
      * @param string $parserArea
      *
      * @return void
@@ -54,7 +62,7 @@ class UserListModel extends MainModel
         $this->_type = $type;
         $this->_status = $status;
 		$this->_genre = $genre;
-		$this->_order1 = $order;
+		$this->_order = $order;
         $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status.'&genre='.$genre.'&order='.$order;
         $this->_parserArea = $parserArea;
 
@@ -104,7 +112,7 @@ class UserListModel extends MainModel
       $data = [];
       $offset = 0;
 	  while (true) {
-		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre.'&order='.$this->_order1;
+		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre.'&order='.$this->_order;
 
 		$content = json_decode(file_get_contents(htmlspecialchars_decode($url)), true);
 		
