@@ -694,7 +694,7 @@ class MalScraper
      *
      * @return array
      */
-    private function getUserList($user, $type = 'anime', $status = 7, $genre = 0, $oder = 0)
+    private function getUserList($user, $type = 'anime', $status = 7, $genre = 0, $order = 0)
     {
         return (new UserList($user, $type, $status, $genre, $order))->getAllInfo();
     }
