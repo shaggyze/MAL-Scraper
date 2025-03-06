@@ -5,7 +5,7 @@ namespace MalScraper\Model\User;
 use MalScraper\Model\User\UserListCSSModel as UserListCSS;
 
 /**
- * UserCSSModel class.
+ * UserCoverModel class.
  */
 class UserCSSModel
 {
@@ -22,7 +22,7 @@ class UserCSSModel
      * @var string
      */
     private $_type;
-
+	
     /**
      * CSS style.
      *
@@ -31,36 +31,28 @@ class UserCSSModel
     private $_style;
 
     /**
-     * CSS genre.
+     * Anime/manga genre.
      *
      * @var string
      */
     private $_genre;
 
     /**
-     * CSS order.
-     *
-     * @var string
-     */
-    private $_order;
-    /**
      * Default constructor.
      *
      * @param string $user
      * @param string $type
-     * @param int $style
-     * @param int $genre
-     * @param int $order
+     * @param string $style
+     * @param string $genre
      * @param string $parserArea
      *
      * @return void
      */
-    public function __construct($user, $type="anime", $style=null, $genre=null, $order=null)
+    public function __construct($user, $type="anime", $style=null, $genre=null)
     {
         $this->_user = $user;
         $this->_type = $type;
 		$this->_genre = $genre;
-		$this->_order = $order;
         if ($style) {
             $this->_style = $style;
         } else {
@@ -79,7 +71,7 @@ class UserCSSModel
      */
     public function getAllInfo()
     {
-        $list = (new UserList($this->_user, $this->_type, 7, $this->_genre, $this->_order))->getAllInfo();
+        $list = (new UserListCSS($this->_user, $this->_type, 7, $this->_genre))->getAllInfo();
 
         $css = '';
 		if (is_array($list)) {
