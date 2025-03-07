@@ -284,9 +284,9 @@ class ReviewModel extends MainModel
     private function getAllInfo()
     {
         $data = [];
-        $review_area = $this->_parser->find('#content', 0);
+        $review_area = $this->_parser->find('.review-element', 0);
 
-        $top_area = $review_area->find('.review-element', 0);
+        $top_area = $review_area->find('.body', 0);
         $bottom_area = $top_area->next_sibling();
 
         $data['id'] = $this->getId();
