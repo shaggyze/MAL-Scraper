@@ -708,9 +708,9 @@ class MalScraper
      *
      * @return string
      */
-    private function getUserCover($user, $type = 'anime', $style = false, $genre = 0)
+    private function getUserCover($user, $type = 'anime', $style = false, $genre = 0, $order)
     {
-        return (new UserCover($user, $type, $style, $genre))->getAllInfo();
+        return (new UserCover($user, $type, $style, $genre, $order))->getAllInfo();
     }
 
     /**
