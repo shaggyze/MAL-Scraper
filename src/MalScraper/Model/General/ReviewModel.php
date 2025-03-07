@@ -88,7 +88,7 @@ class ReviewModel extends MainModel
      */
     private function getReviewSource($top_area, $bottom_area)
     {
-        $source_area = $top_area->find('.review-element', 0);
+        $source_area = $top_area->find('.mb4', 0);
 
         return [
             'type' => $this->getSourceType($source_area),
@@ -283,9 +283,9 @@ class ReviewModel extends MainModel
     private function getAllInfo()
     {
         $data = [];
-        $review_area = $this->_parser->find('.borderDark', 0);
+        $review_area = $this->_parser->find('#content', 0);
 
-        $top_area = $review_area->find('.spaceit', 0);
+        $top_area = $review_area->find('.review-element', 0);
         $bottom_area = $top_area->next_sibling();
 
         $data['id'] = $this->getId();
