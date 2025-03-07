@@ -88,7 +88,7 @@ class ReviewModel extends MainModel
      */
     private function getReviewSource($top_area, $bottom_area)
     {
-        $source_area = $top_area->find('.mb8', 1);
+        $source_area = $top_area->find('.review-element', 0);
 
         return [
             'type' => $this->getSourceType($source_area),
