@@ -123,7 +123,7 @@ class ReviewModel extends MainModel
      */
     private function getSourceId($source_area)
     {
-        $id = $source_area->find('strong a', 0)->href;
+        $id = $source_area->find('a', 0)->href;
         $id = explode('/', $id);
 
         return $id[4];
@@ -138,7 +138,7 @@ class ReviewModel extends MainModel
      */
     private function getSourceTitle($source_area)
     {
-        $title = $source_area->find('strong', 0)->plaintext;
+        $title = $source_area->find('a', 0)->plaintext;
 
         return trim($title);
     }
@@ -152,7 +152,8 @@ class ReviewModel extends MainModel
      */
     private function getSourceImage($bottom_area)
     {
-        $image = $bottom_area->find('.picSurround img', 0)->getAttribute('data-src');
+		$image_area = $bottom_area->find('.thumb', 0);
+        $image = $image_area->find('.lazyloaded', 0)->getAttribute('data-src');
 
         return Helper::imageUrlCleaner($image);
     }
