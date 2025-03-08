@@ -261,7 +261,7 @@ class Helper
 					}
 					break;
 				case '21':
-					if ($user === "LunyRem" {
+					if ($user === "LunyRem") {
 						$animeImageUrl = 'https://shaggyze.website/Themes/covers/One_Piece.jpeg';
 						error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 						return $animeImageUrl;
