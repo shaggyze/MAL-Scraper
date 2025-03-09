@@ -290,7 +290,7 @@ class ReviewModel extends MainModel
         $bottom_area = $top_area->next_sibling();
 
         $data['id'] = $this->getId();
-        /*$data['source'] = $this->getReviewSource($top_area, $bottom_area);
+        $data['source'] = $this->getReviewSource($top_area, $bottom_area);
         $data['username'] = $this->getReviewUser($top_area);
         $data['image'] = $this->getReviewImage($top_area);
         $data['helpful'] = $this->getReviewHelpful($top_area);
@@ -301,7 +301,7 @@ class ReviewModel extends MainModel
             $data['chapter'] = $this->getReviewEpisode($top_area);
         }
         $data['score'] = $this->getReviewScore($bottom_area);
-        $data['review'] = $this->getReviewText($bottom_area);*/
+        $data['review'] = $this->getReviewText($bottom_area);
 
         return $data;
     }
