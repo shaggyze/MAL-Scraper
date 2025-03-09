@@ -94,7 +94,7 @@ class ReviewModel extends MainModel
             'type' => $this->getSourceType($source_area),
             'id'   => $this->getSourceId($source_area),
             'title'=> $this->getSourceTitle($source_area),
-            'image'=> $this->getSourceImage($bottom_area),
+            /*'image'=> $this->getSourceImage($bottom_area),*/
         ];
     }
 
