@@ -153,7 +153,7 @@ class ReviewModel extends MainModel
     private function getSourceImage($bottom_area)
     {
 		$image_area = $bottom_area->find('.thumb', 0);
-        $image = $image_area->find('img', 0)->src;
+        $image = $image_area->find('a img', 0)->src;
 
         return Helper::imageUrlCleaner($image);
     }
