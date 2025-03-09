@@ -264,12 +264,8 @@ class ReviewModel extends MainModel
      */
     private function getReviewText($bottom_area)
     {
-        $useless_area = $bottom_area->find('div', 0);
-        $useless_area_1 = $useless_area->plaintext;
-        $useless_area_2 = $useless_area->next_sibling()->plaintext;
-        $useless_area_3 = $bottom_area->find('div[id^=revhelp_output]', 0)->plaintext;
-        $useless_area_4 = $bottom_area->find('a[id^=reviewToggle]', 0) ? $bottom_area->find('a[id^=reviewToggle]', 0)->plaintext : null;
-        $text = str_replace([$useless_area_1, $useless_area_2, $useless_area_3, $useless_area_4], '', $bottom_area->plaintext);
+        $text = $bottom_area->find('.body', 0)->innertext;
+
         $text = str_replace('&lt;', '<', $text);
 
         return trim(preg_replace('/\h+/', ' ', $text));
