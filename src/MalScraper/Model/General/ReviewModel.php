@@ -197,7 +197,8 @@ class ReviewModel extends MainModel
     private function getReviewHelpful($top_area)
     {
         $helpful = $top_area->find('.recommended', 0)->innertext;
-
+        $helpful = str_replace('<i class="fas fa-star"></i>', '', $helpful);
+		
         return trim($helpful);
     }
 
