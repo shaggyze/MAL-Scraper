@@ -286,7 +286,7 @@ class ReviewModel extends MainModel
         $data = [];
         $review_area = $this->_parser->find('#content', 0);
 
-        $top_area = $review_area->find('.body', 0);
+        $top_area = $review_area->find('.review-element', 0);
         $bottom_area = $top_area->next_sibling();
 
         $data['id'] = $this->getId();
