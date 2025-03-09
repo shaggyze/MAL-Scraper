@@ -167,9 +167,9 @@ class ReviewModel extends MainModel
      */
     private function getReviewUser($top_area)
     {
-        $user = $top_area->find('table', 0);
+        $user = $top_area->find('.username', 0);
 
-        return $user->find('td', 1)->find('a', 0)->plaintext;
+        return $user->find('a', 0)->plaintext;
     }
 
     /**
