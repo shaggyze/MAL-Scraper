@@ -181,8 +181,8 @@ class ReviewModel extends MainModel
      */
     private function getReviewImage($top_area)
     {
-        $image = $top_area->find('table', 0);
-        $image = $image->find('td', 0)->find('img', 0)->src;
+        $image = $top_area->find('.thumb-right', 0);
+        $image = $image->find('a', 0)->find('img', 0)->getAttribute('data-src');
 
         return Helper::imageUrlCleaner($image);
     }
