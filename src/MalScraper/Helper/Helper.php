@@ -170,7 +170,8 @@ class Helper
         $str = str_replace('userimages/thumbs', 'userimages', $str);
         $str = preg_replace('/r\/\d{1,3}x\d{1,3}\//', '', $str);
         $str = preg_replace('/\?.+/', '', $str);
-
+        $str = str_replace('.jpg', 'l.jpg', $str);
+		
         return $str;
     }
 
