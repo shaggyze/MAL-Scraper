@@ -264,7 +264,7 @@ class ReviewModel extends MainModel
      */
     private function getReviewText($bottom_area)
     {
-        $text = $bottom_area->find('.body', 0)->innertext;
+        $text = $bottom_area->find('.body', 0)->plaintext;
 
         $text = str_replace('&lt;', '<', $text);
 
