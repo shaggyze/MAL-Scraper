@@ -181,8 +181,8 @@ class ReviewModel extends MainModel
      */
     private function getReviewImage($top_area)
     {
-        $image = $top_area->find('.thumb-right', 0);
-        $image = $image->find('a', 0)->find('img', 0)->getAttribute('data-src');
+        $image_area = $top_area->find('.thumb-right', 0);
+        $image = $image_area->find('a', 0)->find('img', 0)->getAttribute('data-src');
 
         return Helper::imageUrlCleaner($image);
     }
@@ -196,8 +196,7 @@ class ReviewModel extends MainModel
      */
     private function getReviewHelpful($top_area)
     {
-        $helpful = $top_area->find('table', 0);
-        $helpful = $helpful->find('td', 1)->find('strong', 0)->plaintext;
+        $helpful = $top_area->find('.recommended', 0)->innertext;
 
         return trim($helpful);
     }
