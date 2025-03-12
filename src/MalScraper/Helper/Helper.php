@@ -267,6 +267,12 @@ class Helper
 						error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 						return $animeImageUrl;
 					}
+				case '40477':
+					if ($user === "LunyRem") {
+						$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1069/137538l.jpg';
+						error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
+						return $animeImageUrl;
+					}
 				default:
 					if (!empty($orig)) {
 						return $orig;
