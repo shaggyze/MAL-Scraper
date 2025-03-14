@@ -255,6 +255,27 @@ class UserListCSSModel extends MainModel
 			  }
 			}
 			if (!empty($content[$i]['anime_id'])) {
+			  if (isset($content2['data']['title_japanese']) && $content2['data']['title_japanese'] !== null) {
+			    $content[$i]['anime_title_jp'] = str_replace(['"', '[', ']'], '', $content2['data']['title_japanese']);
+			  } else {
+				if ($content[$i]['anime_title_eng'] !== 'N/A') {
+			      $content[$i]['anime_title_jp'] = $content[$i]['anime_title_eng'];
+				} else {
+				  $content[$i]['anime_title_jp'] = $content[$i]['anime_title'];
+				}
+			  }
+			} else {
+			  if (isset($content2['data']['title_japanese']) && $content2['data']['title_japanese'] !== null) {
+			    $content[$i]['manga_title_jp'] = str_replace(['"', '[', ']'], '', $content2['data']['title_japanese']);
+			  } else {
+			    if ($content[$i]['manga_english'] !== 'N/A') {
+			      $content[$i]['manga_title_jp'] = $content[$i]['manga_english'];
+				} else {
+				  $content[$i]['manga_title_jp'] = $content[$i]['manga_title'];
+				}
+			  }
+			}
+			if (!empty($content[$i]['anime_id'])) {
 			  if ($content[$i]['anime_title_eng'] == 'N/A') {
 			    $content[$i]['anime_title_eng'] = $content[$i]['anime_title'];
 			  }
