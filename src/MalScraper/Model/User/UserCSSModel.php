@@ -33,7 +33,13 @@ class UserCSSModel
     /**
      * Anime/manga genre.
      *
-     * @var string
+     * @var int
+     */
+    private $_status;
+    /**
+     * Anime/manga genre.
+     *
+     * @var int
      */
     private $_genre;
 
@@ -43,15 +49,17 @@ class UserCSSModel
      * @param string $user
      * @param string $type
      * @param string $style
+     * @param string $status
      * @param string $genre
      * @param string $parserArea
      *
      * @return void
      */
-    public function __construct($user, $type="anime", $style=null, $genre=null)
+    public function __construct($user, $type="anime", $style=null, $status = 7, $genre=null)
     {
         $this->_user = $user;
         $this->_type = $type;
+		$this->_status = $status;
 		$this->_genre = $genre;
         if ($style) {
             $this->_style = $style;
@@ -71,7 +79,7 @@ class UserCSSModel
      */
     public function getAllInfo()
     {
-        $list = (new UserListCSS($this->_user, $this->_type, 7, $this->_genre))->getAllInfo();
+        $list = (new UserListCSS($this->_user, $this->_type, $this->_status, $this->_genre))->getAllInfo();
 
         $cover = '';
 		if (is_array($list)) {
