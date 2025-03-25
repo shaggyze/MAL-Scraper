@@ -134,7 +134,7 @@ class UserListCSSModel extends MainModel
 			}
 			if (!empty($content2['data']['synopsis'])) {
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
-			  $synopsis = str_replace(array('nn', "\n", "\t", "\r"), "-a", $synopsis);
+			  $synopsis = str_replace(array("\n", "\t", "\r"), "-a", $synopsis);
 			  $synopsis = str_replace('"', '-"', $synopsis);
 			  $synopsis = str_replace("'", "-'", $synopsis);
 			  $content[$i]['synopsis'] = $synopsis;
