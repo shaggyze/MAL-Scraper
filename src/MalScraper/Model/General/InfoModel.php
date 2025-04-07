@@ -159,11 +159,12 @@ if (is_array($image_urls)) {
      */
 	private function getTitle()
 	{
-		$animeImage = $this->_parser->find('.lazyload', 0);
-		if (!$animeImage) {
-			return 'N/A';
-		}
-		$title = trim($animeImage->alt);
+		//$animeImage = $this->_parser->find('.lazyload', 0);
+		//if (!$animeImage) {
+		//	return 'N/A';
+		//}
+		//$title = trim($animeImage->alt);
+		$title = trim($this->_parser->find('h1[class=title-name] strong', 0)->plaintext);
 
 		return $title;
 	}
