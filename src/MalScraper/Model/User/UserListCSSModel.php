@@ -135,7 +135,7 @@ class UserListCSSModel extends MainModel
 			if (!empty($content2['data']['broadcast'])) {
 				$content[$i]['broadcast'] = $content2['data']['broadcast'];
 			} else {
-				$content[$i]['broadcast'] = "N/A";
+				$content[$i]['broadcast'] = "";
 			}
 			if (!empty($content2['data']['synopsis'])) {
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
