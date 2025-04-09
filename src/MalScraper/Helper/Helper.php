@@ -269,7 +269,7 @@ class Helper
 					}
 				case '40477':
 					if ($user === "LunyRem") {
-						$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1069/137538l.jpg';
+						$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1069/137538l.webp';
 						error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 						return $animeImageUrl;
 					}

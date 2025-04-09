@@ -132,6 +132,11 @@ class UserListCSSModel extends MainModel
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
 			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
+			if (!empty($content2['data']['broadcast'])) {
+				$content[$i]['broadcast'] = $content2['data']['broadcast'];
+			} else {
+				$content[$i]['broadcast'] = "N/A";
+			}
 			if (!empty($content2['data']['synopsis'])) {
 			  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
 			  $synopsis = str_replace(array("\n", "\t", "\r"), "-a ", $synopsis);
