@@ -372,7 +372,18 @@ class SeasonModel extends MainModel
             $info_area = $each_anime->find('.information', 0);
 
             $result['id'] = $this->getId($name_area);
-
+            $result['cover'] = $this->getImage($each_anime);
+            $result['title'] = $this->getTitle($name_area);
+            $result['synopsis'] = $this->getSynopsis($each_anime);
+            $result['score'] = $this->getScore($each_anime);
+            $result['members'] = $this->getMember($each_anime);
+            //$result['type'] = $this->getType($name_area);
+            $result['episodes'] = $this->getEpisode($producer_area);
+			$result['aired_start'] = $this->getAiring($producer_area);
+            $result['studios'] = $this->getStudio($each_anime);
+            $result['source'] = $this->getSource($each_anime);
+            $result['genres'] = $this->getGenre($each_anime);
+            $result['theme_demographic'] = $this->getThemeDemographic($each_anime);
 
             //$result['licensor'] = $this->getLicensor($each_anime);
 
