@@ -263,7 +263,8 @@ class Helper
 					break;
 				case '21':
 					if ($user === "LunyRem") {
-						$animeImageUrl = 'https://shaggyze.website/Themes/covers/One_Piece.jpeg';
+						//$animeImageUrl = 'https://shaggyze.website/Themes/covers/One_Piece.jpeg';
+						$animeImageUrl = 'https://cdn.myanimelist.net/images/anime/1405/149053l.jpg';
 						error_log('PHP Notice:  Compare  ' . (isset($animeImageUrl) ? $animeImageUrl : 'N/A') . ' with ' . $orig);
 						return $animeImageUrl;
 					}
