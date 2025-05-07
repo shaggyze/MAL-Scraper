@@ -63,6 +63,20 @@ class HistoryModel extends MainModel
     }
 
     /**
+     * Get url.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $name_area
+     *
+     * @return string
+     */
+    private function getUrl($name_area)
+    {
+        $url = $name_area->find('a', 0)->href;
+
+        return $url;
+    }
+
+    /**
      * Get id.
      *
      * @param \simplehtmldom_1_5\simple_html_dom $name_area
@@ -153,6 +167,7 @@ class HistoryModel extends MainModel
                 $name_area = $history->find('td', 0);
 
                 $h_temp['id'] = $this->getId($name_area);
+                $h_temp['url'] = $this->getUrl($name_area);
                 $h_temp['title'] = $this->getTitle($name_area);
                 $h_temp['type'] = $this->getType($name_area);
                 $h_temp['progress'] = $this->getProgress($name_area);
