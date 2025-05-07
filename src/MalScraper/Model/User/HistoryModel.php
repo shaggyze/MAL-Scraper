@@ -71,7 +71,7 @@ class HistoryModel extends MainModel
      */
     private function getUrl($name_area)
     {
-        $url = $name_area->find('a', 0)->href;
+        $url = $this->_myAnimeListUrl.$name_area->find('a', 0)->href;
 
         return $url;
     }
