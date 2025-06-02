@@ -34,7 +34,7 @@ class InfoModel extends MainModel
      *
      * @return void
      */
-    public function __construct($type, $id, $parserArea = '#contentWrapper')
+    public function __construct($type, $id, $parserArea = '#content')
     {
         $this->_type = $type;
         $this->_id = $id;
@@ -86,7 +86,6 @@ class InfoModel extends MainModel
 		return Helper::imageUrlCleaner($animeImage->getAttribute('data-src'));
 	}
 
-
 /**
  * Get anime/manga covers.
  *
@@ -135,6 +134,23 @@ private function getImages()
     }
 
     return $image_urls;
+}
+
+/**
+ * Get anime/manga approved.
+ *
+ * @return array|string
+ */
+private function getApproved()
+{
+    // Find the anchor tag with the inner text "Add to My List"
+    $approved = null;
+    foreach ($this->_parser->find('#content > table > tbody > tr > td.borderClass > div > div.profileRows.pb0 > a') as $element) {
+        if (trim($element->plaintext) === 'Add to My List') {
+            $approved = $element;
+        }
+    }
+	return $approved ? true : false;
 }
 
 // Example usage (assuming you have a way to set $this->_parser)
@@ -972,6 +988,7 @@ if (is_array($image_urls)) {
             'id'             => $this->getId(),
             'cover'          => $this->getCover(),
 			'images'         => $this->getImages(),
+			'approved'       => $this->getApproved(),
             'title'          => $this->getTitle(),
             'titles'         => $this->getTitle2(""),
             'title_english'  => $this->getTitle2("English"),
