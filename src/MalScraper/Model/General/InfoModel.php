@@ -148,6 +148,7 @@ private function getApproved()
     foreach ($this->_parser->find('a') as $element) {
         if (trim($element->plaintext) === 'Add to My List') {
             $approved = $element;
+			break;
         }
     }
 	return $approved ? true : false;
