@@ -144,14 +144,14 @@ private function getImages()
 private function getApproved()
 {
     // Find the anchor tag with the inner text "Add to My List"
-    $approved = null;
+    $approved = false;
     foreach ($this->_parser->find('div > a') as $element) {
         if (trim($element->plaintext) === 'Add to My List') {
-            $approved = $element;
+            $approved = true;
 			break;
         }
     }
-	return $approved ? true : false;
+	return $approved;
 }
 
 // Example usage (assuming you have a way to set $this->_parser)
