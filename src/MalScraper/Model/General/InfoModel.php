@@ -145,7 +145,7 @@ private function getApproved()
 {
     // Find the anchor tag with the inner text "Add to My List"
     $approved = "false";
-    foreach ($this->_parser->find('div > a') as $element) {
+    foreach ($this->_parser->find('a') as $element) {
         if (trim($element->plaintext) === 'Add to My List') {
             $approved = "true";
 			break;
