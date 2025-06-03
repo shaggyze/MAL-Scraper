@@ -145,7 +145,7 @@ private function getApproved()
 {
     // Find the anchor tag with the inner text "Add to My List"
 	$approved = $this->_parser->find('div[class=addtolist-block] span', 0);
-    if (isset(trim($approved->plaintext)) === 'This anime is pending approval.') {
+    if ((trim($approved->plaintext) === 'This anime is pending approval.') {
         $approved = "false";
     } else {
 		$approved = "true";
