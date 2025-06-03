@@ -34,7 +34,7 @@ class InfoModel extends MainModel
      *
      * @return void
      */
-    public function __construct($type, $id, $parserArea = '#content')
+    public function __construct($type, $id, $parserArea = '#contentWrapper')
     {
         $this->_type = $type;
         $this->_id = $id;
