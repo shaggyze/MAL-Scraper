@@ -144,10 +144,10 @@ private function getImages()
 private function getApproved()
 {
     // Find the anchor tag with the inner text "Add to My List"
-    $approved = "false";
-    foreach ($this->_parser->find('a') as $element) {
-        if (trim($element->plaintext) === 'Add to My List') {
-            $approved = "true";
+    $approved = "true";
+    foreach ($this->_parser->find('span') as $element) {
+        if (trim($element->plaintext) === 'This anime is pending approval.') {
+            $approved = "false";
 			break;
         }
     }
