@@ -104,20 +104,32 @@ class MainModel
      *
      * @return \simplehtmldom_1_5\simple_html_dom
      */
-    public static function getParser($url, $contentDiv, $additionalSetting = false)
-    {
-        $html = HtmlDomParser::file_get_html($url)->find($contentDiv, 0);
-        $html = !$additionalSetting ? $html : $html->next_sibling();
-        if (!empty($html) && isset($html->outertext)) {
-			$html = $html->outertext;
-			$html = str_replace('&quot;', '\"', $html);
-			$html = str_replace('&lt;', '&l-t;', $html); // handle '<'
-			$html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
-			$html = str_replace('&l-t;', '&lt;', $html);
-			$html = HtmlDomParser::str_get_html($html);
-		}
-        return $html;
+public static function getParser($url, $contentDiv, $additionalSetting = false)
+{
+    // First, get the DOM object
+    $dom = HtmlDomParser::file_get_html($url);
+
+    // IMPORTANT: Check if the DOM object was successfully created
+    if (!$dom) {
+        // Return false or null to indicate failure, preventing the crash.
+        return false;
     }
+
+    // Now that we know $dom is an object, we can safely call find()
+    $html = $dom->find($contentDiv, 0);
+    
+    // ... rest of the function (which should also check if $html is not empty)
+    if (!empty($html) && isset($html->outertext)) {
+        $html = $html->outertext;
+        $html = str_replace('&quot;', '\"', $html);
+        $html = str_replace('&lt;', '&l-t;', $html); // handle '<'
+        $html = html_entity_decode($html, ENT_QUOTES, 'UTF-8');
+        $html = str_replace('&l-t;', '&lt;', $html);
+        $html = HtmlDomParser::str_get_html($html);
+    }
+    
+    return $html;
+}
 
     /**
      * Header error check.
