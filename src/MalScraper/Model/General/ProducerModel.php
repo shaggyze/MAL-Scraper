@@ -353,7 +353,7 @@ class ProducerModel extends MainModel
                 //$result['serialization'] = $this->getAnimeLicensor($each_anime);
             }
 
-            $result['airing_start'] = $this->getAnimeStart($info_area);
+            //$result['airing_start'] = $this->getAnimeStart($info_area);
             $result['member'] = $this->getAnimeMember($info_area);
             $result['score'] = $this->getAnimeScore($info_area);
 
