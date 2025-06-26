@@ -577,7 +577,7 @@ class ProducerModel extends MainModel
                 //    $result['author'] = $this->getAnimeProducer($each_anime); 
                 //    $result['volume'] = $this->getAnimeEpisode($each_anime);  
                 //    $result['serialization'] = $this->getAnimeLicensor($each_anime); 
-                }
+                //}
 
                 $result['airing_start'] = $this->getAnimeStart($each_anime);
                 $result['member'] = $this->getAnimeMember($each_anime);
