@@ -344,7 +344,7 @@ class ProducerModel extends MainModel
 
             if ($this->_type == 'anime') {
                 //$result['producer'] = $this->getAnimeProducer($producer_area);
-                $result['episode'] = $this->getAnimeEpisode($producer_area);
+                //$result['episode'] = $this->getAnimeEpisode($producer_area);
                 $result['licensor'] = $this->getAnimeLicensor($each_anime);
                 $result['type'] = $this->getAnimeType($info_area);
             } else {
