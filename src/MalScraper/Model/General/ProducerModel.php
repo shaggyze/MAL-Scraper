@@ -339,8 +339,8 @@ class ProducerModel extends MainModel
             $result['id'] = $this->getAnimeId($name_area);
             $result['title'] = $this->getAnimeTitle($name_area);
             //$result['genre'] = $this->getAnimeGenre($each_anime);
-            $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
-            $result['source'] = $this->getAnimeSource($producer_area);
+            //$result['synopsis'] = $this->getAnimeSynopsis($each_anime);
+            //$result['source'] = $this->getAnimeSource($producer_area);
 
             if ($this->_type == 'anime') {
                 $result['producer'] = $this->getAnimeProducer($producer_area);
