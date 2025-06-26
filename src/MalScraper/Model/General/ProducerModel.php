@@ -338,7 +338,7 @@ class ProducerModel extends MainModel
             $result['image'] = $this->getAnimeImage($each_anime);
             $result['id'] = $this->getAnimeId($name_area);
             $result['title'] = $this->getAnimeTitle($name_area);
-            $result['genre'] = $this->getAnimeGenre($each_anime);
+            //$result['genre'] = $this->getAnimeGenre($each_anime);
             $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
             $result['source'] = $this->getAnimeSource($producer_area);
 
