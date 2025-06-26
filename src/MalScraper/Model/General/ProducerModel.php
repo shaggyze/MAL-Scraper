@@ -219,8 +219,8 @@ class ProducerModel extends MainModel
     private function getAnimeGenre($each_anime)
     {
         $genre = [];
-        $genre_area = $each_anime->find('div[class="genres js-genre"]', 0);
-        foreach ($genre_area->find('a') as $each_genre) {
+        $genre_area = $each_anime->find('div[class="genres-inner js-genre-inner"]', 0);
+        foreach ($genre_area->find('span > a') as $each_genre) {
             $genre[] = $each_genre->plaintext;
         }
 
