@@ -558,7 +558,6 @@ class ProducerModel extends MainModel
                 
                 if ($name_area && is_object($name_area)) {
                     $result['id'] = $this->getAnimeId($name_area);
-					$result['url'] = $this->_url;
 					$result['title'] = $this->getAnimeTitle($name_area);
                 }
 
