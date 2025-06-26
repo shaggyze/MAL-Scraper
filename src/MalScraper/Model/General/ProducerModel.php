@@ -10,9 +10,6 @@ use MalScraper\Model\MainModel;
  */
 class ProducerModel extends MainModel
 {
-    // ... (Your existing __construct, __call are assumed to be working) ...
-    // ... (getAnimeImage, getAnimeId, getAnimeTitle are assumed to be working as they were) ...
-
     /**
      * Either anime or manga.
      *
@@ -41,7 +38,17 @@ class ProducerModel extends MainModel
      */
     private $_page;
 
-    public function __construct($type, $type2, $id, $page = 1, $parserArea = '#contentWrapper')
+    /**
+     * Default constructor.
+     *
+     * @param string     $type
+     * @param string     $type2
+     * @param string|int $id
+     * @param string     $parserArea
+     *
+     * @return void
+     */
+    public function __construct($type, $type2, $id, $page = 1, $parserArea = '#content')
     {
         $this->_type = $type;
         $this->_type2 = $type2;
@@ -57,184 +64,149 @@ class ProducerModel extends MainModel
         } else {
             $this->_url = $this->_myAnimeListUrl.'/'.$type.'/genre/'.$id.'/?page='.$page;
         }
+
         $this->_parserArea = $parserArea;
+
         parent::errorCheck($this);
     }
 
+    /**
+     * Default call.
+     *
+     * @param string $method
+     * @param array  $arguments
+     *
+     * @return array|string|int
+     */
     public function __call($method, $arguments)
     {
         if ($this->_error) {
             return $this->_error;
         }
-        if (empty($method) || $method === 'getAllInfo') {
-            if (method_exists($this, 'getAllInfo')) {
-                return $this->getAllInfo(...$arguments);
-            }
-        }
-        if (method_exists($this, $method)) {
-            return call_user_func_array([$this, $method], $arguments);
-        }
-        return ['error' => "Method {$method} does not exist in " . __CLASS__];
-    }
 
-    private function getAnimeImage($each_anime) // YOUR_WORKING_ORIGINAL (with safety)
-    {
-        // Based on your HTML: div.image img
-        $imageContainer = $each_anime->find('div.image', 0);
-        if ($imageContainer) {
-            $imgTag = $imageContainer->find('img', 0);
-            if ($imgTag && $imgTag->hasAttribute('data-src')) {
-                return Helper::imageUrlCleaner($imgTag->getAttribute('data-src'));
-            } elseif ($imgTag && $imgTag->hasAttribute('src')) {
-                return Helper::imageUrlCleaner($imgTag->getAttribute('src'));
-            }
-        }
-        return '';
-    }
-
-    private function getAnimeId($name_area) // YOUR_WORKING_ORIGINAL (with safety)
-    {
-        // $name_area is div.title
-        $linkNode = $name_area->find('div.title-text h2.h2_anime_title a.link-title', 0);
-        if (!$linkNode) $linkNode = $name_area->find('a',0); // Fallback
-
-        if ($linkNode && isset($linkNode->href)) {
-            $anime_id_parts = explode('/', $linkNode->href);
-            // URL: https://myanimelist.net/anime/199/Sen_to_Chihiro_no_Kamikakushi -> ID is parts[4]
-            if (isset($anime_id_parts[4]) && is_numeric($anime_id_parts[4])) {
-                return $anime_id_parts[4];
-            }
-        }
-        return '';
-    }
-
-    private function getAnimeTitle($name_area) // YOUR_WORKING_ORIGINAL (with safety)
-    {
-        // $name_area is div.title
-        $linkNode = $name_area->find('div.title-text h2.h2_anime_title a.link-title', 0);
-         if (!$linkNode) $linkNode = $name_area->find('a',0); // Fallback
-
-        return ($linkNode && isset($linkNode->plaintext)) ? trim($linkNode->plaintext) : '';
+        return call_user_func_array([$this, $method], $arguments);
     }
 
     /**
-     * Get producer/studio name.
-     * $properties_node is $each_anime->find('div.synopsis div.properties', 0)
+     * Get anime image.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $properties_node
-     *
-     * @return array
-     */
-    private function getAnimeProducer($properties_node) // UPDATED
-    {
-        $producer = [];
-        if (!$properties_node || !is_object($properties_node)) {
-            return $producer;
-        }
-
-        $targetCaption = ($this->_type == 'anime') ? 'Studio' : 'Authors'; // HTML uses "Studio"
-        // For manga, it would be "Authors", this part needs testing if you use it for manga.
-        
-        foreach ($properties_node->find('div.property') as $propDiv) {
-            $captionNode = $propDiv->find('span.caption', 0);
-            if ($captionNode && isset($captionNode->plaintext) && trim($captionNode->plaintext) == $targetCaption) {
-                foreach ($propDiv->find('span.item a') as $each_producer_link) {
-                    $temp_prod = [];
-                    $temp_prod['id'] = $this->getAnimeProducerId($each_producer_link);
-                    $temp_prod['name'] = $this->getAnimeProducerName($each_producer_link);
-                    if (!empty($temp_prod['id']) || !empty($temp_prod['name'])) {
-                       $producer[] = $temp_prod;
-                    }
-                }
-                break; 
-            }
-        }
-        return $producer;
-    }
-
-    private function getAnimeProducerId($each_producer_link) // YOUR_ORIGINAL (adjusted for current HTML)
-    {
-        if (!is_object($each_producer_link) || empty($each_producer_link->href)) return '';
-        $prod_id_href = $each_producer_link->href; // e.g., /anime/producer/21/Studio_Ghibli
-        $prod_id_parts = explode('/', rtrim($prod_id_href, '/'));
-        
-        // Anime Producer: /anime/producer/ID/Name -> ID is parts[3]
-        if ($this->_type == 'anime') {
-            if (isset($prod_id_parts[3]) && $prod_id_parts[1] == 'anime' && $prod_id_parts[2] == 'producer' && is_numeric($prod_id_parts[3])) {
-                return $prod_id_parts[3];
-            }
-        } else { // manga authors: /people/ID/Name -> ID is parts[2]
-            if (isset($prod_id_parts[2]) && $prod_id_parts[1] == 'people' && is_numeric($prod_id_parts[2])) {
-                return $prod_id_parts[2];
-            }
-             // Manga magazines: /manga/magazine/ID/Name -> ID is parts[3]
-            if (isset($prod_id_parts[3]) && $prod_id_parts[1] == 'manga' && $prod_id_parts[2] == 'magazine' && is_numeric($prod_id_parts[3])) {
-                 return $prod_id_parts[3];
-            }
-        }
-        return '';
-    }
-
-    private function getAnimeProducerName($each_producer_link) // YOUR_ORIGINAL (with safety)
-    {
-        return (is_object($each_producer_link) && isset($each_producer_link->plaintext)) ? trim($each_producer_link->plaintext) : '';
-    }
-
-    /**
-     * Get anime episode count.
-     * $prodsrc_info_node is $each_anime->find('div.prodsrc div.info', 0)
-     *
-     * @param \simplehtmldom_1_5\simple_html_dom $prodsrc_info_node
+     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
      *
      * @return string
      */
-    private function getAnimeEpisode($prodsrc_info_node) // UPDATED
+    private function getAnimeImage($each_anime)
     {
-        if (!$prodsrc_info_node || !is_object($prodsrc_info_node)) {
-            return '';
-        }
-        // HTML: <span class="item"><span>1 ep</span>, ...</span>
-        $spans = $prodsrc_info_node->find('span.item');
-        foreach ($spans as $span) {
-            if (isset($span->plaintext) && strpos($span->plaintext, 'ep') !== false) {
-                 // Try to get the child span's text first if it exists
-                $childSpan = $span->find('span',0);
-                $textToParse = ($childSpan && isset($childSpan->plaintext)) ? $childSpan->plaintext : $span->plaintext;
+        $image = $each_anime->find('div[class=image]', 0)->find('img', 0)->getAttribute('data-src');
 
-                if (preg_match('/(\d+)\s*ep/', $textToParse, $matches)) {
-                    return $matches[1];
-                }
-            }
+        return  Helper::imageUrlCleaner($image);
+    }
+
+    /**
+     * Get anime id.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $name_area
+     *
+     * @return string
+     */
+    private function getAnimeId($name_area)
+    {
+        $anime_id = $name_area->find('a', 0)->href;
+        $anime_id = explode('/', $anime_id);
+
+        return $anime_id[4];
+    }
+
+    /**
+     * Get anime title.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $name_area
+     *
+     * @return string
+     */
+    private function getAnimeTitle($name_area)
+    {
+        return $name_area->find('a', 0)->plaintext;
+    }
+
+    /**
+     * Get producer name.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $producer_area
+     *
+     * @return array
+     */
+    private function getAnimeProducer($producer_area)
+    {
+        $producer = [];
+        $producer_area = $producer_area->find('span[class=item]', 0);
+        foreach ($producer_area->find('a') as $each_producer) {
+            $temp_prod = [];
+
+            $temp_prod['id'] = $this->getAnimeProducerId($each_producer);
+            $temp_prod['name'] = $this->getAnimeProducerName($each_producer);
+
+            $producer[] = $temp_prod;
         }
-        return '';
+
+        return $producer;
+    }
+
+    /**
+     * Get producer id.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $each_producer
+     *
+     * @return string
+     */
+    private function getAnimeProducerId($each_producer)
+    {
+        $prod_id = $each_producer->href;
+        $prod_id = explode('/', $prod_id);
+        if ($this->_type == 'anime') {
+            return $prod_id[3];
+        }
+
+        return $prod_id[4];
+    }
+
+    /**
+     * Get producer name.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $each_producer
+     *
+     * @return string
+     */
+    private function getAnimeProducerName($each_producer)
+    {
+        return $each_producer->plaintext;
+    }
+
+    /**
+     * Get anime episode.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $producer_area
+     *
+     * @return string
+     */
+    private function getAnimeEpisode($producer_area)
+    {
+        $episode = $producer_area->find('div[class=eps]', 0)->plaintext;
+
+        return trim(str_replace(['eps', 'ep', 'vols', 'vol'], '', $episode));
     }
 
     /**
      * Get anime source.
-     * $properties_node is $each_anime->find('div.synopsis div.properties', 0)
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $properties_node
+     * @param \simplehtmldom_1_5\simple_html_dom $producer_area
      *
      * @return string
      */
-    private function getAnimeSource($properties_node) // UPDATED
+    private function getAnimeSource($producer_area)
     {
-        if (!$properties_node || !is_object($properties_node)) {
-            return '';
-        }
-        $targetCaption = 'Source'; // HTML uses "Source"
-        
-        foreach ($properties_node->find('div.property') as $propDiv) {
-            $captionNode = $propDiv->find('span.caption', 0);
-            if ($captionNode && isset($captionNode->plaintext) && trim($captionNode->plaintext) == $targetCaption) {
-                $itemNode = $propDiv->find('span.item', 0);
-                if ($itemNode && isset($itemNode->plaintext)) {
-                    return trim($itemNode->plaintext);
-                }
-                break;
-            }
-        }
-        return '';
+        $source = $producer_area->find('span[class=item]', 0)->plaintext;
+
+        return trim($source);
     }
 
     /**
@@ -244,20 +216,15 @@ class ProducerModel extends MainModel
      *
      * @return array
      */
-    private function getAnimeGenre($each_anime) // UPDATED
+    private function getAnimeGenre($each_anime)
     {
-        $genres = [];
-        if (!$each_anime || !is_object($each_anime)) return $genres;
-        // HTML: <div class="genres js-genre"> <div class="genres-inner js-genre-inner"> <span class="genre"> <a ...>GenreName</a> </span> ... </div> </div>
-        $genre_container = $each_anime->find('div.genres.js-genre div.genres-inner', 0);
-        if ($genre_container) {
-            foreach ($genre_container->find('span.genre a') as $genre_link) {
-                if (isset($genre_link->plaintext)) {
-                    $genres[] = trim($genre_link->plaintext);
-                }
-            }
+        $genre = [];
+        $genre_area = $each_anime->find('div[class="genres-inner js-genre-inner"]', 0);
+        foreach ($genre_area->find('span a') as $each_genre) {
+            $genre[] = $each_genre->plaintext;
         }
-        return $genres;
+
+        return $genre;
     }
 
     /**
@@ -267,197 +234,89 @@ class ProducerModel extends MainModel
      *
      * @return string
      */
-    private function getAnimeSynopsis($each_anime) // UPDATED
+    private function getAnimeSynopsis($each_anime)
     {
-        if (!$each_anime || !is_object($each_anime)) return '';
-        // HTML: <div class="synopsis js-synopsis"> <p class="preline">...</p> ... </div>
-        $synopsis_container = $each_anime->find('div.synopsis.js-synopsis', 0);
-        if ($synopsis_container) {
-            $paragraph_node = $synopsis_container->find('p.preline', 0);
-            if ($paragraph_node && isset($paragraph_node->plaintext)) {
-                // Remove "Read more" button if it affects plaintext (unlikely here as it's separate)
-                // The <button> is outside <p>, so its text won't be part of p.preline's plaintext
-                $text = trim($paragraph_node->plaintext);
-                return trim(preg_replace("/([\s])+/", ' ', $text));
-            } elseif (isset($synopsis_container->plaintext)) { // Fallback to whole container if <p> not found
-                 $text = trim($synopsis_container->plaintext); // This might include button text
-                 // Attempt to remove button text if needed, though button is usually not part of plaintext of parent easily
-                 return trim(preg_replace("/([\s])+/", ' ', $text));
-            }
-        }
-        return '';
+        $synopsis = $each_anime->find('div[class="synopsis js-synopsis"]', 0)->plaintext;
+
+        return trim(preg_replace("/([\s])+/", ' ', $synopsis));
     }
 
     /**
-     * Get anime licensor OR Manga Serialization.
+     * Get anime licensor.
      *
      * @param \simplehtmldom_1_5\simple_html_dom $each_anime
      *
      * @return string|array
      */
-    private function getAnimeLicensor($each_anime) // UPDATED
+    private function getAnimeLicensor($each_anime)
     {
-        // Licensors are not present in the provided HTML sample for this item.
-        // If they were, they'd likely be in the div.properties.
-        // Your original logic for data-licensors on a span.licensors:
         if ($this->_type == 'anime') {
-            $synopsis_container = $each_anime->find('div.synopsis.js-synopsis', 0);
-            if ($synopsis_container) {
-                $licensor_node = $synopsis_container->find('span.licensors', 0); 
-                if ($licensor_node && $licensor_node->hasAttribute('data-licensors')) {
-                    $licensor_attr = $licensor_node->getAttribute('data-licensors');
-                    return array_filter(explode(',', $licensor_attr));
-                }
-            }
-            return []; // No licensors in sample, default to empty array for anime
-        } else { // Manga (Serialization) - also not in sample
-            $synopsis_container = $each_anime->find('div.synopsis.js-synopsis', 0);
-            if ($synopsis_container) {
-                $serialization_link = $synopsis_container->find('.serialization a', 0);
-                if ($serialization_link && isset($serialization_link->plaintext)) {
-                    return trim($serialization_link->plaintext);
-                }
-            }
-            return ''; // No serialization in sample
+            $licensor = $each_anime->find('div[class="synopsis js-synopsis"] .licensors', 0)->getAttribute('data-licensors');
+            $licensor = explode(',', $licensor);
+
+            return array_filter($licensor);
+        } else {
+            $serialization = $each_anime->find('div[class="synopsis js-synopsis"] .serialization a', 0);
+
+            return $serialization ? $serialization->plaintext : '';
         }
     }
 
     /**
-     * Get anime type (Movie, TV, etc.).
-     * $prodsrc_info_node is $each_anime->find('div.prodsrc div.info', 0)
+     * Get anime type.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $prodsrc_info_node
+     * @param \simplehtmldom_1_5\simple_html_dom $info_area
      *
      * @return string
      */
-    private function getAnimeType($prodsrc_info_node) // UPDATED
+    private function getAnimeType($info_area)
     {
-        if (!$prodsrc_info_node || !is_object($prodsrc_info_node)) {
-            return '';
-        }
-        // HTML: <span class="item">Movie, 2001</span>
-        $itemSpans = $prodsrc_info_node->find('span.item');
-        if (isset($itemSpans[0]) && isset($itemSpans[0]->plaintext)) {
-            $full_text = $itemSpans[0]->plaintext; // "Movie, 2001"
-            $parts = explode(',', $full_text);
-            return trim($parts[0]); // "Movie"
-        }
-        return '';
+        $type = $info_area->find('.info', 0)->plaintext;
+        $type = explode('-', $type);
+
+        return trim($type[0]);
     }
 
     /**
-     * Get anime start year.
-     * $prodsrc_info_node is $each_anime->find('div.prodsrc div.info', 0)
+     * Get anime start.
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $prodsrc_info_node
+     * @param \simplehtmldom_1_5\simple_html_dom $info_area
      *
      * @return string
      */
-    private function getAnimeStart($prodsrc_info_node) // UPDATED
+    private function getAnimeStart($info_area)
     {
-        if (!$prodsrc_info_node || !is_object($prodsrc_info_node)) {
-            return '';
-        }
-        // HTML: <span class="item">Movie, 2001</span>
-        // Or sometimes directly from hidden span: <span style="display: none;" class="js-start_date">20010720</span>
-        // Let's prioritize the hidden span if available as it's more precise
-        $hiddenStartDate = $prodsrc_info_node->parent()->parent()->find('div.title span.js-start_date', 0); // Navigate up to find it
-        if ($hiddenStartDate && isset($hiddenStartDate->plaintext)) {
-            $dateYMD = trim($hiddenStartDate->plaintext); // "20010720"
-            if (strlen($dateYMD) == 8) {
-                // You can format this if needed, e.g., YYYY-MM-DD
-                // return substr($dateYMD, 0, 4) . '-' . substr($dateYMD, 4, 2) . '-' . substr($dateYMD, 6, 2);
-                return $dateYMD; // Return raw YYYYMMDD for now
-            }
-        }
+        $airing_start = $info_area->find('.info .remain-time', 0)->plaintext;
 
-        // Fallback to parsing from visible text
-        $itemSpans = $prodsrc_info_node->find('span.item');
-        if (isset($itemSpans[0]) && isset($itemSpans[0]->plaintext)) {
-            $full_text = $itemSpans[0]->plaintext; // "Movie, 2001"
-            $parts = explode(',', $full_text);
-            if (isset($parts[1])) {
-                return trim($parts[1]); // "2001"
-            }
-        }
-        return '';
+        return trim($airing_start);
+    }
+
+    /**
+     * Get anime member.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $info_area
+     *
+     * @return string
+     */
+    private function getAnimeScore($info_area)
+    {
+        $score = $info_area->find('.scormem .score', 0)->plaintext;
+
+        return trim($score);
     }
 
     /**
      * Get anime score.
-     * $info_area_node is $each_anime->find('.information', 0)
      *
-     * @param \simplehtmldom_1_5\simple_html_dom $info_area_node
-     *
-     * @return string
-     */
-    private function getAnimeScore($info_area_node) // UPDATED
-    {
-        if (!$info_area_node || !is_object($info_area_node)) {
-            return 'N/A';
-        }
-        // HTML: <div class="scormem-item score score-label score-8" title="Score"> <i ...></i>8.77 </div>
-        // Or hidden: <span style="display: none;" class="js-score">8.77</span>
-        
-        // Prioritize hidden js-score as it's cleaner
-        $hiddenScore = $info_area_node->parent()->find('div.title span.js-score', 0); // Navigate up
-        if ($hiddenScore && isset($hiddenScore->plaintext)) {
-            $score_text = trim($hiddenScore->plaintext);
-            return (is_numeric($score_text) && (float)$score_text >= 0) ? $score_text : 'N/A';
-        }
-
-        // Fallback to visible score
-        $scoreNode = $info_area_node->find('div.scormem-item.score', 0);
-        if ($scoreNode && isset($scoreNode->plaintext)) {
-            $score_text = trim($scoreNode->plaintext); // "8.77" (might have icon text too)
-             // Extract number part
-            if(preg_match('/(\d+\.?\d*)/', $score_text, $matches)){
-                return $matches[1];
-            }
-        }
-        return 'N/A';
-    }
-
-    /**
-     * Get anime member count.
-     * $info_area_node is $each_anime->find('.information', 0)
-     *
-     * @param \simplehtmldom_1_5\simple_html_dom $info_area_node
+     * @param \simplehtmldom_1_5\simple_html_dom $info_area
      *
      * @return string
      */
-    private function getAnimeMember($info_area_node) // UPDATED
+    private function getAnimeMember($info_area)
     {
-        if (!$info_area_node || !is_object($info_area_node)) {
-            return '0';
-        }
-        // HTML: <div class="scormem-item member" title="Members"> <i ...></i>2.0M </div>
-        // Or hidden: <span style="display: none;" class="js-members">1957516</span>
+        $member = $info_area->find('.scormem span[class^=member]', 0)->plaintext;
 
-        // Prioritize hidden js-members as it's the raw number
-        $hiddenMembers = $info_area_node->parent()->find('div.title span.js-members', 0); // Navigate up
-        if ($hiddenMembers && isset($hiddenMembers->plaintext)) {
-            return trim(preg_replace('/[^\d]/', '', $hiddenMembers->plaintext));
-        }
-        
-        // Fallback to visible members
-        $memberNode = $info_area_node->find('div.scormem-item.member', 0);
-        if ($memberNode && isset($memberNode->plaintext)) {
-            $memberText = trim($memberNode->plaintext); // "2.0M" (might have icon text)
-            if (preg_match('/([\d\.,]+(?:K|M)?)/i', $memberText, $matches)) {
-                $countStr = strtoupper(str_replace(',', '', $matches[1]));
-                $count = 0;
-                if (strpos($countStr, 'M') !== false) {
-                    $count = (float)str_replace('M', '', $countStr) * 1000000;
-                } elseif (strpos($countStr, 'K') !== false) {
-                    $count = (float)str_replace('K', '', $countStr) * 1000;
-                } else {
-                    $count = (float)$countStr;
-                }
-                return (string)(int)$count;
-            }
-        }
-        return '0';
+        return trim(str_replace(',', '', $member));
     }
 
     /**
@@ -465,58 +324,67 @@ class ProducerModel extends MainModel
      *
      * @return array
      */
+// In ProducerModel.php
 private function getAllInfo()
 {
     if (!$this->_parser || !is_object($this->_parser)) {
         $this->_error = ['error' => 'Parser not initialized or invalid.'];
-        echo "DEBUG: Parser not initialized or invalid.\n"; // DEBUG
         return $this->_error;
     }
-    echo "DEBUG: Parser seems OK.\n"; // DEBUG
 
     $data = [];
-    // YOUR ORIGINAL SELECTOR
-    $selector_for_anime_table = 'div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]';
-    echo "DEBUG: Using selector for anime_table: " . htmlspecialchars($selector_for_anime_table) . "\n"; // DEBUG
-    $anime_table = $this->_parser->find($selector_for_anime_table);
+    // YOUR WORKING ORIGINAL SELECTOR FOR THE LIST OF ITEMS
+    $anime_table = $this->_parser->find('div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]');
 
-    echo "DEBUG: Count of items found by anime_table selector: " . count($anime_table) . "\n"; // DEBUG
-
-    if (count($anime_table) > 0 && isset($anime_table[0]) && is_object($anime_table[0])) {
-        echo "<pre>DEBUG: HTML of FIRST item found by anime_table selector:\n" . htmlspecialchars($anime_table[0]->outertext) . "</pre>\n"; // DEBUG
-    } else {
-        echo "DEBUG: No items found by anime_table selector, or first item is not an object.\n"; // DEBUG
-        // If no items are found, let's see what the _parserArea contains:
-        // echo "<pre>DEBUG: Content of _parserArea:\n" . htmlspecialchars($this->_parser->outertext) . "</pre>\n"; // CAUTION: This can be very large
-    }
-    // die; // You might want to die here to see this output clearly
-
-    // ... (rest of your foreach loop and logic) ...
-    // Ensure all helper functions being called are the ones from my PREVIOUS response
-    // (the one where I used your HTML sample extensively to define their internal selectors).
-
-    // For example, in the loop:
     foreach ($anime_table as $each_anime) {
-        if(!is_object($each_anime)) {
-            echo "DEBUG: \$each_anime is not an object in loop.\n"; //DEBUG
-            continue;
+        if(!is_object($each_anime)) continue; 
+
+        $result = [];
+
+        // YOUR ORIGINAL SUB-SELECTOR for name_area
+        $name_area = $each_anime->find('div[class=title]', 0);
+        
+        // For Mononoke Hime HTML:
+        // $producer_area was 'div[class=property"]' - this is invalid syntax.
+        // It's likely you intended to pass $each_anime or a sub-node.
+        // For Mononoke, specific fields are directly under $each_anime or in $each_anime->find('div.widget')
+        // $info_area was $each_anime->find('.information', 0) - this will be null for Mononoke sample.
+
+        // These are working as per your statement
+        $result['image'] = ''; $result['id'] = ''; $result['title'] = '';
+        $result['image'] = $this->getAnimeImage($each_anime);
+        if ($name_area && is_object($name_area)) {
+            $result['id'] = $this->getAnimeId($name_area);
+            $result['title'] = $this->getAnimeTitle($name_area);
         }
-        // ...
-        $name_area = $each_anime->find('div.title', 0);
-        if (!$name_area || !is_object($name_area)) {
-            echo "DEBUG: \$name_area not found or not an object for an item.\n"; // DEBUG
-            // echo "<pre>DEBUG: HTML of current \$each_anime that failed to find name_area:\n" . htmlspecialchars($each_anime->outertext) . "</pre>\n"; // DEBUG
-            continue;
+
+        if (empty($result['id'])) {
+            continue; 
         }
-        $current_id = $this->getAnimeId($name_area);
-        if (empty($current_id)) {
-            echo "DEBUG: ID extraction failed for an item.\n"; //DEBUG
-            // echo "<pre>DEBUG: HTML of name_area that failed ID extraction:\n" . htmlspecialchars($name_area->outertext) . "</pre>\n"; // DEBUG
+
+        // --- UNCOMMENTED AND PASSING $each_anime TO MOST HELPERS ---
+        // This is the most straightforward way given the Mononoke HTML structure.
+        $result['genre'] = $this->getAnimeGenre($each_anime);
+        $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
+        $result['source'] = $this->getAnimeSource($each_anime); // Pass $each_anime
+
+        if ($this->_type == 'anime') {
+            $result['producer'] = $this->getAnimeProducer($each_anime); // Pass $each_anime
+            $result['episode'] = $this->getAnimeEpisode($each_anime);   // Pass $each_anime
+            $result['licensor'] = $this->getAnimeLicensor($each_anime); 
+            $result['type'] = $this->getAnimeType($each_anime); // Pass $each_anime
+        } else { 
+            $result['author'] = $this->getAnimeProducer($each_anime); 
+            $result['volume'] = $this->getAnimeEpisode($each_anime);  
+            $result['serialization'] = $this->getAnimeLicensor($each_anime); 
         }
-        // ...
+
+        $result['airing_start'] = $this->getAnimeStart($each_anime); // Pass $each_anime
+        $result['member'] = $this->getAnimeMember($each_anime);     // Pass $each_anime
+        $result['score'] = $this->getAnimeScore($each_anime);       // Pass $each_anime
+        
+        $data[] = $result;
     }
-
-
-    return $data; // This will be empty if the loop doesn't run or IDs are not found
+    return $data;
 }
 }
