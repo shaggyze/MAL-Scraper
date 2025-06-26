@@ -465,74 +465,57 @@ class ProducerModel extends MainModel
      *
      * @return array
      */
-    private function getAllInfo()
-    {
-        if (!$this->_parser || !is_object($this->_parser)) {
-            $this->_error = ['error' => 'Parser not initialized or invalid.'];
-            return $this->_error;
-        }
-
-        $data = [];
-        // YOUR ORIGINAL SELECTOR FOR THE LIST OF ITEMS.
-        // Based on your sample, each item starts with:
-        // <div class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3" ...>
-        // So, this selector should be correct for fetching the items.
-        $anime_table = $this->_parser->find('div.js-anime-category-studio.seasonal-anime.js-seasonal-anime');
-var_dump(count($anime_table));
-        foreach ($anime_table as $each_anime) {
-            if(!is_object($each_anime)) continue; 
-
-            $result = [];
-
-            // From your working code:
-            $name_area = $each_anime->find('div.title', 0); // This gets <div class="title">
-
-            // For producer, source: these are in div.synopsis > div.properties
-            $properties_node = $each_anime->find('div.synopsis div.properties', 0);
-
-            // For episode, type, aired year: these are in div.prodsrc > div.info
-            $prodsrc_info_node = $each_anime->find('div.prodsrc div.info', 0);
-            
-            // For score, members: these are in div.information (which is $info_area in your old code)
-            $info_area = $each_anime->find('div.information', 0);
-
-
-            // These are working as per your statement (with safety checks)
-            $result['image'] = ''; $result['id'] = ''; $result['title'] = ''; // Initialize
-            if ($each_anime) $result['image'] = $this->getAnimeImage($each_anime);
-            if ($name_area && is_object($name_area)) {
-                $result['id'] = $this->getAnimeId($name_area);
-                $result['title'] = $this->getAnimeTitle($name_area);
-            }
-var_dump($result['id']);
-            if (empty($result['id'])) {
-                continue;
-            }
-
-            // --- UNCOMMENTED AND USING UPDATED HELPERS BASED ON PROVIDED HTML ---
-            $result['genre'] = $this->getAnimeGenre($each_anime);
-            $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
-            $result['source'] = $this->getAnimeSource($properties_node); 
-
-            if ($this->_type == 'anime') {
-                $result['producer'] = $this->getAnimeProducer($properties_node); 
-                $result['episode'] = $this->getAnimeEpisode($prodsrc_info_node);   
-                $result['licensor'] = $this->getAnimeLicensor($each_anime); // Licensor not in sample, uses old logic
-                $result['type'] = $this->getAnimeType($prodsrc_info_node); 
-            } else { // Manga
-                // Adapt these if using for manga, using anime logic as placeholder
-                $result['author'] = $this->getAnimeProducer($properties_node); 
-                $result['volume'] = $this->getAnimeEpisode($prodsrc_info_node);  
-                $result['serialization'] = $this->getAnimeLicensor($each_anime); 
-            }
-
-            $result['airing_start'] = $this->getAnimeStart($prodsrc_info_node); 
-            $result['member'] = $this->getAnimeMember($info_area);     
-            $result['score'] = $this->getAnimeScore($info_area);       
-            // --- END UNCOMMENTED ---
-
-            $data[] = $result;
-        }
-        return $data;
+private function getAllInfo()
+{
+    if (!$this->_parser || !is_object($this->_parser)) {
+        $this->_error = ['error' => 'Parser not initialized or invalid.'];
+        echo "DEBUG: Parser not initialized or invalid.\n"; // DEBUG
+        return $this->_error;
     }
+    echo "DEBUG: Parser seems OK.\n"; // DEBUG
+
+    $data = [];
+    // YOUR ORIGINAL SELECTOR
+    $selector_for_anime_table = 'div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]';
+    echo "DEBUG: Using selector for anime_table: " . htmlspecialchars($selector_for_anime_table) . "\n"; // DEBUG
+    $anime_table = $this->_parser->find($selector_for_anime_table);
+
+    echo "DEBUG: Count of items found by anime_table selector: " . count($anime_table) . "\n"; // DEBUG
+
+    if (count($anime_table) > 0 && isset($anime_table[0]) && is_object($anime_table[0])) {
+        echo "<pre>DEBUG: HTML of FIRST item found by anime_table selector:\n" . htmlspecialchars($anime_table[0]->outertext) . "</pre>\n"; // DEBUG
+    } else {
+        echo "DEBUG: No items found by anime_table selector, or first item is not an object.\n"; // DEBUG
+        // If no items are found, let's see what the _parserArea contains:
+        // echo "<pre>DEBUG: Content of _parserArea:\n" . htmlspecialchars($this->_parser->outertext) . "</pre>\n"; // CAUTION: This can be very large
+    }
+    // die; // You might want to die here to see this output clearly
+
+    // ... (rest of your foreach loop and logic) ...
+    // Ensure all helper functions being called are the ones from my PREVIOUS response
+    // (the one where I used your HTML sample extensively to define their internal selectors).
+
+    // For example, in the loop:
+    foreach ($anime_table as $each_anime) {
+        if(!is_object($each_anime)) {
+            echo "DEBUG: \$each_anime is not an object in loop.\n"; //DEBUG
+            continue;
+        }
+        // ...
+        $name_area = $each_anime->find('div.title', 0);
+        if (!$name_area || !is_object($name_area)) {
+            echo "DEBUG: \$name_area not found or not an object for an item.\n"; // DEBUG
+            // echo "<pre>DEBUG: HTML of current \$each_anime that failed to find name_area:\n" . htmlspecialchars($each_anime->outertext) . "</pre>\n"; // DEBUG
+            continue;
+        }
+        $current_id = $this->getAnimeId($name_area);
+        if (empty($current_id)) {
+            echo "DEBUG: ID extraction failed for an item.\n"; //DEBUG
+            // echo "<pre>DEBUG: HTML of name_area that failed ID extraction:\n" . htmlspecialchars($name_area->outertext) . "</pre>\n"; // DEBUG
+        }
+        // ...
+    }
+
+
+    return $data; // This will be empty if the loop doesn't run or IDs are not found
 }
