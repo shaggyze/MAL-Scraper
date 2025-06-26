@@ -556,7 +556,7 @@ class ProducerModel extends MainModel
                 $result = [];
                 $name_area = $each_anime->find('div[class=title]', 0);
                 
-                $result['image'] = ''; $result['id'] = ''; $result['title'] = '';
+                $result['id'] = ''; $result['title'] = ''; $result['image'] = '';
                 if ($name_area && is_object($name_area)) {
                     $result['id'] = $this->getAnimeId($name_area);
                     $result['title'] = $this->getAnimeTitle($name_area);
