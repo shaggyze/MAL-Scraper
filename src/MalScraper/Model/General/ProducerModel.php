@@ -4,7 +4,6 @@ namespace MalScraper\Model\General;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
-use HtmlDomParser;
 
 /**
  * ProducerModel class.
@@ -37,8 +36,6 @@ class ProducerModel extends MainModel
         "77" => "Team Sports", "78" => "Time Travel", "82" => "Urban Fantasy", "32" => "Vampire",
         "79" => "Video Game", "83" => "Villainess", "80" => "Visual Arts", "48" => "Workplace",
         "43" => "Josei", "15" => "Kids", "42" => "Seinen", "25" => "Shoujo", "27" => "Shounen"
-        // Note: MAL might add/change IDs. This map needs to be maintained.
-        // Some IDs from your list like "Love Status Quo" (74) and "Showbiz" (75) are newer.
     ];
 
     private static $mangaGenreMap = [
@@ -46,26 +43,22 @@ class ProducerModel extends MainModel
         "28" => "Boys Love", "4" => "Comedy", "8" => "Drama", "10" => "Fantasy",
         "26" => "Girls Love", "47" => "Gourmet", "14" => "Horror", "7" => "Mystery",
         "22" => "Romance", "24" => "Sci-Fi", "36" => "Slice of Life", "30" => "Sports",
-        "37" => "Supernatural", "45" => "Suspense", // Note: Manga uses 45 for Suspense, Anime uses 41
-        "9" => "Ecchi", "49" => "Erotica", "12" => "Hentai", "50" => "Adult Cast",
-        "51" => "Anthropomorphic", "52" => "CGDCT", "53" => "Childcare", "54" => "Combat Sports",
-        "44" => "Crossdressing", // Note: Manga uses 44, Anime uses 81
-        "55" => "Delinquents", "39" => "Detective", "56" => "Educational", "57" => "Gag Humor",
-        "58" => "Gore", "35" => "Harem", "59" => "High Stakes Game", "13" => "Historical",
-        "60" => "Idols (Female)", "61" => "Idols (Male)", "62" => "Isekai", "63" => "Iyashikei",
-        "64" => "Love Polygon", "75" => "Love Status Quo", // Manga also uses 75
-        "65" => "Magical Sex Shift", "66" => "Mahou Shoujo", "17" => "Martial Arts",
-        "18" => "Mecha", "67" => "Medical", "68" => "Memoir", // Manga specific
+        "37" => "Supernatural", "45" => "Suspense", "9" => "Ecchi", "49" => "Erotica",
+        "12" => "Hentai", "50" => "Adult Cast", "51" => "Anthropomorphic", "52" => "CGDCT",
+        "53" => "Childcare", "54" => "Combat Sports", "44" => "Crossdressing", "55" => "Delinquents",
+        "39" => "Detective", "56" => "Educational", "57" => "Gag Humor", "58" => "Gore",
+        "35" => "Harem", "59" => "High Stakes Game", "13" => "Historical", "60" => "Idols (Female)",
+        "61" => "Idols (Male)", "62" => "Isekai", "63" => "Iyashikei", "64" => "Love Polygon",
+        "75" => "Love Status Quo", "65" => "Magical Sex Shift", "66" => "Mahou Shoujo",
+        "17" => "Martial Arts", "18" => "Mecha", "67" => "Medical", "68" => "Memoir",
         "38" => "Military", "19" => "Music", "6" => "Mythology", "69" => "Organized Crime",
         "70" => "Otaku Culture", "20" => "Parody", "71" => "Performing Arts", "72" => "Pets",
         "40" => "Psychological", "3" => "Racing", "73" => "Reincarnation", "74" => "Reverse Harem",
-        "21" => "Samurai", "23" => "School", "76" => "Showbiz", // Manga also uses 76
-        "29" => "Space", "11" => "Strategy Game", "31" => "Super Power", "77" => "Survival",
-        "78" => "Team Sports", "79" => "Time Travel", "83" => "Urban Fantasy", // Manga uses 83, Anime 82
-        "32" => "Vampire", "80" => "Video Game", "81" => "Villainess", // Manga uses 81, Anime 83
-        "82" => "Visual Arts", // Manga uses 82, Anime 80
-        "48" => "Workplace", "42" => "Josei", "15" => "Kids", "41" => "Seinen", // Note: Manga uses 41 for Seinen, Anime 42
-        "25" => "Shoujo", "27" => "Shounen"
+        "21" => "Samurai", "23" => "School", "76" => "Showbiz", "29" => "Space",
+        "11" => "Strategy Game", "31" => "Super Power", "77" => "Survival", "78" => "Team Sports",
+        "79" => "Time Travel", "83" => "Urban Fantasy", "32" => "Vampire", "80" => "Video Game",
+        "81" => "Villainess", "82" => "Visual Arts", "48" => "Workplace", "42" => "Josei",
+        "15" => "Kids", "41" => "Seinen", "25" => "Shoujo", "27" => "Shounen"
     ];
     // --- END: GENRE MAPPINGS ---
 
@@ -177,7 +170,7 @@ class ProducerModel extends MainModel
         $studioPageDetails = [];
         $studioPageDetails['studio_name'] = '';
         $studioPageDetails['logo_image_url'] = '';
-        $studioPageDetails['info'] = []; // This is what we want to populate
+        $studioPageDetails['info'] = [];
         $studioPageDetails['description'] = '';
         $studioPageDetails['available_at_links'] = [];
         $studioPageDetails['resource_links'] = [];
@@ -236,14 +229,19 @@ class ProducerModel extends MainModel
             if ($darkTextNode && is_object($darkTextNode) && isset($darkTextNode->plaintext)) {
                 $label = trim(rtrim($darkTextNode->plaintext, ':'));
                 $value = '';
-                $temp_html_str = $pad->innertext;
+                $temp_html_str = $pad->innertext; // Use innertext of the pad
                 $temp_label_html = $darkTextNode->outertext;
-                $value_html_str = str_ireplace($temp_label_html, '', $temp_html_str);
+                // Ensure $temp_label_html is not empty to avoid issues if label itself is empty
+                $value_html_str = !empty($temp_label_html) ? str_ireplace($temp_label_html, '', $temp_html_str) : $temp_html_str;
+                
                 $temp_dom_for_value = HtmlDomParser::str_get_html($value_html_str);
                 if ($temp_dom_for_value && is_object($temp_dom_for_value)) {
-                    $value = trim($temp_dom_for_value->plaintext());
-                    $temp_dom_for_value->clear();
-                    unset($temp_dom_for_value);
+                    // CORRECTED: Access plaintext as a property
+                    $value = isset($temp_dom_for_value->plaintext) ? trim($temp_dom_for_value->plaintext) : ''; 
+                    $temp_dom_for_value->clear(); 
+                    unset($temp_dom_for_value); 
+                } else {
+                    $value = ''; 
                 }
 
                 if (!empty($value)) {
@@ -262,7 +260,7 @@ class ProducerModel extends MainModel
                             break;
                     }
                 }
-            } elseif (empty($description)) {
+            } elseif (empty($description)) { 
                 $descSpan = $pad->find('span', 0);
                 $currentDescCandidate = '';
                 if ($descSpan && is_object($descSpan) && isset($descSpan->plaintext)) {
@@ -270,12 +268,12 @@ class ProducerModel extends MainModel
                 } elseif (isset($pad->plaintext)) {
                     $currentDescCandidate = trim($pad->plaintext);
                 }
-                if (strlen($currentDescCandidate) > 50) {
+                if (strlen($currentDescCandidate) > 50) { 
                     $description = trim(preg_replace("/\s+/", " ", $currentDescCandidate));
                 }
             }
         }
-        $studioPageDetails['info'] = $studioInfo; // Populated here
+        $studioPageDetails['info'] = $studioInfo;
         $studioPageDetails['description'] = $description;
 
         $availableAtLinks = [];
@@ -388,12 +386,6 @@ class ProducerModel extends MainModel
         return '';
     }
 
-    /**
-     * Get anime genre names by looking up IDs from data-genre attribute.
-     *
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return array
-     */
     private function getAnimeGenre($each_anime)
     {
         $genres = [];
@@ -415,8 +407,8 @@ class ProducerModel extends MainModel
                 }
             }
         }
-        // Fallback for text-based genres if data-genre not present or empty
-        if (empty($genres)) {
+        
+        if (empty($genres)) { // Fallback to text-based genres if data-genre not helpful
             $genre_container_outer = $each_anime->find('div.genres.js-genre', 0); 
             if ($genre_container_outer && is_object($genre_container_outer)) {
                 $genre_container_inner = $genre_container_outer->find('div.genres-inner', 0); 
@@ -546,10 +538,10 @@ class ProducerModel extends MainModel
         
         if (is_array($studioPageDetails)) {
             foreach ($studioPageDetails as $key => $value) {
-                if ($key !== 'error_studio_details') {
+                if ($key !== 'error_studio_details') { // Prevent copying a potential error key directly
                      $outputData[$key] = $value;
-                } elseif (!empty($value)) {
-                     $outputData['studio_details_error'] = $value;
+                } elseif (!empty($value)) { // If there was an error string from _getStudioPageDetails
+                     $outputData['studio_details_error'] = $value; // Store it under a distinct key
                 }
             }
         }
