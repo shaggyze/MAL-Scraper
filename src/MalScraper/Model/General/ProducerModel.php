@@ -48,7 +48,7 @@ class ProducerModel extends MainModel
      *
      * @return void
      */
-    public function __construct($type, $type2, $id, $page = 1, $parserArea = '#content .js-categories-seasonal')
+    public function __construct($type, $type2, $id, $page = 1, $parserArea = '#content')
     {
         $this->_type = $type;
         $this->_type2 = $type2;
@@ -201,10 +201,10 @@ class ProducerModel extends MainModel
      * @param \simplehtmldom_1_5\simple_html_dom $producer_area
      *
      * @return string
-     *
+     */
     private function getAnimeSource($producer_area)
     {
-        $source = $producer_area->find('span[class=source]', 0)->plaintext;
+        $source = $producer_area->find('span[class=item]', 0)->plaintext;
 
         return trim($source);
     }
@@ -327,7 +327,7 @@ class ProducerModel extends MainModel
     private function getAllInfo()
     {
         $data = [];
-        $anime_table = $this->_parser->find('div[class="seasonal-anime js-seasonal-anime"]');
+        $anime_table = $this->_parser->find('div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]');
         foreach ($anime_table as $each_anime) {
             $result = [];
 
