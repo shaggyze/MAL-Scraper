@@ -216,15 +216,54 @@ class ProducerModel extends MainModel
      *
      * @return array
      */
+    /**
+     * Get anime genre.
+     * Original param: $each_anime.
+     * The Mononoke Hime sample has genres in `data-genre` attribute, not as text.
+     * This text-based approach will return empty for that sample.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
+     * @return array
+     */
     private function getAnimeGenre($each_anime)
     {
-        $genre = [];
-        $genre_area = $each_anime->find('div[class="genres-inner js-genre-inner"]', 0);
-        foreach ($genre_area->find('span[class=genre] a') as $each_genre) {
-            $genre[] = $each_genre->plaintext;
+        $genres = [];
+        if (!is_object($each_anime)) {
+            return $genres;
         }
 
-        return $genre;
+        // Attempt to find the genre container structure seen in more detailed item views (like Sen to Chihiro sample)
+        $genre_container_outer = $each_anime->find('div.genres.js-genre', 0); // Find the outer .genres.js-genre div
+
+        if ($genre_container_outer && is_object($genre_container_outer)) { // Check if outer container found
+            $genre_container_inner = $genre_container_outer->find('div.genres-inner', 0); // Then find .genres-inner inside it
+
+            if ($genre_container_inner && is_object($genre_container_inner)) { // Check if inner container found
+                // Now safely find links within the inner container
+                $links = $genre_container_inner->find('span.genre a'); // Try specific path first
+                if (empty($links)) {
+                    $links = $genre_container_inner->find('a'); // Broader fallback
+                }
+                
+                foreach ($links as $each_genre_link) {
+                    if (isset($each_genre_link->plaintext)) {
+                        $genres[] = trim($each_genre_link->plaintext);
+                    }
+                }
+            }
+        }
+        // If the above structure is not found (as in Mononoke Hime sample), $genres remains empty.
+        // If you wanted to parse the data-genre attribute (e.g., "1,2,46,10") from Mononoke Hime:
+        // if (empty($genres) && $each_anime->hasAttribute('data-genre')) {
+        //     $genre_ids_str = $each_anime->getAttribute('data-genre');
+        //     $genre_ids = explode(',', $genre_ids_str);
+        //     // You would then have genre IDs, not names.
+        //     // To get names, you'd typically need another lookup or a mapping.
+        //     // For now, we're sticking to text scraping, so this will be empty if no text links.
+        //     // $genres = $genre_ids; // This would put IDs in the genre list
+        // }
+
+        return $genres;
     }
 
     /**
