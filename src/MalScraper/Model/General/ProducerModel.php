@@ -171,46 +171,74 @@ class ProducerModel extends MainModel
             }
         }
 
-        $studioInfo = [];
-        $description = '';
-        $detailsContainer = null;
-        foreach ($contentLeft->find('div.mb16') as $mb16Div) {
-            if (is_object($mb16Div) && !$mb16Div->find('div.js-sns-icon-container',0) && !$mb16Div->find('div.user-profile-sns',0) ) {
-                $detailsContainer = $mb16Div;
-                break;
-            }
-        }
-        
-        if ($detailsContainer && is_object($detailsContainer)) {
-            foreach ($detailsContainer->find('div.spaceit_pad') as $spaceitPad) {
-                if (!is_object($spaceitPad)) continue;
-                $darkTextNode = $spaceitPad->find('span.dark_text', 0);
-                if ($darkTextNode && is_object($darkTextNode) && isset($darkTextNode->plaintext)) {
-                    $label = trim(rtrim($darkTextNode->plaintext, ':')); // Remove trailing colon
-                    $originalOuterText = $darkTextNode->outertext; // Store original
-                    $darkTextNode->outertext = ''; 
-                    $value = trim($spaceitPad->plaintext);
-                    $darkTextNode->outertext = $originalOuterText; // Restore (though not strictly necessary for scraping value)
+        $studioInfo = []; // This will be $studioPageDetails['info']
+        $description = ''; // This will be $studioPageDetails['description']
 
-                    if (!empty($value)) {
-                        if ($label == 'Japanese') $studioInfo['japanese_name'] = $value;
-                        elseif ($label == 'Established') $studioInfo['established_date'] = $value;
-                        elseif ($label == 'Member Favorites') $studioInfo['member_favorites_count'] = trim(str_replace(',', '', $value));
+        // Find all spaceit_pad divs directly under contentLeft that seem to be info items or description
+        // This is more direct than relying on finding the correct div.mb16 container first.
+        $potentialInfoPads = $contentLeft->find('div.spaceit_pad');
+        
+        $isFirstGeneralSpan = true; // To identify the main description if it's the first span without dark_text
+
+        foreach ($potentialInfoPads as $pad) {
+            if (!is_object($pad)) continue;
+
+            $darkTextNode = $pad->find('span.dark_text', 0);
+
+            if ($darkTextNode && is_object($darkTextNode) && isset($darkTextNode->plaintext)) {
+                $label = trim(rtrim($darkTextNode->plaintext, ':')); // "Japanese", "Established", "Member Favorites"
+                
+                // Temporarily remove the label to get only the value
+                $labelTextForRemoval = $darkTextNode->outertext;
+                $pad->innertext = str_replace($labelTextForRemoval, '', $pad->innertext);
+                $value = trim($pad->plaintext);
+                $pad->innertext = $labelTextForRemoval . $pad->innertext; // Restore (optional, good practice)
+
+                if (!empty($value)) {
+                    switch (strtolower($label)) { // Use strtolower for case-insensitivity
+                        case 'japanese':
+                            $studioInfo['japanese_name'] = $value;
+                            break;
+                        case 'established':
+                            $studioInfo['established_date'] = $value;
+                            break;
+                        case 'member favorites':
+                            $studioInfo['member_favorites_count'] = trim(str_replace(',', '', $value));
+                            break;
+                        case 'synonyms': // For your Studio Pierrot example
+                            $studioInfo['synonyms'] = array_map('trim', explode(',', $value));
+                            break;
+                        // Add other specific labels you want to capture for 'info'
                     }
-                } else {
-                    $descSpan = $spaceitPad->find('span', 0); 
-                    if ($descSpan && is_object($descSpan) && isset($descSpan->plaintext)) {
-                         $currentDesc = trim(preg_replace("/\s+/", " ", $descSpan->plaintext));
-                         if (strlen($currentDesc) > strlen($description)) $description = $currentDesc; // Take the longest one
-                    } elseif (isset($spaceitPad->plaintext) && strlen(trim($spaceitPad->plaintext)) > 50) {
-                         $currentDesc = trim(preg_replace("/\s+/", " ", $spaceitPad->plaintext));
-                         if (strlen($currentDesc) > strlen($description)) $description = $currentDesc;
-                    }
+                }
+                $isFirstGeneralSpan = false; // Once we find a labeled item, subsequent general spans are not the main description
+            } else {
+                // This spaceit_pad does not have a dark_text label.
+                // It could be the main description.
+                // The Studio Ghibli HTML has the description in a <span> inside such a div.spaceit_pad.
+                $descSpan = $pad->find('span', 0);
+                $textToConsiderForDesc = '';
+                if ($descSpan && is_object($descSpan) && isset($descSpan->plaintext)) {
+                    $textToConsiderForDesc = trim($descSpan->plaintext);
+                } elseif (isset($pad->plaintext)) { // Fallback to the div's plaintext if no span
+                    $textToConsiderForDesc = trim($pad->plaintext);
+                }
+
+                // Heuristic: If it's long and we haven't found labeled items yet or it's the only one.
+                // And ensure it's not an "Available At" or "Resources" section header (though those are h2)
+                // or part of the social media buttons if those were spaceit_pad (unlikely).
+                if (strlen($textToConsiderForDesc) > 50 && empty($description) && 
+                    !$pad->parent()->find('div.js-sns-icon-container',0) &&
+                    !$pad->parent()->find('div.user-profile-sns',0) ) {
+                    $description = trim(preg_replace("/\s+/", " ", $textToConsiderForDesc));
+                } else if ($isFirstGeneralSpan && strlen($textToConsiderForDesc) > 50 && empty($description)) {
+                     // If it's the very first span without a label and it's long, assume description
+                     $description = trim(preg_replace("/\s+/", " ", $textToConsiderForDesc));
                 }
             }
         }
         $studioPageDetails['info'] = $studioInfo;
-        $studioPageDetails['description'] = $description;
+        $studioPageDetails['description'] = $description; // This should now be populated if logic is correct
 
         $availableAtLinks = [];
         $availableAtSection = $contentLeft->find('div.user-profile-sns', 0);
