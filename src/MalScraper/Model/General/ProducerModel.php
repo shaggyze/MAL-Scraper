@@ -404,23 +404,23 @@ private function getAllInfo()
         // --- UNCOMMENTED AND PASSING $each_anime TO MOST HELPERS ---
         // This is the most straightforward way given the Mononoke HTML structure.
         $result['genre'] = $this->getAnimeGenre($each_anime);
-        $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
-        $result['source'] = $this->getAnimeSource($each_anime); // Pass $each_anime
+        //$result['synopsis'] = $this->getAnimeSynopsis($each_anime);
+        //$result['source'] = $this->getAnimeSource($each_anime); // Pass $each_anime
 
         if ($this->_type == 'anime') {
-            $result['producer'] = $this->getAnimeProducer($each_anime); // Pass $each_anime
-            $result['episode'] = $this->getAnimeEpisode($each_anime);   // Pass $each_anime
-            $result['licensor'] = $this->getAnimeLicensor($each_anime); 
-            $result['type'] = $this->getAnimeType($each_anime); // Pass $each_anime
+            //$result['producer'] = $this->getAnimeProducer($each_anime); // Pass $each_anime
+            //$result['episode'] = $this->getAnimeEpisode($each_anime);   // Pass $each_anime
+            //$result['licensor'] = $this->getAnimeLicensor($each_anime); 
+            //$result['type'] = $this->getAnimeType($each_anime); // Pass $each_anime
         } else { 
-            $result['author'] = $this->getAnimeProducer($each_anime); 
-            $result['volume'] = $this->getAnimeEpisode($each_anime);  
-            $result['serialization'] = $this->getAnimeLicensor($each_anime); 
+            //$result['author'] = $this->getAnimeProducer($each_anime); 
+            //$result['volume'] = $this->getAnimeEpisode($each_anime);  
+            //$result['serialization'] = $this->getAnimeLicensor($each_anime); 
         }
 
-        $result['airing_start'] = $this->getAnimeStart($each_anime); // Pass $each_anime
-        $result['member'] = $this->getAnimeMember($each_anime);     // Pass $each_anime
-        $result['score'] = $this->getAnimeScore($each_anime);       // Pass $each_anime
+        //$result['airing_start'] = $this->getAnimeStart($each_anime); // Pass $each_anime
+        //$result['member'] = $this->getAnimeMember($each_anime);     // Pass $each_anime
+        //$result['score'] = $this->getAnimeScore($each_anime);       // Pass $each_anime
         
         $data[] = $result;
     }
