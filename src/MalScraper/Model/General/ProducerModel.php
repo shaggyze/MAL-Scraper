@@ -41,7 +41,7 @@ class ProducerModel extends MainModel
      */
     private $_page;
 
-    public function __construct($type, $type2, $id, $page = 1, $parserArea = '#content')
+    public function __construct($type, $type2, $id, $page = 1, $parserArea = '#contentWrapper')
     {
         $this->_type = $type;
         $this->_type2 = $type2;
