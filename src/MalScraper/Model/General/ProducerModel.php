@@ -40,9 +40,10 @@ class ProducerModel extends MainModel
         if ($this->_error) {
             return $this->_error;
         }
+        // Default to getAllInfo if no specific method or if "getAllInfo" is called
         if (empty($method) || $method === 'getAllInfo') {
             if (method_exists($this, 'getAllInfo')) {
-                return $this->getAllInfo(...$arguments);
+                return $this->getAllInfo(...$arguments); // Pass arguments if any
             }
         }
         if (method_exists($this, $method)) {
@@ -55,8 +56,7 @@ class ProducerModel extends MainModel
     private function getAnimeImage($each_anime)
     {
         if (!is_object($each_anime)) return '';
-        // "Mononoke Hime" HTML: div.image img
-        $imageDiv = $each_anime->find('div.image', 0);
+        $imageDiv = $each_anime->find('div.image', 0); // "Mononoke Hime" HTML has div.image
         if ($imageDiv && is_object($imageDiv)) {
             $imgTag = $imageDiv->find('img', 0);
             if ($imgTag && is_object($imgTag)) {
@@ -74,7 +74,8 @@ class ProducerModel extends MainModel
     {
         if (!$name_area || !is_object($name_area)) return '';
         // "Mononoke Hime" HTML: div.title > a
-        $linkNode = $name_area->find('a', 0);
+        // "Sen to Chihiro" HTML: div.title > div.title-text > h2 > a
+        $linkNode = $name_area->find('a', 0); // Simpler, direct <a> child of div.title
         if ($linkNode && is_object($linkNode) && isset($linkNode->href)) {
             $anime_id_parts = explode('/', $linkNode->href);
             if (isset($anime_id_parts[4]) && is_numeric($anime_id_parts[4])) {
@@ -87,7 +88,7 @@ class ProducerModel extends MainModel
     private function getAnimeTitle($name_area)
     {
         if (!$name_area || !is_object($name_area)) return '';
-        $node = $name_area->find('a', 0);
+        $node = $name_area->find('a', 0); // Simpler, direct <a> child of div.title
         return ($node && is_object($node) && isset($node->plaintext)) ? trim($node->plaintext) : '';
     }
 
@@ -98,14 +99,14 @@ class ProducerModel extends MainModel
         $prod_id_parts = explode('/', rtrim($prod_id_href, '/'));
         
         if ($this->_type == 'anime') {
-            if (isset($prod_id_parts[3]) && $prod_id_parts[1] == 'anime' && $prod_id_parts[2] == 'producer' && is_numeric($prod_id_parts[3])) {
+            if (isset($prod_id_parts[3]) && ($prod_id_parts[1] ?? '') == 'anime' && ($prod_id_parts[2] ?? '') == 'producer' && is_numeric($prod_id_parts[3])) {
                 return $prod_id_parts[3];
             }
         } else { 
-            if (isset($prod_id_parts[2]) && $prod_id_parts[1] == 'people' && is_numeric($prod_id_parts[2])) {
+            if (isset($prod_id_parts[2]) && ($prod_id_parts[1] ?? '') == 'people' && is_numeric($prod_id_parts[2])) {
                 return $prod_id_parts[2];
             }
-            if (isset($prod_id_parts[3]) && $prod_id_parts[1] == 'manga' && $prod_id_parts[2] == 'magazine' && is_numeric($prod_id_parts[3])) {
+            if (isset($prod_id_parts[3]) && ($prod_id_parts[1] ?? '') == 'manga' && ($prod_id_parts[2] ?? '') == 'magazine' && is_numeric($prod_id_parts[3])) {
                  return $prod_id_parts[3];
             }
         }
@@ -118,26 +119,156 @@ class ProducerModel extends MainModel
     }
     // --- END OF YOUR WORKING ORIGINAL FUNCTIONS ---
 
-    // --- HELPER FUNCTIONS FOR PREVIOUSLY COMMENTED-OUT FIELDS ---
-    // --- Adapted for "Mononoke Hime" simpler card structure where possible ---
-    // --- or gracefully returning empty if data isn't in that simple card ---
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return array
-     */
-    private function getAnimeProducer($each_anime) // Was line 142 problem
+    // --- START: NEW PRIVATE HELPER METHOD FOR STUDIO DETAILS (from previous response) ---
+    private function _getStudioPageDetails()
+    {
+        if (!$this->_parser || !is_object($this->_parser)) {
+            return ['error_studio_details' => 'Parser not available for studio details.'];
+        }
+
+        $studioPageDetails = [];
+        $studioPageDetails['studio_name'] = ''; // Initialize
+        $studioPageDetails['logo_image_url'] = '';
+        $studioPageDetails['info'] = [];
+        $studioPageDetails['description'] = '';
+        $studioPageDetails['available_at_links'] = [];
+        $studioPageDetails['resource_links'] = [];
+
+
+        $studioNameNode = $this->_parser->find('h1.title-name', 0);
+        if ($studioNameNode && is_object($studioNameNode) && isset($studioNameNode->plaintext)) {
+            $studioPageDetails['studio_name'] = trim($studioNameNode->plaintext);
+        } else {
+            $contentLeftForLogo = $this->_parser->find('div.content-left', 0);
+            if ($contentLeftForLogo && is_object($contentLeftForLogo)) {
+                $logoImgForName = $contentLeftForLogo->find('div.logo img', 0);
+                if ($logoImgForName && is_object($logoImgForName) && $logoImgForName->hasAttribute('alt')) {
+                     $studioPageDetails['studio_name'] = trim($logoImgForName->getAttribute('alt'));
+                }
+            }
+        }
+
+        $contentLeft = $this->_parser->find('div.content-left', 0);
+        if (!$contentLeft || !is_object($contentLeft)) {
+            // Attempt with ID if class not found and parserArea is broad
+             if (($this->_parserArea === null || $this->_parserArea === 'body' || $this->_parserArea === '') && 
+                 !($this->_parserArea === '#content' || $this->_parserArea === '.content-left')) {
+                 $contentLeftById = $this->_parser->find('#contentLeft', 0);
+                 if ($contentLeftById && is_object($contentLeftById)) $contentLeft = $contentLeftById;
+            }
+             if (!$contentLeft || !is_object($contentLeft)) { // Still not found
+                 return $studioPageDetails; // Return partially filled or empty details
+             }
+        }
+
+        $logoImg = $contentLeft->find('div.logo img', 0); // Simpler selector
+        if ($logoImg && is_object($logoImg)) {
+            if ($logoImg->hasAttribute('data-src')) {
+                $studioPageDetails['logo_image_url'] = Helper::imageUrlCleaner($logoImg->getAttribute('data-src'));
+            } elseif ($logoImg->hasAttribute('src')) {
+                $studioPageDetails['logo_image_url'] = Helper::imageUrlCleaner($logoImg->getAttribute('src'));
+            }
+        }
+
+        $studioInfo = [];
+        $description = '';
+        $detailsContainer = null;
+        foreach ($contentLeft->find('div.mb16') as $mb16Div) {
+            if (is_object($mb16Div) && !$mb16Div->find('div.js-sns-icon-container',0) && !$mb16Div->find('div.user-profile-sns',0) ) {
+                $detailsContainer = $mb16Div;
+                break;
+            }
+        }
+        
+        if ($detailsContainer && is_object($detailsContainer)) {
+            foreach ($detailsContainer->find('div.spaceit_pad') as $spaceitPad) {
+                if (!is_object($spaceitPad)) continue;
+                $darkTextNode = $spaceitPad->find('span.dark_text', 0);
+                if ($darkTextNode && is_object($darkTextNode) && isset($darkTextNode->plaintext)) {
+                    $label = trim(rtrim($darkTextNode->plaintext, ':')); // Remove trailing colon
+                    $originalOuterText = $darkTextNode->outertext; // Store original
+                    $darkTextNode->outertext = ''; 
+                    $value = trim($spaceitPad->plaintext);
+                    $darkTextNode->outertext = $originalOuterText; // Restore (though not strictly necessary for scraping value)
+
+                    if (!empty($value)) {
+                        if ($label == 'Japanese') $studioInfo['japanese_name'] = $value;
+                        elseif ($label == 'Established') $studioInfo['established_date'] = $value;
+                        elseif ($label == 'Member Favorites') $studioInfo['member_favorites_count'] = trim(str_replace(',', '', $value));
+                    }
+                } else {
+                    $descSpan = $spaceitPad->find('span', 0); 
+                    if ($descSpan && is_object($descSpan) && isset($descSpan->plaintext)) {
+                         $currentDesc = trim(preg_replace("/\s+/", " ", $descSpan->plaintext));
+                         if (strlen($currentDesc) > strlen($description)) $description = $currentDesc; // Take the longest one
+                    } elseif (isset($spaceitPad->plaintext) && strlen(trim($spaceitPad->plaintext)) > 50) {
+                         $currentDesc = trim(preg_replace("/\s+/", " ", $spaceitPad->plaintext));
+                         if (strlen($currentDesc) > strlen($description)) $description = $currentDesc;
+                    }
+                }
+            }
+        }
+        $studioPageDetails['info'] = $studioInfo;
+        $studioPageDetails['description'] = $description;
+
+        $availableAtLinks = [];
+        $availableAtSection = $contentLeft->find('div.user-profile-sns', 0);
+        if ($availableAtSection && is_object($availableAtSection)) {
+            foreach ($availableAtSection->find('a') as $link) {
+                if (is_object($link) && isset($link->href) && isset($link->plaintext)) {
+                    $name = trim($link->plaintext);
+                    $url = trim($link->href);
+                    if (!empty($name) && !empty($url) && filter_var($url, FILTER_VALIDATE_URL)) $availableAtLinks[] = ['name' => $name, 'url' => $url];
+                }
+            }
+        }
+        $studioPageDetails['available_at_links'] = $availableAtLinks;
+
+        $resourceLinks = [];
+        $resourceHeader = null;
+        foreach($contentLeft->find('h2') as $h2) {
+            if (is_object($h2) && isset($h2->plaintext) && trim($h2->plaintext) == 'Resources') {
+                $resourceHeader = $h2;
+                break;
+            }
+        }
+        if ($resourceHeader && is_object($resourceHeader)) {
+            $resourceSection = $resourceHeader->next_sibling(); 
+            while($resourceSection && is_object($resourceSection) && $resourceSection->tag !== 'div'){ // Find next div sibling
+                $resourceSection = $resourceSection->next_sibling();
+            }
+            if ($resourceSection && is_object($resourceSection) && strpos($resourceSection->class ?? '', 'pb16') !== false) {
+                // Links are <a> tags, directly within a <span>
+                $links = $resourceSection->find('span a'); 
+                if (empty($links)) $links = $resourceSection->find('a');
+
+                foreach ($links as $link) {
+                    if (is_object($link) && isset($link->href) && isset($link->plaintext)) {
+                        $name = trim($link->plaintext);
+                        $url = trim($link->href);
+                        if (!empty($name) && !empty($url) && filter_var($url, FILTER_VALIDATE_URL)) $resourceLinks[] = ['name' => $name, 'url' => $url];
+                    }
+                }
+            }
+        }
+        $studioPageDetails['resource_links'] = $resourceLinks;
+        
+        return $studioPageDetails;
+    }
+    // --- END: NEW PRIVATE HELPER METHOD FOR STUDIO DETAILS ---
+
+
+    // --- HELPER FUNCTIONS FOR ANIME LIST ITEMS (from previous response that worked for some fields) ---
+    private function getAnimeProducer($each_anime)
     {
         $producer = [];
         if (!is_object($each_anime)) return $producer;
-
-        // "Mononoke Hime" sample doesn't list studios clearly in this card.
-        // "Sen to Chihiro" sample had: div.synopsis div.properties > div.property (caption "Studio")
         $properties_node = $each_anime->find('div.synopsis div.properties', 0);
-        
-        if ($properties_node && is_object($properties_node)) { // Check if $properties_node was found
+        if ($properties_node && is_object($properties_node)) {
             $targetCaption = ($this->_type == 'anime') ? 'Studio' : 'Authors';
-            foreach ($properties_node->find('div.property') as $propDiv) { // This was line 142
+            foreach ($properties_node->find('div.property') as $propDiv) {
+                if(!is_object($propDiv)) continue;
                 $captionNode = $propDiv->find('span.caption', 0);
                 if ($captionNode && is_object($captionNode) && isset($captionNode->plaintext) && trim($captionNode->plaintext) == $targetCaption) {
                     foreach ($propDiv->find('span.item a') as $link) {
@@ -153,18 +284,12 @@ class ProducerModel extends MainModel
                 }
             }
         }
-        return $producer; // Will be empty if structure not found
+        return $producer;
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return string
-     */
     private function getAnimeEpisode($each_anime)
     {
         if (!is_object($each_anime)) return '';
-        // "Mononoke Hime" sample does not have episode count in this card view.
-        // "Sen to Chihiro" sample had: div.prodsrc div.info > span.item > span > "1 ep"
         $prodsrc_info_node = $each_anime->find('div.prodsrc div.info', 0);
         if ($prodsrc_info_node && is_object($prodsrc_info_node)) {
             $spans = $prodsrc_info_node->find('span.item');
@@ -178,52 +303,38 @@ class ProducerModel extends MainModel
                 }
             }
         }
-        return ''; // Will be empty if structure not found
+        return '';
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return string
-     */
-    private function getAnimeSource($each_anime) // Was line 207, 209 problem
+    private function getAnimeSource($each_anime)
     {
         if (!is_object($each_anime)) return '';
-        // "Mononoke Hime" sample doesn't list source clearly in this card.
-        // "Sen to Chihiro" sample had: div.synopsis div.properties > div.property (caption "Source")
         $properties_node = $each_anime->find('div.synopsis div.properties', 0);
-        
         if ($properties_node && is_object($properties_node)) {
             $targetCaption = ($this->_type == 'anime') ? 'Source' : 'Type';
             foreach ($properties_node->find('div.property') as $propDiv) {
+                if(!is_object($propDiv)) continue;
                 $captionNode = $propDiv->find('span.caption', 0);
                 if ($captionNode && is_object($captionNode) && isset($captionNode->plaintext) && trim($captionNode->plaintext) == $targetCaption) {
                     $itemNode = $propDiv->find('span.item', 0);
-                    if ($itemNode && is_object($itemNode) && isset($itemNode->plaintext)) { // LINE 207 was effectively here
-                        return trim($itemNode->plaintext); // LINE 209 was this return
+                    if ($itemNode && is_object($itemNode) && isset($itemNode->plaintext)) {
+                        return trim($itemNode->plaintext);
                     }
                     break; 
                 }
             }
         }
-        return ''; // Will be empty if structure not found
+        return '';
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return array
-     */
-    private function getAnimeGenre($each_anime) // Was line 223 problem
+    private function getAnimeGenre($each_anime)
     {
         $genres = [];
         if (!is_object($each_anime)) return $genres;
-
-        // "Mononoke Hime" sample has data-genre attribute, no text links.
-        // "Sen to Chihiro" sample had: div.genres.js-genre > div.genres-inner > span.genre > a
         $genre_container_outer = $each_anime->find('div.genres.js-genre', 0); 
-
         if ($genre_container_outer && is_object($genre_container_outer)) {
             $genre_container_inner = $genre_container_outer->find('div.genres-inner', 0); 
-            if ($genre_container_inner && is_object($genre_container_inner)) { // This was line 223 logic
+            if ($genre_container_inner && is_object($genre_container_inner)) {
                 $links = $genre_container_inner->find('span.genre a');                 
                 foreach ($links as $each_genre_link) {
                     if (is_object($each_genre_link) && isset($each_genre_link->plaintext)) {
@@ -232,50 +343,37 @@ class ProducerModel extends MainModel
                 }
             }
         }
-        return $genres; // Will be empty for Mononoke Hime type cards
+        return $genres;
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return string
-     */
-    private function getAnimeSynopsis($each_anime) // Was line 278, 280 problem
+    private function getAnimeSynopsis($each_anime)
     {
         if (!is_object($each_anime)) return '';
-        // "Mononoke Hime" sample doesn't have synopsis in this card view.
-        // "Sen to Chihiro" sample had: div.synopsis.js-synopsis > p.preline
         $synopsis_container = $each_anime->find('div.synopsis.js-synopsis', 0);
-        
         if ($synopsis_container && is_object($synopsis_container)) {
             $paragraph_node = $synopsis_container->find('p.preline', 0);
-            if ($paragraph_node && is_object($paragraph_node) && isset($paragraph_node->plaintext)) { // LINE 278: Accessing plaintext
+            if ($paragraph_node && is_object($paragraph_node) && isset($paragraph_node->plaintext)) {
                 $text = trim($paragraph_node->plaintext);
-                return trim(preg_replace("/([\s])+/", ' ', $text)); // LINE 280: preg_replace
+                return trim(preg_replace("/([\s])+/", ' ', $text));
             }
         }
-        return ''; // Will be empty if structure not found
+        return '';
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return string|array
-     */
     private function getAnimeLicensor($each_anime)
     {
-        // This uses your original logic, which looks for specific structures.
-        // Likely empty for "Mononoke Hime" sample.
         if (!is_object($each_anime)) return ($this->_type == 'anime') ? [] : '';
         if ($this->_type == 'anime') {
-            $synopsisNode = $each_anime->find('div[class="synopsis js-synopsis"]', 0);
+            $synopsisNode = $each_anime->find('div.synopsis.js-synopsis', 0); // More specific class
             if ($synopsisNode && is_object($synopsisNode)) {
-                $licensorNode = $synopsisNode->find('.licensors', 0);
+                $licensorNode = $synopsisNode->find('span.licensors', 0); 
                 if ($licensorNode && is_object($licensorNode) && $licensorNode->hasAttribute('data-licensors')) {
                     return array_filter(explode(',', $licensorNode->getAttribute('data-licensors')));
                 }
             }
             return [];
         } else {
-            $synopsisNode = $each_anime->find('div[class="synopsis js-synopsis"]', 0);
+            $synopsisNode = $each_anime->find('div.synopsis.js-synopsis', 0);
             if ($synopsisNode && is_object($synopsisNode)) {
                 $serializationNode = $synopsisNode->find('.serialization a', 0);
                 if ($serializationNode && is_object($serializationNode) && isset($serializationNode->plaintext)) {
@@ -286,62 +384,44 @@ class ProducerModel extends MainModel
         }
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return string
-     */
     private function getAnimeType($each_anime)
     {
         if (!is_object($each_anime)) return '';
-        // "Mononoke Hime" sample doesn't have type explicitly here. It's inferred.
-        // "Sen to Chihiro" sample had: div.prodsrc div.info > span.item (first one like "Movie, 2001")
         $prodsrc_info_node = $each_anime->find('div.prodsrc div.info', 0);
         if ($prodsrc_info_node && is_object($prodsrc_info_node)) {
-            $itemSpans = $prodsrc_info_node->find('span.item'); // Get all item spans
+            $itemSpans = $prodsrc_info_node->find('span.item');
             if (isset($itemSpans[0]) && is_object($itemSpans[0]) && isset($itemSpans[0]->plaintext)) {
-                $full_text = $itemSpans[0]->plaintext; // e.g., "Movie, 2001" or "TV, 2023"
+                $full_text = $itemSpans[0]->plaintext;
                 $parts = explode(',', $full_text);
-                return trim($parts[0]); // "Movie" or "TV"
+                return trim($parts[0]);
             }
         }
-        return ''; // Will be empty if structure not found
+        return '';
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return string
-     */
     private function getAnimeStart($each_anime)
     {
         if (!is_object($each_anime)) return '';
-        // "Mononoke Hime" sample: <span style="display: none;" class="js-start_date">19970712</span>
         $jsStartDate = $each_anime->find('span.js-start_date', 0);
         if ($jsStartDate && is_object($jsStartDate) && isset($jsStartDate->plaintext)) {
-            return trim($jsStartDate->plaintext); // "19970712"
+            return trim($jsStartDate->plaintext);
         }
-        return ''; // Will be empty if not found
+        return '';
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return string
-     */
     private function getAnimeScore($each_anime)
     {
         if (!is_object($each_anime)) return 'N/A';
-        // "Mononoke Hime" sample: <span style="display: none;" class="js-score">8.67</span>
-        // Also: <div class="widget"><div class="stars">8.67...</div></div>
         $jsScore = $each_anime->find('span.js-score', 0);
         if ($jsScore && is_object($jsScore) && isset($jsScore->plaintext)) {
             $score = trim($jsScore->plaintext);
             return (is_numeric($score) && (float)$score >= 0) ? $score : 'N/A';
         }
-        // Fallback to div.widget div.stars (less reliable due to possible icon text)
         $widget = $each_anime->find('div.widget', 0);
         if ($widget && is_object($widget)) {
             $starsNode = $widget->find('div.stars', 0);
             if ($starsNode && is_object($starsNode) && isset($starsNode->plaintext)) {
-                if(preg_match('/(\d+\.?\d*)/', $starsNode->plaintext, $matches)){ // Extract numeric part
+                if(preg_match('/(\d+\.?\d*)/', $starsNode->plaintext, $matches)){
                     return $matches[1];
                 }
             }
@@ -349,20 +429,13 @@ class ProducerModel extends MainModel
         return 'N/A';
     }
 
-    /**
-     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
-     * @return string
-     */
     private function getAnimeMember($each_anime)
     {
         if (!is_object($each_anime)) return '0';
-        // "Mononoke Hime" sample: <span style="display: none;" class="js-members">1330402</span>
-        // Also: <div class="widget">...<div class="users">1,330,402...</div></div>
         $jsMembers = $each_anime->find('span.js-members', 0);
         if ($jsMembers && is_object($jsMembers) && isset($jsMembers->plaintext)) {
             return trim(preg_replace('/[^\d]/', '', $jsMembers->plaintext));
         }
-        // Fallback to div.widget div.users
         $widget = $each_anime->find('div.widget', 0);
         if ($widget && is_object($widget)) {
             $usersNode = $widget->find('div.users', 0);
@@ -372,67 +445,101 @@ class ProducerModel extends MainModel
         }
         return '0';
     }
+    // --- END OF HELPER FUNCTIONS FOR ANIME LIST ITEMS ---
 
-    private function getAllInfo()
+
+    /**
+     * Main method to get combined studio details and list of works.
+     * This should be the primary public method called for this model.
+     */
+    public function getAllInfo() // Changed to public
     {
+        if ($this->_error) {
+            return $this->_error;
+        }
         if (!$this->_parser || !is_object($this->_parser)) {
             $this->_error = ['error' => 'Parser not initialized or invalid.'];
             return $this->_error;
         }
 
-        $data = [];
+        $outputData = [];
+
+        // 1. Get Studio Page Details
+        $studioPageDetails = $this->_getStudioPageDetails();
+        
+        // Add studio details to the output data structure at the top level
+        if (is_array($studioPageDetails)) {
+            foreach ($studioPageDetails as $key => $value) {
+                if ($key !== 'error_studio_details') { // Don't copy an error key if it exists
+                     $outputData[$key] = $value;
+                } elseif (!empty($value)) { // If there was an error fetching studio details, include it
+                     $outputData['studio_details_error'] = $value;
+                }
+            }
+        }
+
+
+        // 2. Get List of Anime/Works
+        $animeListData = [];
         // YOUR ORIGINAL WORKING SELECTOR FOR THE LIST OF ITEMS
         $anime_table = $this->_parser->find('div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]');
 
-        foreach ($anime_table as $each_anime) {
-            if(!is_object($each_anime)) continue; 
+        if (is_array($anime_table)) { // Ensure $anime_table is an array before looping
+            foreach ($anime_table as $each_anime) {
+                if(!is_object($each_anime)) continue; 
 
-            $result = [];
+                $result = [];
+                // YOUR ORIGINAL SUB-SELECTOR for name_area
+                $name_area = $each_anime->find('div[class=title]', 0);
+                
+                $result['image'] = ''; $result['id'] = ''; $result['title'] = ''; // Initialize
+                $result['image'] = $this->getAnimeImage($each_anime);
+                if ($name_area && is_object($name_area)) {
+                    $result['id'] = $this->getAnimeId($name_area);
+                    $result['title'] = $this->getAnimeTitle($name_area);
+                }
 
-            // YOUR ORIGINAL SUB-SELECTOR for name_area
-            $name_area = $each_anime->find('div[class=title]', 0);
-            
-            // $producer_area was 'div[class=property"]' - this is invalid syntax.
-            // We are now passing $each_anime to helpers that need more context.
-            // $info_area was $each_anime->find('.information', 0)
-            // For Mononoke Hime sample, '.information' doesn't exist at item root.
-            // Score/Member helpers now take $each_anime directly.
+                if (empty($result['id'])) {
+                    continue; 
+                }
 
-            // These are working as per your statement
-            $result['image'] = ''; $result['id'] = ''; $result['title'] = '';
-            $result['image'] = $this->getAnimeImage($each_anime); // Uses $each_anime
-            if ($name_area && is_object($name_area)) {
-                $result['id'] = $this->getAnimeId($name_area);     // Uses $name_area
-                $result['title'] = $this->getAnimeTitle($name_area); // Uses $name_area
+                $result['genre'] = $this->getAnimeGenre($each_anime);
+                $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
+                $result['source'] = $this->getAnimeSource($each_anime);
+
+                if ($this->_type == 'anime') {
+                    $result['producer'] = $this->getAnimeProducer($each_anime);
+                    $result['episode'] = $this->getAnimeEpisode($each_anime);
+                    $result['licensor'] = $this->getAnimeLicensor($each_anime); 
+                    $result['type'] = $this->getAnimeType($each_anime);
+                } else { 
+                    $result['author'] = $this->getAnimeProducer($each_anime); 
+                    $result['volume'] = $this->getAnimeEpisode($each_anime);  
+                    $result['serialization'] = $this->getAnimeLicensor($each_anime); 
+                }
+
+                $result['airing_start'] = $this->getAnimeStart($each_anime);
+                $result['member'] = $this->getAnimeMember($each_anime);
+                $result['score'] = $this->getAnimeScore($each_anime);   
+                
+                $animeListData[] = $result;
             }
-
-            if (empty($result['id'])) {
-                continue; 
-            }
-
-            // --- UNCOMMENTED AND CALLING HELPERS ---
-            // Most helpers now take $each_anime directly.
-            $result['genre'] = $this->getAnimeGenre($each_anime);
-            $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
-            $result['source'] = $this->getAnimeSource($each_anime);
-
-            if ($this->_type == 'anime') {
-                $result['producer'] = $this->getAnimeProducer($each_anime);
-                $result['episode'] = $this->getAnimeEpisode($each_anime);
-                $result['licensor'] = $this->getAnimeLicensor($each_anime); 
-                $result['type'] = $this->getAnimeType($each_anime);
-            } else { 
-                $result['author'] = $this->getAnimeProducer($each_anime); 
-                $result['volume'] = $this->getAnimeEpisode($each_anime);  
-                $result['serialization'] = $this->getAnimeLicensor($each_anime); 
-            }
-
-            $result['airing_start'] = $this->getAnimeStart($each_anime);
-            $result['member'] = $this->getAnimeMember($each_anime); // Takes $each_anime
-            $result['score'] = $this->getAnimeScore($each_anime);   // Takes $each_anime
-            
-            $data[] = $result;
         }
-        return $data;
+
+        // Merge anime list into outputData using numeric keys for each anime item
+        foreach ($animeListData as $index => $animeItem) {
+            $outputData[(string)$index] = $animeItem;
+        }
+        // If $animeListData is empty and no studio details were found either,
+        // $outputData might be empty. Consider if an empty "works" array is preferred.
+        if (empty($animeListData) && !array_key_exists('0', $outputData) && count(array_filter(array_keys($outputData), 'is_numeric')) == 0) {
+            // If no numeric keys (anime list items) were added, explicitly add an empty works array
+            // if you want the "works" key even when empty, otherwise numeric keys are fine.
+            // For merging directly, this isn't needed. If you wanted "works": [], you'd do:
+            // $outputData['works'] = $animeListData;
+        }
+
+
+        return $outputData;
     }
 }
