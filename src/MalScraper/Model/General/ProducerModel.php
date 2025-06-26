@@ -4,6 +4,7 @@ namespace MalScraper\Model\General;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
+use HtmlDomParser;
 
 /**
  * ProducerModel class.
