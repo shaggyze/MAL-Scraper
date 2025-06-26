@@ -220,7 +220,7 @@ class ProducerModel extends MainModel
     {
         $genre = [];
         $genre_area = $each_anime->find('div[class="genres-inner js-genre-inner"]', 0);
-        foreach ($genre_area->find('span a') as $each_genre) {
+        foreach ($genre_area->find('span[class=genre] a') as $each_genre) {
             $genre[] = $each_genre->plaintext;
         }
 
