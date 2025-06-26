@@ -72,12 +72,12 @@ class ProducerModel extends MainModel
 
         if ($type2 == 'producer') {
             if ($type == 'anime') {
-                $this->_url = $this->_myAnimeListUrl.'/anime/producer/'.$id.'/?page='.$page;
+                $this->_url = $this->_myAnimeListUrl.'/anime/producer/'.$id;
             } else {
-                $this->_url = $this->_myAnimeListUrl.'/manga/magazine/'.$id.'/?page='.$page;
+                $this->_url = $this->_myAnimeListUrl.'/manga/magazine/'.$id;
             }
         } else {
-            $this->_url = $this->_myAnimeListUrl.'/'.$type.'/genre/'.$id.'/?page='.$page;
+            $this->_url = $this->_myAnimeListUrl.'/'.$type.'/genre/'.$page;
         }
         $this->_parserArea = $parserArea;
         parent::errorCheck($this);
@@ -556,30 +556,19 @@ class ProducerModel extends MainModel
                 $result = [];
                 $name_area = $each_anime->find('div[class=title]', 0);
                 
-                $result['image'] = ''; $result['id'] = ''; $result['title'] = '';
-                $result['image'] = $this->getAnimeImage($each_anime);
                 if ($name_area && is_object($name_area)) {
                     $result['id'] = $this->getAnimeId($name_area);
-                    $result['title'] = $this->getAnimeTitle($name_area);
+					$result['url'] = $this->_url;
+					$result['title'] = $this->getAnimeTitle($name_area);
                 }
 
+                $result['image'] = ''; $result['id'] = ''; $result['title'] = '';
+                $result['image'] = $this->getAnimeImage($each_anime);
                 if (empty($result['id'])) continue; 
 
                 $result['genre'] = $this->getAnimeGenre($each_anime);
-                $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
-                $result['source'] = $this->getAnimeSource($each_anime);
-
-                if ($this->_type == 'anime') {
-                    $result['producer'] = $this->getAnimeProducer($each_anime);
-                    $result['episode'] = $this->getAnimeEpisode($each_anime);
-                    $result['licensor'] = $this->getAnimeLicensor($each_anime); 
-                    $result['type'] = $this->getAnimeType($each_anime);
-                } else { 
-                    $result['author'] = $this->getAnimeProducer($each_anime); 
-                    $result['volume'] = $this->getAnimeEpisode($each_anime);  
-                    $result['serialization'] = $this->getAnimeLicensor($each_anime); 
-                }
-
+                //$result['synopsis'] = $this->getAnimeSynopsis($each_anime);
+                //$result['source'] = $this->getAnimeSource($each_anime);
                 $result['airing_start'] = $this->getAnimeStart($each_anime);
                 $result['member'] = $this->getAnimeMember($each_anime);
                 $result['score'] = $this->getAnimeScore($each_anime);   
