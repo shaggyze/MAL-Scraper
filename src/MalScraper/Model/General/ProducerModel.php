@@ -477,7 +477,7 @@ class ProducerModel extends MainModel
         // Based on your sample, each item starts with:
         // <div class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3" ...>
         // So, this selector should be correct for fetching the items.
-        $anime_table = $this->_parser->find('js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3');
+        $anime_table = $this->_parser->find('div.js-anime-category-studio.seasonal-anime.js-seasonal-anime');
 var_dump(count($anime_table));
         foreach ($anime_table as $each_anime) {
             if(!is_object($each_anime)) continue; 
