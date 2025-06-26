@@ -519,3 +519,4 @@ private function getAllInfo()
 
     return $data; // This will be empty if the loop doesn't run or IDs are not found
 }
+}
