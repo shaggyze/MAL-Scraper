@@ -15,6 +15,59 @@ class ProducerModel extends MainModel
     private $_id;
     private $_page;
 
+    // --- START: GENRE MAPPINGS ---
+    private static $animeGenreMap = [
+        "1" => "Action", "2" => "Adventure", "5" => "Avant Garde", "46" => "Award Winning",
+        "28" => "Boys Love", "4" => "Comedy", "8" => "Drama", "10" => "Fantasy",
+        "26" => "Girls Love", "47" => "Gourmet", "14" => "Horror", "7" => "Mystery",
+        "22" => "Romance", "24" => "Sci-Fi", "36" => "Slice of Life", "30" => "Sports",
+        "37" => "Supernatural", "41" => "Suspense", "9" => "Ecchi", "49" => "Erotica",
+        "12" => "Hentai", "50" => "Adult Cast", "51" => "Anthropomorphic", "52" => "CGDCT",
+        "53" => "Childcare", "54" => "Combat Sports", "81" => "Crossdressing", "55" => "Delinquents",
+        "39" => "Detective", "56" => "Educational", "57" => "Gag Humor", "58" => "Gore",
+        "35" => "Harem", "59" => "High Stakes Game", "13" => "Historical", "60" => "Idols (Female)",
+        "61" => "Idols (Male)", "62" => "Isekai", "63" => "Iyashikei", "64" => "Love Polygon",
+        "74" => "Love Status Quo", "65" => "Magical Sex Shift", "66" => "Mahou Shoujo", "17" => "Martial Arts",
+        "18" => "Mecha", "67" => "Medical", "38" => "Military", "19" => "Music", "6" => "Mythology",
+        "68" => "Organized Crime", "69" => "Otaku Culture", "20" => "Parody", "70" => "Performing Arts",
+        "71" => "Pets", "40" => "Psychological", "3" => "Racing", "72" => "Reincarnation",
+        "73" => "Reverse Harem", "21" => "Samurai", "23" => "School", "75" => "Showbiz",
+        "29" => "Space", "11" => "Strategy Game", "31" => "Super Power", "76" => "Survival",
+        "77" => "Team Sports", "78" => "Time Travel", "82" => "Urban Fantasy", "32" => "Vampire",
+        "79" => "Video Game", "83" => "Villainess", "80" => "Visual Arts", "48" => "Workplace",
+        "43" => "Josei", "15" => "Kids", "42" => "Seinen", "25" => "Shoujo", "27" => "Shounen"
+        // Note: MAL might add/change IDs. This map needs to be maintained.
+        // Some IDs from your list like "Love Status Quo" (74) and "Showbiz" (75) are newer.
+    ];
+
+    private static $mangaGenreMap = [
+        "1" => "Action", "2" => "Adventure", "5" => "Avant Garde", "46" => "Award Winning",
+        "28" => "Boys Love", "4" => "Comedy", "8" => "Drama", "10" => "Fantasy",
+        "26" => "Girls Love", "47" => "Gourmet", "14" => "Horror", "7" => "Mystery",
+        "22" => "Romance", "24" => "Sci-Fi", "36" => "Slice of Life", "30" => "Sports",
+        "37" => "Supernatural", "45" => "Suspense", // Note: Manga uses 45 for Suspense, Anime uses 41
+        "9" => "Ecchi", "49" => "Erotica", "12" => "Hentai", "50" => "Adult Cast",
+        "51" => "Anthropomorphic", "52" => "CGDCT", "53" => "Childcare", "54" => "Combat Sports",
+        "44" => "Crossdressing", // Note: Manga uses 44, Anime uses 81
+        "55" => "Delinquents", "39" => "Detective", "56" => "Educational", "57" => "Gag Humor",
+        "58" => "Gore", "35" => "Harem", "59" => "High Stakes Game", "13" => "Historical",
+        "60" => "Idols (Female)", "61" => "Idols (Male)", "62" => "Isekai", "63" => "Iyashikei",
+        "64" => "Love Polygon", "75" => "Love Status Quo", // Manga also uses 75
+        "65" => "Magical Sex Shift", "66" => "Mahou Shoujo", "17" => "Martial Arts",
+        "18" => "Mecha", "67" => "Medical", "68" => "Memoir", // Manga specific
+        "38" => "Military", "19" => "Music", "6" => "Mythology", "69" => "Organized Crime",
+        "70" => "Otaku Culture", "20" => "Parody", "71" => "Performing Arts", "72" => "Pets",
+        "40" => "Psychological", "3" => "Racing", "73" => "Reincarnation", "74" => "Reverse Harem",
+        "21" => "Samurai", "23" => "School", "76" => "Showbiz", // Manga also uses 76
+        "29" => "Space", "11" => "Strategy Game", "31" => "Super Power", "77" => "Survival",
+        "78" => "Team Sports", "79" => "Time Travel", "83" => "Urban Fantasy", // Manga uses 83, Anime 82
+        "32" => "Vampire", "80" => "Video Game", "81" => "Villainess", // Manga uses 81, Anime 83
+        "82" => "Visual Arts", // Manga uses 82, Anime 80
+        "48" => "Workplace", "42" => "Josei", "15" => "Kids", "41" => "Seinen", // Note: Manga uses 41 for Seinen, Anime 42
+        "25" => "Shoujo", "27" => "Shounen"
+    ];
+    // --- END: GENRE MAPPINGS ---
+
     public function __construct($type, $type2, $id, $page = 1, $parserArea = '#content')
     {
         $this->_type = $type;
@@ -40,10 +93,9 @@ class ProducerModel extends MainModel
         if ($this->_error) {
             return $this->_error;
         }
-        // Default to getAllInfo if no specific method or if "getAllInfo" is called
         if (empty($method) || $method === 'getAllInfo') {
             if (method_exists($this, 'getAllInfo')) {
-                return $this->getAllInfo(...$arguments); // Pass arguments if any
+                return $this->getAllInfo(...$arguments);
             }
         }
         if (method_exists($this, $method)) {
@@ -52,11 +104,10 @@ class ProducerModel extends MainModel
         return ['error' => "Method {$method} does not exist in " . __CLASS__];
     }
 
-    // --- YOUR WORKING ORIGINAL FUNCTIONS (with added safety) ---
     private function getAnimeImage($each_anime)
     {
         if (!is_object($each_anime)) return '';
-        $imageDiv = $each_anime->find('div.image', 0); // "Mononoke Hime" HTML has div.image
+        $imageDiv = $each_anime->find('div.image', 0);
         if ($imageDiv && is_object($imageDiv)) {
             $imgTag = $imageDiv->find('img', 0);
             if ($imgTag && is_object($imgTag)) {
@@ -73,9 +124,7 @@ class ProducerModel extends MainModel
     private function getAnimeId($name_area)
     {
         if (!$name_area || !is_object($name_area)) return '';
-        // "Mononoke Hime" HTML: div.title > a
-        // "Sen to Chihiro" HTML: div.title > div.title-text > h2 > a
-        $linkNode = $name_area->find('a', 0); // Simpler, direct <a> child of div.title
+        $linkNode = $name_area->find('a', 0);
         if ($linkNode && is_object($linkNode) && isset($linkNode->href)) {
             $anime_id_parts = explode('/', $linkNode->href);
             if (isset($anime_id_parts[4]) && is_numeric($anime_id_parts[4])) {
@@ -88,7 +137,7 @@ class ProducerModel extends MainModel
     private function getAnimeTitle($name_area)
     {
         if (!$name_area || !is_object($name_area)) return '';
-        $node = $name_area->find('a', 0); // Simpler, direct <a> child of div.title
+        $node = $name_area->find('a', 0);
         return ($node && is_object($node) && isset($node->plaintext)) ? trim($node->plaintext) : '';
     }
 
@@ -117,10 +166,7 @@ class ProducerModel extends MainModel
     {
         return (is_object($each_producer_link) && isset($each_producer_link->plaintext)) ? trim($each_producer_link->plaintext) : '';
     }
-    // --- END OF YOUR WORKING ORIGINAL FUNCTIONS ---
 
-
-    // --- START: NEW PRIVATE HELPER METHOD FOR STUDIO DETAILS (from previous response) ---
     private function _getStudioPageDetails()
     {
         if (!$this->_parser || !is_object($this->_parser)) {
@@ -128,13 +174,12 @@ class ProducerModel extends MainModel
         }
 
         $studioPageDetails = [];
-        $studioPageDetails['studio_name'] = ''; // Initialize
+        $studioPageDetails['studio_name'] = '';
         $studioPageDetails['logo_image_url'] = '';
-        $studioPageDetails['info'] = [];
+        $studioPageDetails['info'] = []; // This is what we want to populate
         $studioPageDetails['description'] = '';
         $studioPageDetails['available_at_links'] = [];
         $studioPageDetails['resource_links'] = [];
-
 
         $studioNameNode = $this->_parser->find('h1.title-name', 0);
         if ($studioNameNode && is_object($studioNameNode) && isset($studioNameNode->plaintext)) {
@@ -151,18 +196,17 @@ class ProducerModel extends MainModel
 
         $contentLeft = $this->_parser->find('div.content-left', 0);
         if (!$contentLeft || !is_object($contentLeft)) {
-            // Attempt with ID if class not found and parserArea is broad
              if (($this->_parserArea === null || $this->_parserArea === 'body' || $this->_parserArea === '') && 
                  !($this->_parserArea === '#content' || $this->_parserArea === '.content-left')) {
                  $contentLeftById = $this->_parser->find('#contentLeft', 0);
                  if ($contentLeftById && is_object($contentLeftById)) $contentLeft = $contentLeftById;
             }
-             if (!$contentLeft || !is_object($contentLeft)) { // Still not found
-                 return $studioPageDetails; // Return partially filled or empty details
+             if (!$contentLeft || !is_object($contentLeft)) {
+                 return $studioPageDetails; 
              }
         }
 
-        $logoImg = $contentLeft->find('div.logo img', 0); // Simpler selector
+        $logoImg = $contentLeft->find('div.logo img', 0);
         if ($logoImg && is_object($logoImg)) {
             if ($logoImg->hasAttribute('data-src')) {
                 $studioPageDetails['logo_image_url'] = Helper::imageUrlCleaner($logoImg->getAttribute('data-src'));
@@ -171,31 +215,38 @@ class ProducerModel extends MainModel
             }
         }
 
-        $studioInfo = []; // This will be $studioPageDetails['info']
-        $description = ''; // This will be $studioPageDetails['description']
+        $studioInfo = [];
+        $description = '';
+        $mainInfoBlock = null;
+        foreach($contentLeft->find('div.mb16') as $mb16) {
+            if (is_object($mb16) && $mb16->find('div.spaceit_pad span.dark_text', 0)) {
+                if (!$mb16->find('div.js-sns-icon-container',0) && !$mb16->find('div.user-profile-sns',0)) {
+                    $mainInfoBlock = $mb16;
+                    break;
+                }
+            }
+        }
+        $nodesToSearch = ($mainInfoBlock && is_object($mainInfoBlock)) ? $mainInfoBlock->find('div.spaceit_pad') : $contentLeft->find('div.spaceit_pad');
 
-        // Find all spaceit_pad divs directly under contentLeft that seem to be info items or description
-        // This is more direct than relying on finding the correct div.mb16 container first.
-        $potentialInfoPads = $contentLeft->find('div.spaceit_pad');
-        
-        $isFirstGeneralSpan = true; // To identify the main description if it's the first span without dark_text
-
-        foreach ($potentialInfoPads as $pad) {
+        foreach ($nodesToSearch as $pad) {
             if (!is_object($pad)) continue;
-
             $darkTextNode = $pad->find('span.dark_text', 0);
 
             if ($darkTextNode && is_object($darkTextNode) && isset($darkTextNode->plaintext)) {
-                $label = trim(rtrim($darkTextNode->plaintext, ':')); // "Japanese", "Established", "Member Favorites"
-                
-                // Temporarily remove the label to get only the value
-                $labelTextForRemoval = $darkTextNode->outertext;
-                $pad->innertext = str_replace($labelTextForRemoval, '', $pad->innertext);
-                $value = trim($pad->plaintext);
-                $pad->innertext = $labelTextForRemoval . $pad->innertext; // Restore (optional, good practice)
+                $label = trim(rtrim($darkTextNode->plaintext, ':'));
+                $value = '';
+                $temp_html_str = $pad->innertext;
+                $temp_label_html = $darkTextNode->outertext;
+                $value_html_str = str_ireplace($temp_label_html, '', $temp_html_str);
+                $temp_dom_for_value = HtmlDomParser::str_get_html($value_html_str);
+                if ($temp_dom_for_value && is_object($temp_dom_for_value)) {
+                    $value = trim($temp_dom_for_value->plaintext());
+                    $temp_dom_for_value->clear();
+                    unset($temp_dom_for_value);
+                }
 
                 if (!empty($value)) {
-                    switch (strtolower($label)) { // Use strtolower for case-insensitivity
+                    switch (strtolower($label)) {
                         case 'japanese':
                             $studioInfo['japanese_name'] = $value;
                             break;
@@ -205,40 +256,26 @@ class ProducerModel extends MainModel
                         case 'member favorites':
                             $studioInfo['member_favorites_count'] = trim(str_replace(',', '', $value));
                             break;
-                        case 'synonyms': // For your Studio Pierrot example
+                        case 'synonyms':
                             $studioInfo['synonyms'] = array_map('trim', explode(',', $value));
                             break;
-                        // Add other specific labels you want to capture for 'info'
                     }
                 }
-                $isFirstGeneralSpan = false; // Once we find a labeled item, subsequent general spans are not the main description
-            } else {
-                // This spaceit_pad does not have a dark_text label.
-                // It could be the main description.
-                // The Studio Ghibli HTML has the description in a <span> inside such a div.spaceit_pad.
+            } elseif (empty($description)) {
                 $descSpan = $pad->find('span', 0);
-                $textToConsiderForDesc = '';
+                $currentDescCandidate = '';
                 if ($descSpan && is_object($descSpan) && isset($descSpan->plaintext)) {
-                    $textToConsiderForDesc = trim($descSpan->plaintext);
-                } elseif (isset($pad->plaintext)) { // Fallback to the div's plaintext if no span
-                    $textToConsiderForDesc = trim($pad->plaintext);
+                    $currentDescCandidate = trim($descSpan->plaintext);
+                } elseif (isset($pad->plaintext)) {
+                    $currentDescCandidate = trim($pad->plaintext);
                 }
-
-                // Heuristic: If it's long and we haven't found labeled items yet or it's the only one.
-                // And ensure it's not an "Available At" or "Resources" section header (though those are h2)
-                // or part of the social media buttons if those were spaceit_pad (unlikely).
-                if (strlen($textToConsiderForDesc) > 50 && empty($description) && 
-                    !$pad->parent()->find('div.js-sns-icon-container',0) &&
-                    !$pad->parent()->find('div.user-profile-sns',0) ) {
-                    $description = trim(preg_replace("/\s+/", " ", $textToConsiderForDesc));
-                } else if ($isFirstGeneralSpan && strlen($textToConsiderForDesc) > 50 && empty($description)) {
-                     // If it's the very first span without a label and it's long, assume description
-                     $description = trim(preg_replace("/\s+/", " ", $textToConsiderForDesc));
+                if (strlen($currentDescCandidate) > 50) {
+                    $description = trim(preg_replace("/\s+/", " ", $currentDescCandidate));
                 }
             }
         }
-        $studioPageDetails['info'] = $studioInfo;
-        $studioPageDetails['description'] = $description; // This should now be populated if logic is correct
+        $studioPageDetails['info'] = $studioInfo; // Populated here
+        $studioPageDetails['description'] = $description;
 
         $availableAtLinks = [];
         $availableAtSection = $contentLeft->find('div.user-profile-sns', 0);
@@ -263,14 +300,12 @@ class ProducerModel extends MainModel
         }
         if ($resourceHeader && is_object($resourceHeader)) {
             $resourceSection = $resourceHeader->next_sibling(); 
-            while($resourceSection && is_object($resourceSection) && $resourceSection->tag !== 'div'){ // Find next div sibling
+            while($resourceSection && is_object($resourceSection) && $resourceSection->tag !== 'div'){
                 $resourceSection = $resourceSection->next_sibling();
             }
             if ($resourceSection && is_object($resourceSection) && strpos($resourceSection->class ?? '', 'pb16') !== false) {
-                // Links are <a> tags, directly within a <span>
-                $links = $resourceSection->find('span a'); 
+                $links = $resourceSection->find('span a');
                 if (empty($links)) $links = $resourceSection->find('a');
-
                 foreach ($links as $link) {
                     if (is_object($link) && isset($link->href) && isset($link->plaintext)) {
                         $name = trim($link->plaintext);
@@ -284,10 +319,7 @@ class ProducerModel extends MainModel
         
         return $studioPageDetails;
     }
-    // --- END: NEW PRIVATE HELPER METHOD FOR STUDIO DETAILS ---
 
-
-    // --- HELPER FUNCTIONS FOR ANIME LIST ITEMS (from previous response that worked for some fields) ---
     private function getAnimeProducer($each_anime)
     {
         $producer = [];
@@ -355,18 +387,44 @@ class ProducerModel extends MainModel
         return '';
     }
 
+    /**
+     * Get anime genre names by looking up IDs from data-genre attribute.
+     *
+     * @param \simplehtmldom_1_5\simple_html_dom $each_anime
+     * @return array
+     */
     private function getAnimeGenre($each_anime)
     {
         $genres = [];
-        if (!is_object($each_anime)) return $genres;
-        $genre_container_outer = $each_anime->find('div.genres.js-genre', 0); 
-        if ($genre_container_outer && is_object($genre_container_outer)) {
-            $genre_container_inner = $genre_container_outer->find('div.genres-inner', 0); 
-            if ($genre_container_inner && is_object($genre_container_inner)) {
-                $links = $genre_container_inner->find('span.genre a');                 
-                foreach ($links as $each_genre_link) {
-                    if (is_object($each_genre_link) && isset($each_genre_link->plaintext)) {
-                        $genres[] = trim($each_genre_link->plaintext);
+        if (!is_object($each_anime)) {
+            return $genres;
+        }
+
+        $currentGenreMap = ($this->_type == 'anime') ? self::$animeGenreMap : self::$mangaGenreMap;
+
+        if ($each_anime->hasAttribute('data-genre')) {
+            $genre_ids_str = $each_anime->getAttribute('data-genre');
+            if (!empty($genre_ids_str)) {
+                $genre_ids = explode(',', $genre_ids_str);
+                foreach ($genre_ids as $id) {
+                    $trimmed_id = trim($id);
+                    if (isset($currentGenreMap[$trimmed_id])) {
+                        $genres[] = $currentGenreMap[$trimmed_id];
+                    }
+                }
+            }
+        }
+        // Fallback for text-based genres if data-genre not present or empty
+        if (empty($genres)) {
+            $genre_container_outer = $each_anime->find('div.genres.js-genre', 0); 
+            if ($genre_container_outer && is_object($genre_container_outer)) {
+                $genre_container_inner = $genre_container_outer->find('div.genres-inner', 0); 
+                if ($genre_container_inner && is_object($genre_container_inner)) {
+                    $links = $genre_container_inner->find('span.genre a');                 
+                    foreach ($links as $each_genre_link) {
+                        if (is_object($each_genre_link) && isset($each_genre_link->plaintext)) {
+                            $genres[] = trim($each_genre_link->plaintext);
+                        }
                     }
                 }
             }
@@ -392,7 +450,7 @@ class ProducerModel extends MainModel
     {
         if (!is_object($each_anime)) return ($this->_type == 'anime') ? [] : '';
         if ($this->_type == 'anime') {
-            $synopsisNode = $each_anime->find('div.synopsis.js-synopsis', 0); // More specific class
+            $synopsisNode = $each_anime->find('div.synopsis.js-synopsis', 0); 
             if ($synopsisNode && is_object($synopsisNode)) {
                 $licensorNode = $synopsisNode->find('span.licensors', 0); 
                 if ($licensorNode && is_object($licensorNode) && $licensorNode->hasAttribute('data-licensors')) {
@@ -473,63 +531,45 @@ class ProducerModel extends MainModel
         }
         return '0';
     }
-    // --- END OF HELPER FUNCTIONS FOR ANIME LIST ITEMS ---
-
-
-    /**
-     * Main method to get combined studio details and list of works.
-     * This should be the primary public method called for this model.
-     */
-    public function getAllInfo() // Changed to public
+    
+    public function getAllInfo()
     {
-        if ($this->_error) {
-            return $this->_error;
-        }
+        if ($this->_error) return $this->_error;
         if (!$this->_parser || !is_object($this->_parser)) {
             $this->_error = ['error' => 'Parser not initialized or invalid.'];
             return $this->_error;
         }
 
         $outputData = [];
-
-        // 1. Get Studio Page Details
         $studioPageDetails = $this->_getStudioPageDetails();
         
-        // Add studio details to the output data structure at the top level
         if (is_array($studioPageDetails)) {
             foreach ($studioPageDetails as $key => $value) {
-                if ($key !== 'error_studio_details') { // Don't copy an error key if it exists
+                if ($key !== 'error_studio_details') {
                      $outputData[$key] = $value;
-                } elseif (!empty($value)) { // If there was an error fetching studio details, include it
+                } elseif (!empty($value)) {
                      $outputData['studio_details_error'] = $value;
                 }
             }
         }
 
-
-        // 2. Get List of Anime/Works
         $animeListData = [];
-        // YOUR ORIGINAL WORKING SELECTOR FOR THE LIST OF ITEMS
         $anime_table = $this->_parser->find('div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]');
 
-        if (is_array($anime_table)) { // Ensure $anime_table is an array before looping
+        if (is_array($anime_table)) {
             foreach ($anime_table as $each_anime) {
                 if(!is_object($each_anime)) continue; 
-
                 $result = [];
-                // YOUR ORIGINAL SUB-SELECTOR for name_area
                 $name_area = $each_anime->find('div[class=title]', 0);
                 
-                $result['image'] = ''; $result['id'] = ''; $result['title'] = ''; // Initialize
+                $result['image'] = ''; $result['id'] = ''; $result['title'] = '';
                 $result['image'] = $this->getAnimeImage($each_anime);
                 if ($name_area && is_object($name_area)) {
                     $result['id'] = $this->getAnimeId($name_area);
                     $result['title'] = $this->getAnimeTitle($name_area);
                 }
 
-                if (empty($result['id'])) {
-                    continue; 
-                }
+                if (empty($result['id'])) continue; 
 
                 $result['genre'] = $this->getAnimeGenre($each_anime);
                 $result['synopsis'] = $this->getAnimeSynopsis($each_anime);
@@ -554,20 +594,10 @@ class ProducerModel extends MainModel
             }
         }
 
-        // Merge anime list into outputData using numeric keys for each anime item
         foreach ($animeListData as $index => $animeItem) {
             $outputData[(string)$index] = $animeItem;
         }
-        // If $animeListData is empty and no studio details were found either,
-        // $outputData might be empty. Consider if an empty "works" array is preferred.
-        if (empty($animeListData) && !array_key_exists('0', $outputData) && count(array_filter(array_keys($outputData), 'is_numeric')) == 0) {
-            // If no numeric keys (anime list items) were added, explicitly add an empty works array
-            // if you want the "works" key even when empty, otherwise numeric keys are fine.
-            // For merging directly, this isn't needed. If you wanted "works": [], you'd do:
-            // $outputData['works'] = $animeListData;
-        }
-
-
+        
         return $outputData;
     }
 }
