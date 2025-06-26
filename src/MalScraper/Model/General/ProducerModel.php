@@ -346,11 +346,11 @@ class ProducerModel extends MainModel
                 //$result['producer'] = $this->getAnimeProducer($producer_area);
                 //$result['episode'] = $this->getAnimeEpisode($producer_area);
                 //$result['licensor'] = $this->getAnimeLicensor($each_anime);
-                $result['type'] = $this->getAnimeType($info_area);
+                //$result['type'] = $this->getAnimeType($info_area);
             } else {
-                $result['author'] = $this->getAnimeProducer($producer_area);
-                $result['volume'] = $this->getAnimeEpisode($producer_area);
-                $result['serialization'] = $this->getAnimeLicensor($each_anime);
+                //$result['author'] = $this->getAnimeProducer($producer_area);
+                //$result['volume'] = $this->getAnimeEpisode($producer_area);
+                //$result['serialization'] = $this->getAnimeLicensor($each_anime);
             }
 
             $result['airing_start'] = $this->getAnimeStart($info_area);
