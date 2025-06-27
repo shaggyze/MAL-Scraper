@@ -330,9 +330,9 @@ class ProducerModel extends MainModel
         
         // This second part is the fix for the detailed manga cards (using text links)
         if (empty($genres)) { // If data-genre didn't yield results, try finding text links
-            $genre_container = $each_anime->find('div.genres.js-genre div.genres-inner', 0); 
+            $genre_container = $each_anime->find('.genres.js-genre div.genres-inner', 0); 
             if ($genre_container && is_object($genre_container)) {
-                foreach ($genre_container->find('span.genre a') as $link) { // The selector for manga cards
+                foreach ($genre_container->find('.genre a') as $link) { // The selector for manga cards
                     if (is_object($link) && isset($link->plaintext)) $genres[] = trim($link->plaintext);
                 }
             }
@@ -344,7 +344,7 @@ class ProducerModel extends MainModel
     {
         if (!is_object($each_anime)) return '';
         // This selector works for the detailed manga cards
-        $synopsis_container = $each_anime->find('div.synopsis.js-synopsis', 0);
+        $synopsis_container = $each_anime->find('.synopsis.js-synopsis', 0);
         if ($synopsis_container && is_object($synopsis_container)) {
             $paragraph_node = $synopsis_container->find('p.preline', 0);
             if ($paragraph_node && is_object($paragraph_node) && isset($paragraph_node->plaintext)) {
@@ -359,14 +359,14 @@ class ProducerModel extends MainModel
         if (!is_object($each_anime)) return 'N/A';
 
         // First, check for hidden js-score (for simple anime cards)
-        $jsScore = $each_anime->find('span.js-score', 0);
+        $jsScore = $each_anime->find('.js-score', 0);
         if ($jsScore && is_object($jsScore) && isset($jsScore->plaintext)) {
             $score = trim($jsScore->plaintext);
             return (is_numeric($score) && (float)$score >= 0) ? $score : 'N/A';
         }
 
         // Then, check for the detailed manga card structure
-        $infoNode = $each_anime->find('div.information', 0);
+        $infoNode = $each_anime->find('.information', 0);
         if ($infoNode && is_object($infoNode)) {
              $scoreNode = $infoNode->find('div.scormem-item.score', 0);
              if ($scoreNode && is_object($scoreNode) && isset($scoreNode->plaintext)) {
@@ -375,9 +375,9 @@ class ProducerModel extends MainModel
         }
         
         // Fallback for simple anime cards' visible widget
-        $widget = $each_anime->find('div.widget', 0);
+        $widget = $each_anime->find('.widget', 0);
         if ($widget && is_object($widget)) {
-            $starsNode = $widget->find('div.stars', 0);
+            $starsNode = $widget->find('.stars', 0);
             if ($starsNode && is_object($starsNode) && isset($starsNode->plaintext)) {
                 if(preg_match('/(\d+\.?\d*)/', $starsNode->plaintext, $matches)) return $matches[1];
             }
