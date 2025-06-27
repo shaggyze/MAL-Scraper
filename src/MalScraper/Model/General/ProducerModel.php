@@ -421,7 +421,7 @@ class ProducerModel extends MainModel
                     elseif (!empty($value)) $outputData['studio_details_error'] = $value;
                 }
             }
-        } else { // For manga, just get the magazine name.
+        } else {
             $magazineNameNode = $this->_parser->find('div.normal_header span.di-ib', 0);
             if ($magazineNameNode && is_object($magazineNameNode) && isset($magazineNameNode->plaintext)) {
                 $outputData['magazine_name'] = trim(preg_replace('/\s*\(\d+\)$/', '', $magazineNameNode->plaintext));
@@ -429,14 +429,28 @@ class ProducerModel extends MainModel
         }
 
         $workListData = [];
-        // Use a flexible selector for the list of items that works for both anime and manga pages
-        $work_table = $this->_parser->find('.seasonal-anime-list');
         
+        // --- START: ADAPTIVE MAIN SELECTOR ---
+        $work_table = [];
+        if ($this->_type == 'anime') {
+            // Use your original, working selector for anime producer pages
+            $work_table = $this->_parser->find('div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]');
+        } else { // manga or genre
+            // Use the selector that targets the container seen in the manga magazine page
+            $list_container = $this->_parser->find('div.seasonal-anime-list', 0);
+            if ($list_container && is_object($list_container)) {
+                $work_table = $list_container->find('div.seasonal-anime.js-seasonal-anime');
+            } else {
+                // Fallback if that container isn't found
+                $work_table = $this->_parser->find('div.seasonal-anime.js-seasonal-anime');
+            }
+        }
+        // --- END: ADAPTIVE MAIN SELECTOR ---
+
         if (is_array($work_table)) {
             foreach ($work_table as $each_work) {
                 if(!is_object($each_work)) continue; 
                 $result = [];
-                // The title div selector needs to work for both card types
                 $name_area = $each_work->find('div.title', 0);
                 
                 $result['id'] = ''; $result['title'] = ''; $result['image'] = '';
@@ -449,12 +463,11 @@ class ProducerModel extends MainModel
 
                 // --- Conditional Scraping ---
                 if ($this->_type == 'anime') {
-                    // Scrape only fields present in the simple anime card
                     $result['genre'] = $this->getAnimeGenre($each_work);
                     $result['airing_start'] = $this->getAnimeStart($each_work);
                     $result['member'] = $this->getAnimeMember($each_work);
                     $result['score'] = $this->getAnimeScore($each_work);   
-                } else { // Manga has more details to scrape
+                } else { // Manga has more details to scrape from its card
                     $result['genre'] = $this->getAnimeGenre($each_work);
                     $result['synopsis'] = $this->getAnimeSynopsis($each_work);
                     $result['author'] = $this->getAnimeProducer($each_work); 
@@ -470,7 +483,6 @@ class ProducerModel extends MainModel
             }
         }
 
-        // Merge the anime/manga list into the output
         foreach ($workListData as $index => $workItem) {
             $outputData[(string)$index] = $workItem;
         }
