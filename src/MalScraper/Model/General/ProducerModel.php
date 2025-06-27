@@ -368,7 +368,7 @@ class ProducerModel extends MainModel
         // Then, check for the detailed manga card structure
         $infoNode = $each_anime->find('.information', 0);
         if ($infoNode && is_object($infoNode)) {
-             $scoreNode = $infoNode->find('div.scormem-item.score', 0);
+             $scoreNode = $infoNode->find('.scormem-item.score', 0);
              if ($scoreNode && is_object($scoreNode) && isset($scoreNode->plaintext)) {
                  if(preg_match('/(\d+\.?\d*)/', $scoreNode->plaintext, $matches)) return $matches[1];
              }
@@ -484,7 +484,7 @@ class ProducerModel extends MainModel
                     $result['volume'] = $this->getAnimeEpisode($each_work);  
                     $result['serialization'] = $this->getAnimeLicensor($each_work);
                     $result['type'] = $this->getAnimeType($each_work);
-                    $result['airing_start'] = $this->getAnimeStart($each_work);
+                    $result['published'] = $this->getAnimeStart($each_work);
                     $result['member'] = $this->getAnimeMember($each_work);
                     $result['score'] = $this->getAnimeScore($each_work);   
                 }
