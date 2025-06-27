@@ -77,21 +77,7 @@ class UserListCSSModel extends MainModel
         return call_user_func_array([$this, $method], $arguments);
     }
 
-    /**
-     * Default call.
-     *
-     * @param string $type
-     * @param array  $id
-     *
-     * @return string|int
-     */
-    public function get_subdirectory($type, $id)
-	{
-        $subdirectory_number = floor($id / 10000);
-        $subdirectory_path = '../maldb/info/' . $type . '/' . $subdirectory_number . '/';
 
-        return strval($subdirectory_number);
-    }
 
     /**
      * Get user list.
@@ -118,7 +104,7 @@ class UserListCSSModel extends MainModel
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
-			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
+			  $subdirectory = get_subdirectory('info', 'anime', $content[$i]['anime_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $url2 = 'https://shaggyze.website/maldb/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
