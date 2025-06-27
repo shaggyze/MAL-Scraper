@@ -250,45 +250,6 @@ class ProducerModel extends MainModel
         return '';
     }
 
-    private function getAnimeGenre($each_anime)
-    {
-        $genres = [];
-        if (!is_object($each_anime)) return $genres;
-        $currentGenreMap = ($this->_type == 'anime') ? self::$animeGenreMap : self::$mangaGenreMap;
-        if ($each_anime->hasAttribute('data-genre')) {
-            $genre_ids_str = $each_anime->getAttribute('data-genre');
-            if (!empty($genre_ids_str)) {
-                $genre_ids = explode(',', $genre_ids_str);
-                foreach ($genre_ids as $id) {
-                    $trimmed_id = trim($id);
-                    if (isset($currentGenreMap[$trimmed_id])) $genres[] = $currentGenreMap[$trimmed_id];
-                }
-            }
-        }
-        if (empty($genres)) {
-            $genre_container = $each_anime->find('div.genres.js-genre div.genres-inner', 0); 
-            if ($genre_container && is_object($genre_container)) {
-                foreach ($genre_container->find('span.genre a') as $link) {
-                    if (is_object($link) && isset($link->plaintext)) $genres[] = trim($link->plaintext);
-                }
-            }
-        }
-        return $genres;
-    }
-
-    private function getAnimeSynopsis($each_anime)
-    {
-        if (!is_object($each_anime)) return '';
-        $synopsis_container = $each_anime->find('div.synopsis.js-synopsis', 0);
-        if ($synopsis_container && is_object($synopsis_container)) {
-            $paragraph_node = $synopsis_container->find('p.preline', 0);
-            if ($paragraph_node && is_object($paragraph_node) && isset($paragraph_node->plaintext)) {
-                return trim(preg_replace("/([\s])+/", ' ', $paragraph_node->plaintext));
-            }
-        }
-        return '';
-    }
-
     private function getAnimeLicensor($each_anime) // For manga, this is Serialization
     {
         if (!is_object($each_anime)) return ($this->_type == 'anime') ? [] : '';
@@ -349,14 +310,62 @@ class ProducerModel extends MainModel
         return '';
     }
 
+    private function getAnimeGenre($each_anime)
+    {
+        $genres = [];
+        if (!is_object($each_anime)) return $genres;
+        
+        // This first part is for the simple anime cards (using data-genre)
+        $currentGenreMap = ($this->_type == 'anime') ? self::$animeGenreMap : self::$mangaGenreMap;
+        if ($each_anime->hasAttribute('data-genre')) {
+            $genre_ids_str = $each_anime->getAttribute('data-genre');
+            if (!empty($genre_ids_str)) {
+                $genre_ids = explode(',', $genre_ids_str);
+                foreach ($genre_ids as $id) {
+                    $trimmed_id = trim($id);
+                    if (isset($currentGenreMap[$trimmed_id])) $genres[] = $currentGenreMap[$trimmed_id];
+                }
+            }
+        }
+        
+        // This second part is the fix for the detailed manga cards (using text links)
+        if (empty($genres)) { // If data-genre didn't yield results, try finding text links
+            $genre_container = $each_anime->find('div.genres.js-genre div.genres-inner', 0); 
+            if ($genre_container && is_object($genre_container)) {
+                foreach ($genre_container->find('span.genre a') as $link) { // The selector for manga cards
+                    if (is_object($link) && isset($link->plaintext)) $genres[] = trim($link->plaintext);
+                }
+            }
+        }
+        return $genres;
+    }
+
+    private function getAnimeSynopsis($each_anime)
+    {
+        if (!is_object($each_anime)) return '';
+        // This selector works for the detailed manga cards
+        $synopsis_container = $each_anime->find('div.synopsis.js-synopsis', 0);
+        if ($synopsis_container && is_object($synopsis_container)) {
+            $paragraph_node = $synopsis_container->find('p.preline', 0);
+            if ($paragraph_node && is_object($paragraph_node) && isset($paragraph_node->plaintext)) {
+                return trim(preg_replace("/([\s])+/", ' ', $paragraph_node->plaintext));
+            }
+        }
+        return '';
+    }
+    
     private function getAnimeScore($each_anime)
     {
         if (!is_object($each_anime)) return 'N/A';
+
+        // First, check for hidden js-score (for simple anime cards)
         $jsScore = $each_anime->find('span.js-score', 0);
         if ($jsScore && is_object($jsScore) && isset($jsScore->plaintext)) {
             $score = trim($jsScore->plaintext);
             return (is_numeric($score) && (float)$score >= 0) ? $score : 'N/A';
         }
+
+        // Then, check for the detailed manga card structure
         $infoNode = $each_anime->find('div.information', 0);
         if ($infoNode && is_object($infoNode)) {
              $scoreNode = $infoNode->find('div.scormem-item.score', 0);
@@ -364,6 +373,8 @@ class ProducerModel extends MainModel
                  if(preg_match('/(\d+\.?\d*)/', $scoreNode->plaintext, $matches)) return $matches[1];
              }
         }
+        
+        // Fallback for simple anime cards' visible widget
         $widget = $each_anime->find('div.widget', 0);
         if ($widget && is_object($widget)) {
             $starsNode = $widget->find('div.stars', 0);
@@ -377,10 +388,14 @@ class ProducerModel extends MainModel
     private function getAnimeMember($each_anime)
     {
         if (!is_object($each_anime)) return '0';
+        
+        // First, check for hidden js-members (for simple anime cards)
         $jsMembers = $each_anime->find('span.js-members', 0);
         if ($jsMembers && is_object($jsMembers) && isset($jsMembers->plaintext)) {
             return trim(preg_replace('/[^\d]/', '', $jsMembers->plaintext));
         }
+        
+        // Then, check for the detailed manga card structure
         $infoNode = $each_anime->find('div.information', 0);
         if ($infoNode && is_object($infoNode)) {
             $memberNode = $infoNode->find('div.scormem-item.member', 0);
@@ -395,6 +410,8 @@ class ProducerModel extends MainModel
                 }
             }
         }
+        
+        // Fallback for simple anime cards' visible widget
         $widget = $each_anime->find('div.widget', 0);
         if ($widget && is_object($widget)) {
             $usersNode = $widget->find('div.users', 0);
