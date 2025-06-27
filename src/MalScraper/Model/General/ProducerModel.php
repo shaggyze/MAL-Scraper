@@ -437,9 +437,9 @@ class ProducerModel extends MainModel
             $work_table = $this->_parser->find('div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]');
         } else { // manga or genre
             // Use the selector that targets the container seen in the manga magazine page
-            $list_container = $this->_parser->find('.seasonal-anime-list', 0);
+            $list_container = $this->_parser->find('.seasonal-anime-list');
             if ($list_container && is_object($list_container)) {
-                $work_table = $list_container->find('.seasonal-anime.js-seasonal-anime');
+                $work_table = $list_container->find('.seasonal-anime-list');
             } else {
                 // Fallback if that container isn't found
                 $work_table = $this->_parser->find('.seasonal-anime.js-seasonal-anime');
