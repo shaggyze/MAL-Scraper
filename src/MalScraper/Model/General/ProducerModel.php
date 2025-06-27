@@ -344,9 +344,9 @@ class ProducerModel extends MainModel
     {
         if (!is_object($each_anime)) return '';
         // This selector works for the detailed manga cards
-        $synopsis_container = $each_anime->find('.synopsis.js-synopsis', 0);
+        $synopsis_container = $each_anime->find('div[class="synopsis js-synopsis"]', 0);
         if ($synopsis_container && is_object($synopsis_container)) {
-            $paragraph_node = $synopsis_container->find('p.preline', 0);
+            $paragraph_node = $synopsis_container->find('p[class="preline"]');
             if ($paragraph_node && is_object($paragraph_node) && isset($paragraph_node->plaintext)) {
                 return trim(preg_replace("/([\s])+/", ' ', $paragraph_node->plaintext));
             }
