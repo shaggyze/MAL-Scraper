@@ -430,7 +430,7 @@ class ProducerModel extends MainModel
 
         $workListData = [];
         // Use a flexible selector for the list of items that works for both anime and manga pages
-        $work_table = $this->_parser->find('seasonal-anime-list');
+        $work_table = $this->_parser->find('.seasonal-anime-list');
         
         if (is_array($work_table)) {
             foreach ($work_table as $each_work) {
