@@ -217,7 +217,9 @@ class ProducerModel extends MainModel
         if ($prodsrc_info_node && is_object($prodsrc_info_node)) {
             if ($this->_type == 'manga') {
                 $volSpan = $prodsrc_info_node->find('span.volume',0);
-                if ($volSpan && is_object($volSpan) && isset($volSpan->plaintext)) return trim($volSpan->plaintext);
+                if ($volSpan && is_object($volSpan) && isset($volSpan->plaintext)) {
+                    return trim($volSpan->plaintext);
+                }
             } else {
                 foreach ($prodsrc_info_node->find('span.item') as $span) {
                     if (is_object($span) && isset($span->plaintext) && strpos($span->plaintext, 'ep') !== false) {
@@ -422,21 +424,19 @@ class ProducerModel extends MainModel
         } else { // For manga, just get the magazine name.
             $magazineNameNode = $this->_parser->find('div.normal_header span.di-ib', 0);
             if ($magazineNameNode && is_object($magazineNameNode) && isset($magazineNameNode->plaintext)) {
-                $outputData['magazine_name'] = trim(preg_replace('/\(\d+\)$/', '', $magazineNameNode->plaintext));
+                $outputData['magazine_name'] = trim(preg_replace('/\s*\(\d+\)$/', '', $magazineNameNode->plaintext));
             }
         }
 
         $workListData = [];
-        // Use a flexible selector for the list of items
+        // Use a flexible selector for the list of items that works for both anime and manga pages
         $work_table = $this->_parser->find('div.seasonal-anime.js-seasonal-anime');
-        if(empty($work_table) && $this->_type == 'anime') { // Fallback to your original anime-specific one if needed
-            $work_table = $this->_parser->find('div[class="js-anime-category-studio seasonal-anime js-seasonal-anime js-anime-type-all js-anime-type-3"]');
-        }
-
+        
         if (is_array($work_table)) {
             foreach ($work_table as $each_work) {
                 if(!is_object($each_work)) continue; 
                 $result = [];
+                // The title div selector needs to work for both card types
                 $name_area = $each_work->find('div.title', 0);
                 
                 $result['id'] = ''; $result['title'] = ''; $result['image'] = '';
@@ -447,24 +447,24 @@ class ProducerModel extends MainModel
                 $result['image'] = $this->getAnimeImage($each_work);
                 if (empty($result['id'])) continue; 
 
-                $result['genre'] = $this->getAnimeGenre($each_work);
-                $result['synopsis'] = $this->getAnimeSynopsis($each_work);
-                
+                // --- Conditional Scraping ---
                 if ($this->_type == 'anime') {
-                    $result['source'] = $this->getAnimeSource($each_work);
-                    $result['producer'] = $this->getAnimeProducer($each_work);
-                    $result['episode'] = $this->getAnimeEpisode($each_work);
-                    $result['licensor'] = $this->getAnimeLicensor($each_work); 
-                    $result['type'] = $this->getAnimeType($each_work);
-                } else { 
+                    // Scrape only fields present in the simple anime card
+                    $result['genre'] = $this->getAnimeGenre($each_work);
+                    $result['airing_start'] = $this->getAnimeStart($each_work);
+                    $result['member'] = $this->getAnimeMember($each_work);
+                    $result['score'] = $this->getAnimeScore($each_work);   
+                } else { // Manga has more details to scrape
+                    $result['genre'] = $this->getAnimeGenre($each_work);
+                    $result['synopsis'] = $this->getAnimeSynopsis($each_work);
                     $result['author'] = $this->getAnimeProducer($each_work); 
                     $result['volume'] = $this->getAnimeEpisode($each_work);  
-                    $result['serialization'] = $this->getAnimeLicensor($each_work); 
+                    $result['serialization'] = $this->getAnimeLicensor($each_work);
+                    $result['type'] = $this->getAnimeType($each_work);
+                    $result['airing_start'] = $this->getAnimeStart($each_work);
+                    $result['member'] = $this->getAnimeMember($each_work);
+                    $result['score'] = $this->getAnimeScore($each_work);   
                 }
-
-                $result['airing_start'] = $this->getAnimeStart($each_work);
-                $result['member'] = $this->getAnimeMember($each_work);
-                $result['score'] = $this->getAnimeScore($each_work);   
                 
                 $workListData[] = $result;
             }
