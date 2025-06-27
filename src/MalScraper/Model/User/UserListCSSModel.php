@@ -88,7 +88,7 @@ class UserListCSSModel extends MainModel
     public function get_subdirectory($type, $id)
 	{
         $subdirectory_number = floor($id / 10000);
-        $subdirectory_path = '../info/' . $type . '/' . $subdirectory_number . '/';
+        $subdirectory_path = '../maldb/info/' . $type . '/' . $subdirectory_number . '/';
 
         return strval($subdirectory_number);
     }
@@ -120,7 +120,7 @@ class UserListCSSModel extends MainModel
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('anime', $content[$i]['anime_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
-			  $url2 = 'https://shaggyze.website/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
+			  $url2 = 'https://shaggyze.website/maldb/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
 			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
