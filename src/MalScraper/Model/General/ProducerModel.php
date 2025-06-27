@@ -179,28 +179,20 @@ class ProducerModel extends MainModel
         $studioNameNode = $this->_parser->find('h1.title-name', 0);
         if ($studioNameNode && is_object($studioNameNode) && isset($studioNameNode->plaintext)) {
             $studioPageDetails['studio_name'] = trim($studioNameNode->plaintext);
-        } else {
-            $contentLeftForLogo = $this->_parser->find('div.content-left', 0);
-            if ($contentLeftForLogo && is_object($contentLeftForLogo)) {
-                $logoImgForName = $contentLeftForLogo->find('div.logo img', 0);
-                if ($logoImgForName && is_object($logoImgForName) && $logoImgForName->hasAttribute('alt')) {
-                     $studioPageDetails['studio_name'] = trim($logoImgForName->getAttribute('alt'));
-                }
-            }
         }
 
         $contentLeft = $this->_parser->find('div.content-left', 0);
         if (!$contentLeft || !is_object($contentLeft)) {
-             if (($this->_parserArea === null || $this->_parserArea === 'body' || $this->_parserArea === '') && 
-                 !($this->_parserArea === '#content' || $this->_parserArea === '.content-left')) {
-                 $contentLeftById = $this->_parser->find('#contentLeft', 0);
-                 if ($contentLeftById && is_object($contentLeftById)) $contentLeft = $contentLeftById;
-            }
-             if (!$contentLeft || !is_object($contentLeft)) {
-                 return $studioPageDetails; 
-             }
+            return $studioPageDetails; // Cannot proceed if content-left isn't found
         }
-
+        
+        if (empty($studioPageDetails['studio_name'])) {
+            $logoImgForName = $contentLeft->find('div.logo img', 0);
+            if ($logoImgForName && is_object($logoImgForName) && $logoImgForName->hasAttribute('alt')) {
+                 $studioPageDetails['studio_name'] = trim($logoImgForName->getAttribute('alt'));
+            }
+        }
+        
         $logoImg = $contentLeft->find('div.logo img', 0);
         if ($logoImg && is_object($logoImg)) {
             if ($logoImg->hasAttribute('data-src')) {
@@ -212,41 +204,21 @@ class ProducerModel extends MainModel
 
         $studioInfo = [];
         $description = '';
-        $mainInfoBlock = null;
-        foreach($contentLeft->find('div.mb16') as $mb16) {
-            if (is_object($mb16) && $mb16->find('div.spaceit_pad span.dark_text', 0)) {
-                if (!$mb16->find('div.js-sns-icon-container',0) && !$mb16->find('div.user-profile-sns',0)) {
-                    $mainInfoBlock = $mb16;
-                    break;
-                }
-            }
-        }
-        $nodesToSearch = ($mainInfoBlock && is_object($mainInfoBlock)) ? $mainInfoBlock->find('div.spaceit_pad') : $contentLeft->find('div.spaceit_pad');
-
-        foreach ($nodesToSearch as $pad) {
+        
+        foreach ($contentLeft->find('div.spaceit_pad') as $pad) {
             if (!is_object($pad)) continue;
             $darkTextNode = $pad->find('span.dark_text', 0);
 
             if ($darkTextNode && is_object($darkTextNode) && isset($darkTextNode->plaintext)) {
-                $label = trim(rtrim($darkTextNode->plaintext, ':'));
-                $value = '';
-                $temp_html_str = $pad->innertext; // Use innertext of the pad
-                $temp_label_html = $darkTextNode->outertext;
-                // Ensure $temp_label_html is not empty to avoid issues if label itself is empty
-                $value_html_str = !empty($temp_label_html) ? str_ireplace($temp_label_html, '', $temp_html_str) : $temp_html_str;
+                $label_text = trim($darkTextNode->plaintext);
+                $label_key = trim(rtrim($label_text, ':'));
                 
-                $temp_dom_for_value = HtmlDomParser::str_get_html($value_html_str);
-                if ($temp_dom_for_value && is_object($temp_dom_for_value)) {
-                    // CORRECTED: Access plaintext as a property
-                    $value = isset($temp_dom_for_value->plaintext) ? trim($temp_dom_for_value->plaintext) : ''; 
-                    $temp_dom_for_value->clear(); 
-                    unset($temp_dom_for_value); 
-                } else {
-                    $value = ''; 
-                }
+                // Simpler value extraction
+                $full_pad_text = trim($pad->plaintext);
+                $value = trim(str_ireplace($label_text, '', $full_pad_text));
 
                 if (!empty($value)) {
-                    switch (strtolower($label)) {
+                    switch (strtolower($label_key)) {
                         case 'japanese':
                             $studioInfo['japanese_name'] = $value;
                             break;
@@ -263,12 +235,7 @@ class ProducerModel extends MainModel
                 }
             } elseif (empty($description)) { 
                 $descSpan = $pad->find('span', 0);
-                $currentDescCandidate = '';
-                if ($descSpan && is_object($descSpan) && isset($descSpan->plaintext)) {
-                    $currentDescCandidate = trim($descSpan->plaintext);
-                } elseif (isset($pad->plaintext)) {
-                    $currentDescCandidate = trim($pad->plaintext);
-                }
+                $currentDescCandidate = ($descSpan && is_object($descSpan) && isset($descSpan->plaintext)) ? trim($descSpan->plaintext) : trim($pad->plaintext);
                 if (strlen($currentDescCandidate) > 50) { 
                     $description = trim(preg_replace("/\s+/", " ", $currentDescCandidate));
                 }
@@ -390,9 +357,7 @@ class ProducerModel extends MainModel
     private function getAnimeGenre($each_anime)
     {
         $genres = [];
-        if (!is_object($each_anime)) {
-            return $genres;
-        }
+        if (!is_object($each_anime)) return $genres;
 
         $currentGenreMap = ($this->_type == 'anime') ? self::$animeGenreMap : self::$mangaGenreMap;
 
@@ -409,7 +374,7 @@ class ProducerModel extends MainModel
             }
         }
         
-        if (empty($genres)) { // Fallback to text-based genres if data-genre not helpful
+        if (empty($genres)) { // Fallback if data-genre is missing or empty
             $genre_container_outer = $each_anime->find('div.genres.js-genre', 0); 
             if ($genre_container_outer && is_object($genre_container_outer)) {
                 $genre_container_inner = $genre_container_outer->find('div.genres-inner', 0); 
@@ -539,10 +504,10 @@ class ProducerModel extends MainModel
         
         if (is_array($studioPageDetails)) {
             foreach ($studioPageDetails as $key => $value) {
-                if ($key !== 'error_studio_details') { // Prevent copying a potential error key directly
+                if ($key !== 'error_studio_details') {
                      $outputData[$key] = $value;
-                } elseif (!empty($value)) { // If there was an error string from _getStudioPageDetails
-                     $outputData['studio_details_error'] = $value; // Store it under a distinct key
+                } elseif (!empty($value)) {
+                     $outputData['studio_details_error'] = $value;
                 }
             }
         }
