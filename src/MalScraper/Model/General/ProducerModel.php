@@ -330,9 +330,9 @@ class ProducerModel extends MainModel
         
         // This second part is the fix for the detailed manga cards (using text links)
         if (empty($genres)) { // If data-genre didn't yield results, try finding text links
-            $genre_container = $each_anime->find('.genres.js-genre div.genres-inner', 0); 
+            $genre_container = $each_anime->find('div[class="genres.js-genre div.genres-inner"]', 0); 
             if ($genre_container && is_object($genre_container)) {
-                foreach ($genre_container->find('.genre a') as $link) { // The selector for manga cards
+                foreach ($genre_container->find('span[class="genre"] a') as $link) { // The selector for manga cards
                     if (is_object($link) && isset($link->plaintext)) $genres[] = trim($link->plaintext);
                 }
             }
