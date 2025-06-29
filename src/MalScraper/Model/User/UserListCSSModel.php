@@ -111,7 +111,7 @@ class UserListCSSModel extends MainModel
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
 			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
-			  $subdirectory = get_subdirectory('manga', $content[$i]['manga_id']);
+			  $subdirectory = get_subdirectory('info', 'manga', $content[$i]['manga_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $url2 = 'https://shaggyze.website/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
