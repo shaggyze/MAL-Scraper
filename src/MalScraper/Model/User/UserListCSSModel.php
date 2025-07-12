@@ -1,4 +1,10 @@
 <?php
+ini_set('max_execution_time', 20000);
+ini_set('memory_limit', "2048M");
+ini_set('max_file_size', 1000000000);
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
 namespace MalScraper\Model\User;
 
