@@ -155,7 +155,7 @@ if ($content_json !== false) {
     // $content remains null, indicating total failure
 }
 
-		$content = json_decode(file_get_contents(htmlspecialchars_decode($url)), true);
+		//$content = json_decode(file_get_contents(htmlspecialchars_decode($url)), true);
 
 		if ($content) {
 		  $count = count($content);
