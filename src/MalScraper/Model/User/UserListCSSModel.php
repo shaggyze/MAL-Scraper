@@ -96,7 +96,64 @@ class UserListCSSModel extends MainModel
 	  $te_ptwr = 0;
 
 	  while (true) {
-		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
+$primary_url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
+
+$content_json = false; // Initialize to false
+$http_status = null;
+$use_alternate_url = false;
+
+// Create a stream context to ignore HTTP errors so we can read the headers
+$context = stream_context_create([
+    'http' => [
+        'ignore_errors' => true // This allows file_get_contents to return content even on 4xx/5xx errors
+    ]
+]);
+
+// Attempt to get content from the primary URL
+// @ suppresses warnings/errors from file_get_contents if it fails for non-HTTP reasons
+$content_json = @file_get_contents(htmlspecialchars_decode($primary_url), false, $context);
+
+// Check the HTTP response header for the status code
+if (isset($http_response_header) && count($http_response_header) > 0) {
+    // The first header line contains the status code, e.g., "HTTP/1.1 405 Method Not Allowed"
+    preg_match('{HTTP\/\S+\s(\d{3})}', $http_response_header[0], $match);
+    if (isset($match[1])) {
+        $http_status = (int)$match[1];
+    }
+}
+
+// Determine if we need to use the alternate URL
+// We use it if file_get_contents failed (e.g., network error, DNS) OR if the HTTP status is 405
+if ($content_json === false || ($http_status === 405)) {
+    $use_alternate_url = true;
+    echo "DEBUG: Primary URL failed (file_get_contents returned false) or returned HTTP 405. Attempting alternate URL.\n";
+}
+
+if ($use_alternate_url) {
+    // Construct the alternate URL
+    $alternate_url = 'https://shaggyze.website/maldb/userlist/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
+    echo "DEBUG: Using alternate URL: " . $alternate_url . "\n";
+    // For the alternate, we can revert to a simpler fetch if 405 isn't expected there,
+    // or keep the context if you anticipate similar issues.
+    // For this example, we'll keep it simple for the alternate, just checking general failure.
+    $content_json = @file_get_contents(htmlspecialchars_decode($alternate_url));
+}
+
+// Now, process the content regardless of which URL it came from
+$content = null; // Initialize content to null
+
+if ($content_json !== false) {
+    $content = json_decode($content_json, true);
+
+    // Always check for JSON decoding errors
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo "DEBUG: Error decoding JSON: " . json_last_error_msg() . "\n";
+        $content = null; // Set content to null if JSON is invalid
+    }
+} else {
+    echo "DEBUG: Failed to retrieve content from both primary and alternate URLs.\n";
+    // $content remains null, indicating total failure
+}
 
 		$content = json_decode(file_get_contents(htmlspecialchars_decode($url)), true);
 
