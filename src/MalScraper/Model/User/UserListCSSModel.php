@@ -4,6 +4,7 @@ namespace MalScraper\Model\User;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
+use MalScraper\Model\General\InfoModel; // <-- Added this line
 
 ini_set('max_execution_time', 20000);
 ini_set('memory_limit', "2048M");
@@ -11,6 +12,7 @@ ini_set('max_file_size', 1000000000);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+
 /**
  * UserListModel class.
  */
@@ -161,26 +163,32 @@ if ($content_json !== false) {
     // $content remains null, indicating total failure
 }
 
-		//$content = json_decode(file_get_contents(htmlspecialchars_decode($url)), true);
-
 		if ($content) {
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
+
+			// --- START of modification ---
+			// Replaced the URL building and file_get_contents with a call to the InfoModel API.
+			$content2 = []; // Initialize content2
 			if (!empty($content[$i]['anime_id'])) {
-			  $subdirectory = get_subdirectory('info', 'anime', $content[$i]['anime_id']);
-			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
-			  $url2 = 'https://shaggyze.website/maldb/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
-			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
-			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
-			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
+				$infoModel = new InfoModel('anime', $content[$i]['anime_id']);
+				$infoData = $infoModel->getAllInfo();
+				if ($infoData) {
+					// Wrap the result in a 'data' key to match the original structure.
+					$content2['data'] = $infoData;
+				}
+				if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
-			  $subdirectory = get_subdirectory('info', 'manga', $content[$i]['manga_id']);
-			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
-			  $url2 = 'https://shaggyze.website/maldb/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
-			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
-			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
-			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
+				$infoModel = new InfoModel('manga', $content[$i]['manga_id']);
+				$infoData = $infoModel->getAllInfo();
+				if ($infoData) {
+					// Wrap the result in a 'data' key to match the original structure.
+					$content2['data'] = $infoData;
+				}
+				if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
+			// --- END of modification ---
+
 			if (!empty($content2['data']['broadcast'])) {
 				$content[$i]['broadcast'] = $content2['data']['broadcast'];
 			} else {
