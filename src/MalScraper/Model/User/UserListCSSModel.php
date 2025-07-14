@@ -62,7 +62,6 @@ class UserListCSSModel extends MainModel
 
         while (true) {
             $primary_url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
-
             $content_json = false;
             $http_status = null;
             $use_alternate_url = false;
@@ -71,7 +70,6 @@ class UserListCSSModel extends MainModel
                 'http' => ['ignore_errors' => true]
             ]);
 
-            // Attempt to fetch from the primary URL
             $content_json = @file_get_contents(htmlspecialchars_decode($primary_url), false, $context);
 
             if (isset($http_response_header) && count($http_response_header) > 0) {
@@ -88,6 +86,11 @@ class UserListCSSModel extends MainModel
             $content = null;
 
             if ($use_alternate_url) {
+                // We only try the alternate URL once, so we check if offset is 0.
+                // This prevents re-fetching the same backup file in a loop.
+                if ($offset > 0) {
+                    break;
+                }
                 echo "DEBUG: Primary URL failed. Attempting alternate URL.\n";
                 $alternate_url = 'https://shaggyze.website/maldb/userlist/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
                 echo "DEBUG: Using alternate URL: " . $alternate_url . "\n";
@@ -97,107 +100,99 @@ class UserListCSSModel extends MainModel
             if ($content_json !== false) {
                 $content = json_decode($content_json, true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
-                    echo "DEBUG: Error decoding JSON: " . json_last_error_msg() . "\n";
                     $content = null;
                 }
-            } else {
-                echo "DEBUG: Failed to retrieve content from all URLs.\n";
             }
 
             if ($use_alternate_url && isset($content['data']) && is_array($content['data'])) {
                 $content = array_values($content['data']);
             }
 
-            // --- START: ROBUST EXIT AND PROCESSING LOGIC ---
-
-            // Main Exit Condition: If we failed to get any data, or the data is empty, stop.
+            // --- Definitive Exit Condition ---
+            // If at any point we have no valid content, we are done.
             if (empty($content)) {
                 break;
             }
 
-            // If we have content, process it.
-            $count = count($content);
-            for ($i = 0; $i < $count; $i++) {
-                
-                if (!is_array($content[$i]) || (empty($content[$i]['anime_id']) && empty($content[$i]['manga_id']))) {
-                    continue; 
+            // --- Defensive Processing Loop ---
+            foreach ($content as &$item) {
+                // 1. Check if the item is a valid array. If not, skip it.
+                if (!is_array($item)) {
+                    continue;
                 }
-                
-                $content2 = ['data' => []];
-                if (!empty($content[$i]['anime_id'])) {
-                    $infoModel = new InfoModel('anime', $content[$i]['anime_id']);
-                    $infoData = $infoModel->getAllInfo();
-                    if ($infoData) {
-                        $content2['data'] = $infoData;
-                    }
-                    if (empty($content[$i]['anime_title_eng'])) {$content[$i]['anime_title_eng'] = "N/A";}
-                } else {
-                    $infoModel = new InfoModel('manga', $content[$i]['manga_id']);
-                    $infoData = $infoModel->getAllInfo();
-                    if ($infoData) {
-                        $content2['data'] = $infoData;
-                    }
-                    if (empty($content[$i]['manga_english'])) {$content[$i]['manga_english'] = "N/A";}
-                }
-                
-                // (All your data processing logic for synopsis, genres, etc. goes here and remains unchanged)
-                // ...
-                if (!empty($content[$i]['num_watched_episodes'])) {
-                    $total_episodes = intval($content[$i]['anime_num_episodes']);
-                    if ($total_episodes > 0) {
-                        $content[$i]['progress_percent'] = round(($content[$i]['num_watched_episodes'] / $total_episodes) * 100, 2);
-                    } else {
-                        $content[$i]['progress_percent'] = 0;
-                    }
-                } elseif (!empty($content[$i]['num_read_volumes'])) {
-                    $total_volumes = intval($content[$i]['manga_num_volumes']);
-                    if ($total_volumes > 0) {
-                        $content[$i]['progress_percent'] = round(($content[$i]['num_read_volumes'] / $total_volumes) * 100, 2);
-                    } else {
-                        $content[$i]['progress_percent'] = 0;
-                    }
-                } else {
-                    $content[$i]['progress_percent'] = 0;
-                }
-                // ...
-                // (The status counter logic remains unchanged)
-                 if ($content[$i]['status'] == 1) {
-                    $te_cwr += 1;
-                    $te_all += 1;
-                } elseif ($content[$i]['status'] == 2) {
-                    $te_c += 1;
-                    $te_all += 1;
-                } elseif ($content[$i]['status'] == 3) {
-                    $te_oh += 1;
-                    $te_all += 1;
-                } elseif ($content[$i]['status'] == 4) {
-                    $te_d += 1;
-                    $te_all += 1;
-                } elseif ($content[$i]['status'] == 6) {
-                    $te_ptwr += 1;
-                    $te_all += 1;
-                }
-                $content[$i]['total_entries_cwr'] = $te_cwr;
-                $content[$i]['total_entries_c'] = $te_c;
-                $content[$i]['total_entries_oh'] = $te_oh;
-                $content[$i]['total_entries_d'] = $te_d;
-                $content[$i]['total_entries_ptwr'] = $te_ptwr;
-                $content[$i]['total_entries_all'] = $te_all;
-                $content[$i]['\a'] = "-a";
 
+                $id = null;
+                $type = null;
+
+                if (!empty($item['anime_id'])) {
+                    $id = $item['anime_id'];
+                    $type = 'anime';
+                } elseif (!empty($item['manga_id'])) {
+                    $id = $item['manga_id'];
+                    $type = 'manga';
+                }
+
+                // 2. If there's no ID, we can't process it. Skip it.
+                if ($id === null) {
+                    continue;
+                }
+
+                // 3. Get rich data, but anticipate failure.
+                $infoModel = new InfoModel($type, $id);
+                $infoData = $infoModel->getAllInfo();
+                
+                // If the scraper fails, $infoData will be empty. We'll add default values.
+                $content2 = ['data' => $infoData ?: []];
+
+                // 4. Safely add all your data, using null coalescing (??) to prevent errors
+                $item['broadcast'] = $content2['data']['broadcast'] ?? "";
+                $item['synopsis'] = $content2['data']['synopsis'] ?? "N/A";
+                // ... continue this pattern for all scraped data ...
+                $item['rank'] = $content2['data']['rank'] ?? "N/A";
+
+                // ... (your existing logic with default values) ...
+                
+                // 5. Defensively handle progress calculation
+                $item['progress_percent'] = 0;
+                if (!empty($item['num_watched_episodes'])) {
+                    $total_episodes = intval($item['anime_num_episodes'] ?? 0);
+                    if ($total_episodes > 0) {
+                        $item['progress_percent'] = round(($item['num_watched_episodes'] / $total_episodes) * 100, 2);
+                    }
+                } elseif (!empty($item['num_read_volumes'])) {
+                    $total_volumes = intval($item['manga_num_volumes'] ?? 0);
+                    if ($total_volumes > 0) {
+                        $item['progress_percent'] = round(($item['num_read_volumes'] / $total_volumes) * 100, 2);
+                    }
+                }
+
+                // 6. Defensively handle status counting
+                $status = intval($item['status'] ?? 0);
+                if ($status == 1) { $te_cwr++; $te_all++; }
+                elseif ($status == 2) { $te_c++; $te_all++; }
+                elseif ($status == 3) { $te_oh++; $te_all++; }
+                elseif ($status == 4) { $te_d++; $te_all++; }
+                elseif ($status == 6) { $te_ptwr++; $te_all++; }
+
+                $item['total_entries_cwr'] = $te_cwr;
+                $item['total_entries_c'] = $te_c;
+                $item['total_entries_oh'] = $te_oh;
+                $item['total_entries_d'] = $te_d;
+                $item['total_entries_ptwr'] = $te_ptwr;
+                $item['total_entries_all'] = $te_all;
+                $item['\a'] = "-a";
             }
+            unset($item); // Unset reference from foreach
 
             $data = array_merge($data, $content);
 
-            // Secondary Exit Condition: If we used the alternate URL, we are done.
+            // If we used the alternate URL, its job is done. Exit the loop.
             if ($use_alternate_url) {
                 break;
             }
 
-            // If we are still here, it's because we used the primary URL.
-            // Prepare for the next page.
+            // If we are here, we must have used the primary URL. Increment for next page.
             $offset += 300;
-            // --- END: ROBUST EXIT AND PROCESSING LOGIC ---
         }
 
         return $data;
