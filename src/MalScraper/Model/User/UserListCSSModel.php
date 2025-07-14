@@ -106,15 +106,18 @@ class UserListCSSModel extends MainModel
         }
 
 		if ($content) {
-            // (The entire for loop for processing data remains unchanged here)
             $count = count($content);
             for ($i = 0; $i < $count; $i++) {
             
-                if (empty($content[$i]['anime_id']) && empty($content[$i]['manga_id'])) {
+                // --- FIX PART 1: Robust Guard Clause ---
+                // Skip any entry that is not a valid array or is missing its core ID.
+                if (!is_array($content[$i]) || (empty($content[$i]['anime_id']) && empty($content[$i]['manga_id']))) {
                     continue; 
                 }
 
-                $content2 = [];
+                // --- FIX PART 2: Handle Scraper Failure Gracefully ---
+                // Initialize $content2 with a default structure.
+                $content2 = ['data' => []];
                 if (!empty($content[$i]['anime_id'])) {
                     $infoModel = new InfoModel('anime', $content[$i]['anime_id']);
                     $infoData = $infoModel->getAllInfo();
@@ -131,7 +134,24 @@ class UserListCSSModel extends MainModel
                     if (empty($content[$i]['manga_english'])) {$content[$i]['manga_english'] = "N/A";}
                 }
                 
-                // ... all the data processing logic ...
+                // Now, all the checks below will work safely even if InfoModel failed.
+                if (!empty($content2['data']['broadcast'])) {
+                    $content[$i]['broadcast'] = $content2['data']['broadcast'];
+                } else {
+                    $content[$i]['broadcast'] = "";
+                }
+                if (!empty($content2['data']['synopsis'])) {
+                  $synopsis = preg_replace('/[\x0D]/', "", $content2['data']['synopsis']);
+                  $synopsis = str_replace(array("\n", "\t", "\r"), "-a ", $synopsis);
+                  $synopsis = str_replace('"', '-"', $synopsis);
+                  $synopsis = str_replace("'", "-'", $synopsis);
+                  $content[$i]['synopsis'] = $synopsis;
+                } else {
+                  $content[$i]['synopsis'] = "N/A";
+                }
+
+                // ... (rest of the data processing logic remains the same) ...
+
                 if (!empty($content[$i]['num_watched_episodes'])) {
                     $total_episodes = intval($content[$i]['anime_num_episodes']);
                     if ($total_episodes > 0) {
@@ -149,8 +169,8 @@ class UserListCSSModel extends MainModel
                 } else {
                     $content[$i]['progress_percent'] = 0;
                 }
-                // ... rest of the processing logic ...
 
+                // ... (the status counter logic remains the same) ...
                 if ($content[$i]['status'] == 1) {
                     $te_cwr += 1;
                     $te_all += 1;
@@ -178,17 +198,12 @@ class UserListCSSModel extends MainModel
 
             $data = array_merge($data, $content);
 
-            // --- START OF FIX ---
-            // If we successfully used the alternate URL, which contains the complete list,
-            // we must break the loop to prevent it from running infinitely.
             if ($use_alternate_url) {
                 break;
             }
-            // --- END OF FIX ---
 
             $offset += 300;
 		} else {
-            // This is the normal exit point for the primary URL path
             break;
 		}
 	  }
