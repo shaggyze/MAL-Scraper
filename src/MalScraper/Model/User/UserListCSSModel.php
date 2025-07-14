@@ -77,8 +77,6 @@ class UserListCSSModel extends MainModel
         return call_user_func_array([$this, $method], $arguments);
     }
 
-
-
     /**
      * Get user list.
      *
@@ -96,11 +94,60 @@ class UserListCSSModel extends MainModel
 	  $te_ptwr = 0;
 
 	  while (true) {
-		$url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
+        $primary_url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
-		$content = json_decode(file_get_contents(htmlspecialchars_decode($url)), true);
+        $content_json = false;
+        $http_status = null;
+        $use_alternate_url = false;
+
+        $context = stream_context_create([
+            'http' => [
+                'ignore_errors' => true
+            ]
+        ]);
+
+        $content_json = @file_get_contents(htmlspecialchars_decode($primary_url), false, $context);
+
+        if (isset($http_response_header) && count($http_response_header) > 0) {
+            preg_match('{HTTP\/\S+\s(\d{3})}', $http_response_header[0], $match);
+            if (isset($match[1])) {
+                $http_status = (int)$match[1];
+            }
+        }
+
+        if ($content_json === false || ($http_status === 405)) {
+            $use_alternate_url = true;
+            echo "DEBUG: Primary URL failed. Attempting alternate URL.\n";
+        }
+
+        if ($use_alternate_url) {
+            $alternate_url = 'https://shaggyze.website/maldb/userlist/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
+            echo "DEBUG: Using alternate URL: " . $alternate_url . "\n";
+            $content_json = @file_get_contents(htmlspecialchars_decode($alternate_url));
+        }
+
+        $content = null;
+
+        if ($content_json !== false) {
+            $content = json_decode($content_json, true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                echo "DEBUG: Error decoding JSON: " . json_last_error_msg() . "\n";
+                $content = null;
+            }
+        } else {
+            echo "DEBUG: Failed to retrieve content from all URLs.\n";
+        }
+        
+        // --- START OF FIX 1: JSON Structure ---
+        // If the alternate URL was used and the data is in the expected wrapped format,
+        // extract just the array of items. array_values handles object-style arrays.
+        if ($use_alternate_url && isset($content['data']) && is_array($content['data'])) {
+            $content = array_values($content['data']);
+        }
+        // --- END OF FIX 1 ---
 
 		if ($content) {
+          // This entire section of your original code remains unchanged.
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
 			if (!empty($content[$i]['anime_id'])) {
@@ -109,14 +156,14 @@ class UserListCSSModel extends MainModel
 			  $url2 = 'https://shaggyze.website/maldb/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
-			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
+			  if (empty($content[$i]['anime_title_eng'])) {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
 			  $subdirectory = get_subdirectory('info', 'manga', $content[$i]['manga_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $url2 = 'https://shaggyze.website/maldb/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
-			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
+			  if (empty($content[$i]['manga_english'])) {$content[$i]['manga_english'] = "N/A";}
 			}
 			if (!empty($content2['data']['broadcast'])) {
 				$content[$i]['broadcast'] = $content2['data']['broadcast'];
@@ -354,6 +401,14 @@ class UserListCSSModel extends MainModel
 		  }
 
 		  $data = array_merge($data, $content);
+
+          // --- START OF FIX 2: Infinite Loop ---
+          // If we used the alternate URL, we have processed the entire file.
+          // We must break here to prevent the loop from running again with an increased offset.
+          if ($use_alternate_url) {
+              break;
+          }
+          // --- END OF FIX 2 ---
 
 		  $offset += 300;
 		} else {
