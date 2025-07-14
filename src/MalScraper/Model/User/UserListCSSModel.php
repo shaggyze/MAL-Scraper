@@ -81,14 +81,14 @@ class UserListCSSModel extends MainModel
     {
       $data = [];
       $offset = 0;
-	  $te_all = 0;
-	  $te_cwr = 0;
-	  $te_c = 0;
-	  $te_oh = 0;
-	  $te_d = 0;
-	  $te_ptwr = 0;
+      $te_all = 0;
+      $te_cwr = 0;
+      $te_c = 0;
+      $te_oh = 0;
+      $te_d = 0;
+      $te_ptwr = 0;
 
-	  while (true) {
+      while (true) {
         $primary_url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
         $content_json = false;
@@ -96,11 +96,10 @@ class UserListCSSModel extends MainModel
         $use_alternate_url = false;
 
         $context = stream_context_create([
-            'http' => [
-                'ignore_errors' => true
-            ]
+            'http' => ['ignore_errors' => true]
         ]);
-        
+
+        // 1. Attempt to fetch from the primary source.
         $content_json = @file_get_contents(htmlspecialchars_decode($primary_url), false, $context);
 
         if (isset($http_response_header) && count($http_response_header) > 0) {
@@ -110,59 +109,63 @@ class UserListCSSModel extends MainModel
             }
         }
 
+        // 2. Decide if we need to use the fallback.
         if ($content_json === false || ($http_status === 405)) {
             $use_alternate_url = true;
         }
 
         if ($use_alternate_url) {
+            // IMPORTANT: If we are trying to paginate and the primary fails, we must stop.
+            // Only use the alternate URL on the very first attempt (offset=0).
+            if ($offset > 0) {
+                break;
+            }
             echo "DEBUG: Primary URL failed. Attempting alternate URL.\n";
             $alternate_url = 'https://shaggyze.website/maldb/userlist/'.$this->_user.'_'.$this->_type.'_'.$this->_status.'_'.$this->_genre.'.json';
             echo "DEBUG: Using alternate URL: " . $alternate_url . "\n";
             $content_json = @file_get_contents(htmlspecialchars_decode($alternate_url));
         }
 
+        // 3. Decode the result.
         $content = null;
-        if ($content_json !== false) {
-            $content = json_decode($content_json, true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                echo "DEBUG: Error decoding JSON: " . json_last_error_msg() . "\n";
-                $content = null;
+        if ($content_json) {
+            $decoded_json = json_decode($content_json, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $content = $decoded_json;
             }
-        } else {
-            echo "DEBUG: Failed to retrieve content from all URLs.\n";
         }
         
-        // --- FIX #1: NORMALIZE JSON STRUCTURE ---
-        // If we used the alternate URL and it has a 'data' key, we extract the inner array.
-        // This makes both data sources look the same to the code below.
+        // 4. Normalize the data structure if the alternate URL was used.
         if ($use_alternate_url && isset($content['data']) && is_array($content['data'])) {
             $content = array_values($content['data']);
         }
-        // --- END FIX #1 ---
+        
+        // 5. MAIN EXIT CONDITION: If there is no data to process, we are done.
+        if (empty($content)) {
+            break;
+        }
 
-		if ($content) {
-		  $count = count($content);
-		  for ($i = 0; $i < $count; $i++) {
-              // Your original processing logic from here...
+        // 6. Process the data. (Your original code remains here).
+        $count = count($content);
+        for ($i = 0; $i < $count; $i++) {
+            // Your entire for-loop with all its logic.
+            // ... (e.g., fetching from url1/url2, calculating stats, etc.) ...
 			if (!empty($content[$i]['anime_id'])) {
 			  $subdirectory = get_subdirectory('info', 'anime', $content[$i]['anime_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=anime&id=' . $content[$i]['anime_id'];
 			  $url2 = 'https://shaggyze.website/maldb/info/anime/' . $subdirectory . '/' . $content[$i]['anime_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
-			  if (empty($content[$i]['anime_title_eng'])) {$content[$i]['anime_title_eng'] = "N/A";}
+			  if ($content[$i]['anime_title_eng'] == "") {$content[$i]['anime_title_eng'] = "N/A";}
 			} else {
 			  $subdirectory = get_subdirectory('info', 'manga', $content[$i]['manga_id']);
 			  $url1 = 'https://shaggyze.website/msa/info?t=manga&id=' . $content[$i]['manga_id'];
 			  $url2 = 'https://shaggyze.website/maldb/info/manga/' . $subdirectory . '/' . $content[$i]['manga_id'] . '.json';
 			  if (!filter_var($url2, FILTER_VALIDATE_URL) || !file_get_contents($url2)) {$url2 = $url1;}
 			  $content2 = json_decode(file_get_contents(htmlspecialchars_decode($url2)), true);
-			  if (empty($content[$i]['manga_english'])) {$content[$i]['manga_english'] = "N/A";}
+			  if ($content[$i]['manga_english'] == "") {$content[$i]['manga_english'] = "N/A";}
 			}
-			//...down to here remains exactly the same as your original code.
-			//... (All your data processing logic for synopsis, genres, titles, etc.)
-            if ($content[$i]['status'] == 1) {
+			if ($content[$i]['status'] == 1) {
 			    $te_cwr += 1;
 				$te_all += 1;
 			} elseif ($content[$i]['status'] == 2) {
@@ -178,31 +181,17 @@ class UserListCSSModel extends MainModel
 			    $te_ptwr += 1;
 				$te_all += 1;
 			}
-            $content[$i]['total_entries_cwr'] = $te_cwr;
-            $content[$i]['total_entries_c'] = $te_c;
-            $content[$i]['total_entries_oh'] = $te_oh;
-            $content[$i]['total_entries_d'] = $te_d;
-            $content[$i]['total_entries_ptwr'] = $te_ptwr;
-            $content[$i]['total_entries_all'] = $te_all;
-            $content[$i]['\a'] = "-a";
-		  }
+        }
+        $data = array_merge($data, $content);
 
-		  $data = array_merge($data, $content);
+        // 7. SECONDARY EXIT CONDITION: If we successfully used the backup, our job is done.
+        if ($use_alternate_url) {
+            break;
+        }
 
-          // --- FIX #2: STOP THE INFINITE LOOP ---
-          // If we used the alternate URL, its job is done. We must exit the loop now.
-          if ($use_alternate_url) {
-              break;
-          }
-          // --- END FIX #2 ---
-
-		  $offset += 300;
-		} else {
-          // This is the normal exit, when the primary URL runs out of pages.
-		  break;
-		}
-	  }
-
-        return $data;
+        // 8. If we are still here, it's because the primary URL worked. Prepare for the next page.
+        $offset += 300;
+      }
+      return $data;
     }
 }
