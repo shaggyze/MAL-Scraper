@@ -152,7 +152,7 @@ $content = null; // Initialize content to null
 
 if ($content_json !== false) {
     $content = json_decode($content_json, true);
-	$content = $content[data];
+	$content = $content['data'];
     // Always check for JSON decoding errors
     if (json_last_error() !== JSON_ERROR_NONE) {
         echo "DEBUG: Error decoding JSON: " . json_last_error_msg() . "\n";
