@@ -127,7 +127,6 @@ class UserListCSSModel extends MainModel
 
         if ($content_json === false || ($http_status === 405)) {
             $use_alternate_url = true;
-            // No need for a DEBUG echo here as it's handled below
         }
         
         $content = null;
@@ -150,20 +149,14 @@ class UserListCSSModel extends MainModel
             echo "DEBUG: Failed to retrieve content from all URLs.\n";
         }
 
-        // --- START OF FIX ---
-        // This block unifies the data structure regardless of the source.
         if ($use_alternate_url && isset($content['data']) && is_array($content['data'])) {
-            // If the alternate URL was used and has a 'data' key,
-            // we take the 'data' part and convert it to a simple array.
             $content = array_values($content['data']);
         }
-        // --- END OF FIX ---
 
 		if ($content) {
 		  $count = count($content);
 		  for ($i = 0; $i < $count; $i++) {
             
-            // This check is still good practice to prevent errors on any unexpectedly empty records.
             if (empty($content[$i]['anime_id']) && empty($content[$i]['manga_id'])) {
                 continue; 
             }
@@ -342,21 +335,29 @@ class UserListCSSModel extends MainModel
 			    $content[$i]['manga_english'] = $content[$i]['manga_title'];
 			  }
 			}
+
+            // --- START OF FIX ---
+            // Replaced the faulty !== check with a more robust integer conversion and > 0 check
+            // to prevent division by zero errors when episode/volume counts are "0".
 			if (!empty($content[$i]['num_watched_episodes'])) {
-			  if ($content[$i]['anime_num_episodes'] !== 0) {
-			    $content[$i]['progress_percent'] = round(($content[$i]['num_watched_episodes'] / $content[$i]['anime_num_episodes']) * 100, 2);
-			  } else {
-			    $content[$i]['progress_percent'] = 0;
-			  }
-			} elseif (!empty($content[$i]['num_read_volumes'])) {
-			  if ($content[$i]['manga_num_volumes'] !== 0) {
-			    $content[$i]['progress_percent'] = round(($content[$i]['num_read_volumes'] / $content[$i]['manga_num_volumes']) * 100, 2);
-			  } else {
-			    $content[$i]['progress_percent'] = 0;
-			  }
-			} else {
-			    $content[$i]['progress_percent'] = 0;
-			}
+                $total_episodes = intval($content[$i]['anime_num_episodes']);
+                if ($total_episodes > 0) {
+                    $content[$i]['progress_percent'] = round(($content[$i]['num_watched_episodes'] / $total_episodes) * 100, 2);
+                } else {
+                    $content[$i]['progress_percent'] = 0;
+                }
+            } elseif (!empty($content[$i]['num_read_volumes'])) {
+                $total_volumes = intval($content[$i]['manga_num_volumes']);
+                if ($total_volumes > 0) {
+                    $content[$i]['progress_percent'] = round(($content[$i]['num_read_volumes'] / $total_volumes) * 100, 2);
+                } else {
+                    $content[$i]['progress_percent'] = 0;
+                }
+            } else {
+                $content[$i]['progress_percent'] = 0;
+            }
+            // --- END OF FIX ---
+
 			if (!empty($content2['data']['rank'])) {
 			  $content[$i]['rank'] = $content2['data']['rank'];
 			} else {
