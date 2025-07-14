@@ -430,6 +430,7 @@ if ($content_json !== false) {
 
 		  $offset += 300;
 		} else {
+			echo "DEBUG: End Content\n";
 		  break;
 		}
 	  }
