@@ -120,6 +120,7 @@ $context = stream_context_create([
 // Attempt to get content from the primary URL
 // @ suppresses warnings/errors from file_get_contents if it fails for non-HTTP reasons
 $content_json = @file_get_contents(htmlspecialchars_decode($primary_url), false, $context);
+$content = json_decode($content_json, true);
 
 // Check the HTTP response header for the status code
 if (isset($http_response_header) && count($http_response_header) > 0) {
@@ -145,14 +146,15 @@ if ($use_alternate_url) {
     // or keep the context if you anticipate similar issues.
     // For this example, we'll keep it simple for the alternate, just checking general failure.
     $content_json = @file_get_contents(htmlspecialchars_decode($alternate_url));
+	$content = json_decode($content_json, true);
+	$content = $content['data'];
 }
 
 // Now, process the content regardless of which URL it came from
 $content = null; // Initialize content to null
 
 if ($content_json !== false) {
-    $content = json_decode($content_json, true);
-	$content = $content['data'];
+
     // Always check for JSON decoding errors
     if (json_last_error() !== JSON_ERROR_NONE) {
         echo "DEBUG: Error decoding JSON: " . json_last_error_msg() . "\n";
