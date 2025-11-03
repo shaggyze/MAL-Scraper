@@ -133,7 +133,7 @@ class UserListCSSModel extends MainModel
 
                 for ($i = 0; $i < $count; $i++) {
                     
-                    // --- ROBUST NULL/UNDEFINED KEY FIXES ---
+                    // --- ROBUST NULL/UNDEFINED KEY FIXES (Optimized for speed) ---
                     
                     // 1. Ensure end_dates exists
                     $content[$i]['end_dates'] = $content[$i]['end_dates'] ?? 'N/A';
@@ -141,30 +141,38 @@ class UserListCSSModel extends MainModel
                     // 2. Safely ensure English titles exist for the correct type
                     if ($this->_type == 'anime') {
                         $content[$i]['anime_english'] = $content[$i]['anime_english'] ?? null;
-                        // Unset the manga key just in case it was incorrectly included or to avoid confusion
                         unset($content[$i]['manga_english']); 
                     } else { // manga
                         $content[$i]['manga_english'] = $content[$i]['manga_english'] ?? null;
-                        // Unset the anime key
                         unset($content[$i]['anime_english']);
                     }
                     
-                    // 3. Image Path Cleaning and Replacement (Fixes Deprecation Warning)
+                    // 3. Image Path Cleaning and Replacement (Minimalist, NULL-SAFE approach)
                     $is_anime = !empty($content[$i]['anime_id']);
-                    $image_path_key = $is_anime ? 'anime_image_path' : 'manga_image_path';
-                    $id_key = $is_anime ? 'anime_id' : 'manga_id';
-                    $media_type = $is_anime ? 'anime' : 'manga';
 
-                    // Use null coalescing to ensure the path is always a string ('') before calling Helper functions
-                    $image_path = $content[$i][$image_path_key] ?? '';
-                    
-                    $content[$i][$image_path_key] = Helper::imageUrlCleaner($image_path);
-                    $content[$i][$image_path_key] = Helper::imageUrlReplace(
-                        $content[$i][$id_key] ?? 0, // Fallback ID to 0
-                        $media_type, 
-                        $content[$i][$image_path_key], 
-                        $this->_user
-                    );
+                    if ($is_anime) {
+                        // Clean the image path, ensuring we pass a string, not null
+                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['anime_image_path'] ?? ''); 
+                        
+                        // Replace the URL
+                        $content[$i]['anime_image_path'] = Helper::imageUrlReplace(
+                            $content[$i]['anime_id'] ?? 0, 
+                            'anime', 
+                            $cleaned_path, 
+                            $this->_user
+                        );
+                    } else {
+                        // Clean the image path, ensuring we pass a string, not null
+                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['manga_image_path'] ?? '');
+                        
+                        // Replace the URL
+                        $content[$i]['manga_image_path'] = Helper::imageUrlReplace(
+                            $content[$i]['manga_id'] ?? 0, 
+                            'manga', 
+                            $cleaned_path, 
+                            $this->_user
+                        );
+                    }
                     
                     // --- END ROBUST NULL/UNDEFINED KEY FIXES ---
 
@@ -193,7 +201,7 @@ class UserListCSSModel extends MainModel
                         $te_my_ep = $content[$i]['num_read_chapters'] ?? 0; // Safely default to 0
                     }
 
-                    // Protect against division by zero (te_ep is already protected above, but as a double-check)
+                    // Protect against division by zero 
                     $te_ep_safe = $te_ep > 0 ? $te_ep : 1;
                     
                     $content[$i]['progress'] = (int) (($te_my_ep / $te_ep_safe) * 100);
