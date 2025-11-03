@@ -139,12 +139,14 @@ class UserListCSSModel extends MainModel
                     
                     // --- OPTIMIZED NULL/UNDEFINED KEY FIXES ---
                     
-                    // Ensure end_dates exists (and default to 'N/A' if null)
+                    // 1. Ensure end_dates exists (and default to 'N/A' if null)
                     $content[$i]['end_dates'] = $content[$i]['end_dates'] ?? 'N/A';
                     
+                    // 2. Safely ensure English titles exist for the correct type
                     if ($this->_type == 'anime') {
-                        // Use null coalescing to ensure keys exist, defaulting to null
-                        $content[$i]['anime_english'] = $content[$i]['anime_english'] ?? null;
+                        // The title is accessed as 'anime_title_eng' in the original logic block, 
+                        // but needs to be added here if missing to prevent "Undefined array key" warning.
+                        $content[$i]['anime_title_eng'] = $content[$i]['anime_title_eng'] ?? null;
                         
                         // Image Path Handling (using ?? '' to guarantee string)
                         $cleaned_path = Helper::imageUrlCleaner($content[$i]['anime_image_path'] ?? ''); 
@@ -155,7 +157,8 @@ class UserListCSSModel extends MainModel
                             $this->_user
                         );
                     } else { // manga
-                        // Use null coalescing to ensure keys exist, defaulting to null
+                        // FIX: Safely ensure 'manga_english' is set to null if missing, 
+                        // preventing the "Undefined array key" warning when processing titles later.
                         $content[$i]['manga_english'] = $content[$i]['manga_english'] ?? null;
                         
                         // Image Path Handling (using ?? '' to guarantee string)
