@@ -190,7 +190,7 @@ class UserListCSSModel extends MainModel
       $batch_counter = 0;
 
       // --- STAGE 1: Concurrent MAL User List Pages Fetching ---
-      if (debug) echo "Starting concurrent list page fetching (Batch Size: " . self::LIST_CONCURRENCY_SIZE . ")...\n";
+      if (debug) {echo "Starting concurrent list page fetching (Batch Size: " . self::LIST_CONCURRENCY_SIZE . ")...\n";}
 
       while (!$list_finished) {
           $batch_counter++;
