@@ -134,7 +134,7 @@ class UserListCSSModel extends MainModel
             
             // Basic progress/status check for long runs
             if (microtime(true) - $start_batch_time > 5 && $total_handles > 1) {
-                if (debug) echo "\r> [CURL MULTI] Waiting for $running of $total_handles requests to complete...";
+                if (self::debug) echo "\r> [CURL MULTI] Waiting for $running of $total_handles requests to complete...";
                 $start_batch_time = microtime(true); // Reset timer
             }
         } while ($mrc == CURLM_CALL_MULTI_PERFORM);
@@ -149,7 +149,7 @@ class UserListCSSModel extends MainModel
         }
         
         if ($total_handles > 1) {
-            if (debug) echo "\r> [CURL MULTI] All $total_handles requests completed.   \n";
+            if (self::debug) echo "\r> [CURL MULTI] All $total_handles requests completed.   \n";
         }
 
         $results = [];
