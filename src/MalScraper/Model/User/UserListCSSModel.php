@@ -4,7 +4,7 @@ namespace MalScraper\Model\User;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
-global const debug = true;
+
 /**
  * UserListModel class.
  */
@@ -39,6 +39,7 @@ class UserListCSSModel extends MainModel
     private $_genre;
 
     // --- NEW CONCURRENCY CONSTANTS ---
+    const debug = true;
     // Number of user list pages to fetch concurrently (Each page is 300 items)
     const LIST_CONCURRENCY_SIZE = 5; 
     // Number of individual item metadata URLs to fetch concurrently. 
@@ -190,7 +191,7 @@ class UserListCSSModel extends MainModel
       $batch_counter = 0;
 
       // --- STAGE 1: Concurrent MAL User List Pages Fetching ---
-      if (debug) {echo "Starting concurrent list page fetching (Batch Size: " . self::LIST_CONCURRENCY_SIZE . ")...\n";}
+      if (self::debug) echo "Starting concurrent list page fetching (Batch Size: " . self::LIST_CONCURRENCY_SIZE . ")...\n";
 
       while (!$list_finished) {
           $batch_counter++;
