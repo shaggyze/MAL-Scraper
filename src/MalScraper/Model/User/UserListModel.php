@@ -120,7 +120,7 @@ class UserListModel extends MainModel
             $handles = [];
             $batch_found_new_data = false;
             $max_offset_in_batch = 0;
-
+			if ($this->_user) == '_All_' self::LIST_CONCURRENCY_SIZE = 75;
             // Prepare batch of concurrent requests
             for ($i = 0; $i < self::LIST_CONCURRENCY_SIZE; $i++) {
                 $offset_to_fetch = $current_offset + ($i * self::OFFSET_STEP);
