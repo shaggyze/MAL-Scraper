@@ -46,7 +46,7 @@ class UserListModel extends MainModel
     private $_order;
 
     // --- CONCURRENCY CONSTANTS (Optimized for large lists, e.g., 3,000+ items) ---
-    const debug = true; // Set to true to see debug echo output
+    const debug = false; // Set to true to see debug echo output
     // Number of user list pages to fetch concurrently (Each page is 300 items)
     const LIST_CONCURRENCY_SIZE = 10; 
     // This constant is included for consistency but is not strictly used in this model, 
