@@ -51,12 +51,12 @@ class Helper
     {
         $result = [];
         if (is_numeric($response)) {
-            header('HTTP/1.1 '.$response);
+            //header('HTTP/1.1 '.$response);
             $result['status'] = $response;
             $result['message'] = self::toResponse($response);
             $result['data'] = [];
         } else {
-            header('HTTP/1.1 '. 200);
+            //header('HTTP/1.1 '. 200);
             $result['status'] = 200;
             $result['message'] = 'Success';
             $result['data'] = self::superEncode($response);
