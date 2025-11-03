@@ -45,10 +45,10 @@ class UserListModel extends MainModel
      */
     private $_order;
 
-    // --- CONCURRENCY CONSTANTS (Used for single-threaded cURL fetch) ---
+    // --- NEW CONCURRENCY CONSTANTS ---
     const debug = true; // Set to true to see debug echo output
-    // Number of user list pages to fetch concurrently. Set to 1 as requested.
-    const LIST_CONCURRENCY_SIZE = 1; 
+    // Number of user list pages to fetch concurrently (Each page is 300 items)
+    const LIST_CONCURRENCY_SIZE = 10; 
     // Max entries per page returned by MAL load.json endpoint
     const OFFSET_STEP = 300; 
 
