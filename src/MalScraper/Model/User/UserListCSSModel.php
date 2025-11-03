@@ -94,20 +94,24 @@ class UserListCSSModel extends MainModel
         // --- SCARAPING LOGIC (Synchronous) ---
         $data = [];
         $offset = 0;
-        $ch = curl_init();
+        
+        // Initialize cURL handle ONCE before the loop
+        $ch = curl_init(); 
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $headers = [
+            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+        ];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         
         while (true) {
             $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
             if (function_exists('add_debug_message')) add_debug_message("Fetching offset: {$offset}, URL: {$url}");
             
+            // Set URL for the current iteration
             curl_setopt($ch, CURLOPT_URL, htmlspecialchars_decode($url));
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             
-            $headers = [
-                'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-            ];
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
             $response = curl_exec($ch);
             $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
@@ -133,39 +137,29 @@ class UserListCSSModel extends MainModel
 
                 for ($i = 0; $i < $count; $i++) {
                     
-                    // --- ROBUST NULL/UNDEFINED KEY FIXES (Optimized for speed) ---
+                    // --- OPTIMIZED NULL/UNDEFINED KEY FIXES ---
                     
-                    // 1. Ensure end_dates exists
+                    // Ensure end_dates exists (and default to 'N/A' if null)
                     $content[$i]['end_dates'] = $content[$i]['end_dates'] ?? 'N/A';
                     
-                    // 2. Safely ensure English titles exist for the correct type
                     if ($this->_type == 'anime') {
+                        // Use null coalescing to ensure keys exist, defaulting to null
                         $content[$i]['anime_english'] = $content[$i]['anime_english'] ?? null;
-                        unset($content[$i]['manga_english']); 
-                    } else { // manga
-                        $content[$i]['manga_english'] = $content[$i]['manga_english'] ?? null;
-                        unset($content[$i]['anime_english']);
-                    }
-                    
-                    // 3. Image Path Cleaning and Replacement (Minimalist, NULL-SAFE approach)
-                    $is_anime = !empty($content[$i]['anime_id']);
-
-                    if ($is_anime) {
-                        // Clean the image path, ensuring we pass a string, not null
-                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['anime_image_path'] ?? ''); 
                         
-                        // Replace the URL
+                        // Image Path Handling (using ?? '' to guarantee string)
+                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['anime_image_path'] ?? ''); 
                         $content[$i]['anime_image_path'] = Helper::imageUrlReplace(
                             $content[$i]['anime_id'] ?? 0, 
                             'anime', 
                             $cleaned_path, 
                             $this->_user
                         );
-                    } else {
-                        // Clean the image path, ensuring we pass a string, not null
-                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['manga_image_path'] ?? '');
+                    } else { // manga
+                        // Use null coalescing to ensure keys exist, defaulting to null
+                        $content[$i]['manga_english'] = $content[$i]['manga_english'] ?? null;
                         
-                        // Replace the URL
+                        // Image Path Handling (using ?? '' to guarantee string)
+                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['manga_image_path'] ?? '');
                         $content[$i]['manga_image_path'] = Helper::imageUrlReplace(
                             $content[$i]['manga_id'] ?? 0, 
                             'manga', 
@@ -174,7 +168,7 @@ class UserListCSSModel extends MainModel
                         );
                     }
                     
-                    // --- END ROBUST NULL/UNDEFINED KEY FIXES ---
+                    // --- END OPTIMIZED NULL/UNDEFINED KEY FIXES ---
 
                     if ($content[$i]['status'] == 1) {
                         $te_cwr += 1;
@@ -194,11 +188,11 @@ class UserListCSSModel extends MainModel
                     }
                     
                     if ($this->_type == 'anime') {
-                        $te_ep = $content[$i]['anime_num_episodes'] ?? 1; // Safely default to 1
-                        $te_my_ep = $content[$i]['num_watched_episodes'] ?? 0; // Safely default to 0
+                        $te_ep = $content[$i]['anime_num_episodes'] ?? 1;
+                        $te_my_ep = $content[$i]['num_watched_episodes'] ?? 0;
                     } else {
-                        $te_ep = $content[$i]['manga_num_chapters'] ?? 1; // Safely default to 1
-                        $te_my_ep = $content[$i]['num_read_chapters'] ?? 0; // Safely default to 0
+                        $te_ep = $content[$i]['manga_num_chapters'] ?? 1;
+                        $te_my_ep = $content[$i]['num_read_chapters'] ?? 0;
                     }
 
                     // Protect against division by zero 
@@ -220,7 +214,9 @@ class UserListCSSModel extends MainModel
             }
         }
 
-        curl_close($ch);
+        // Close cURL handle ONCE after the loop
+        curl_close($ch); 
+        
         if (function_exists('add_debug_message')) add_debug_message("getList (CSS) completed. Total items: " . count($data));
         return $data;
     }
