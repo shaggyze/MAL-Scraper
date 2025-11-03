@@ -143,12 +143,34 @@ class UserListCSSModel extends MainModel
                     
                     // --- OPTIMIZED NULL/UNDEFINED KEY FIXES ---
                     
-                    // FIX: Ensure 'end_dates' exists (using null coalescing)
-                    $item_ref['end_dates'] = $item_ref['end_dates'] ?? 'N/A';
+                    // 1. Ensure end_dates exists (and default to 'N/A' if null)
+                    $content[$i]['end_dates'] = $content[$i]['end_dates'] ?? 'N/A';
                     
-                    // FIX: Ensure 'manga_english' is set to null if missing to prevent "Undefined array key" warnings
-                    if ($this->_type == 'manga') {
-                        $item_ref['manga_english'] = $item_ref['manga_english'] ?? null;
+                    // 2. Safely ensure English titles exist for the correct type
+                    if ($this->_type == 'anime') {
+                        // FIX: Safely ensure 'anime_title_eng' is set to null if missing
+                        $content[$i]['anime_title_eng'] = $content[$i]['anime_title_eng'] ?? null;
+                        
+                        // Image Path Handling (using ?? '' to guarantee string)
+                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['anime_image_path'] ?? ''); 
+                        $content[$i]['anime_image_path'] = Helper::imageUrlReplace(
+                            $content[$i]['anime_id'] ?? 0, 
+                            'anime', 
+                            $cleaned_path, 
+                            $this->_user
+                        );
+                    } else { // manga
+                        // FIX: Safely ensure 'manga_english' is set to null if missing
+                        $content[$i]['manga_english'] = $content[$i]['manga_english'] ?? null;
+                        
+                        // Image Path Handling (using ?? '' to guarantee string)
+                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['manga_image_path'] ?? '');
+                        $content[$i]['manga_image_path'] = Helper::imageUrlReplace(
+                            $content[$i]['manga_id'] ?? 0, 
+                            'manga', 
+                            $cleaned_path, 
+                            $this->_user
+                        );
                     }
                     
                     // --- END OPTIMIZED NULL/UNDEFINED KEY FIXES ---
