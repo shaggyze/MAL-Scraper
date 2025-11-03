@@ -37,9 +37,8 @@ class UserListCSSModel extends MainModel
      * @var string
      */
     private $_genre;
-
-    // --- DEBUG CONSTANTS ---
-    const debug = true; 
+    
+    // Max entries per page returned by MAL load.json endpoint
     const OFFSET_STEP = 300; 
 
     /**
@@ -94,8 +93,6 @@ class UserListCSSModel extends MainModel
      */
     public function getList()
     {
-        if (self::debug) echo "DEBUG: Starting getList (CSS) for user: {$this->_user}, type: {$this->_type}\n";
-        
         // --- SCARAPING LOGIC (Synchronous) ---
         $data = [];
         $offset = 0;
@@ -112,8 +109,6 @@ class UserListCSSModel extends MainModel
         while (true) {
             $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
-            if (self::debug) echo "DEBUG: Fetching offset: {$offset}, URL: {$url}\n";
-            
             // Set URL for the current iteration
             curl_setopt($ch, CURLOPT_URL, htmlspecialchars_decode($url));
             
@@ -122,7 +117,6 @@ class UserListCSSModel extends MainModel
             $curl_error = curl_error($ch);
             
             if ($http_code !== 200 || $curl_error) {
-                 if (self::debug) echo "DEBUG: cURL Error at offset {$offset}: HTTP {$http_code}, Error: {$curl_error}\n";
                  break; // Stop fetching on error
             }
 
@@ -130,7 +124,6 @@ class UserListCSSModel extends MainModel
             
             if ($content) {
                 $count = count($content);
-                if (self::debug) echo "DEBUG: Successful fetch for offset {$offset}. Items found: {$count}\n";
 
                 $te_cwr = 0;
                 $te_c = 0;
@@ -141,80 +134,95 @@ class UserListCSSModel extends MainModel
 
                 for ($i = 0; $i < $count; $i++) {
                     
-                    // --- OPTIMIZED NULL/UNDEFINED KEY FIXES ---
+                    $item_ref = &$content[$i];
                     
-                    // 1. Ensure end_dates exists (and default to 'N/A' if null)
-                    $content[$i]['end_dates'] = $content[$i]['end_dates'] ?? 'N/A';
+                    // FIX: Ensure 'end_dates' exists (using null coalescing)
+                    $item_ref['end_dates'] = $item_ref['end_dates'] ?? 'N/A';
                     
-                    // 2. Safely ensure English titles exist for the correct type
-                    if ($this->_type == 'anime') {
-                        // FIX: Safely ensure 'anime_title_eng' is set to null if missing
-                        $content[$i]['anime_title_eng'] = $content[$i]['anime_title_eng'] ?? null;
-                        
-                        // Image Path Handling (using ?? '' to guarantee string)
-                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['anime_image_path'] ?? ''); 
-                        $content[$i]['anime_image_path'] = Helper::imageUrlReplace(
-                            $content[$i]['anime_id'] ?? 0, 
-                            'anime', 
-                            $cleaned_path, 
-                            $this->_user
-                        );
-                    } else { // manga
-                        // FIX: Safely ensure 'manga_english' is set to null if missing
-                        $content[$i]['manga_english'] = $content[$i]['manga_english'] ?? null;
-                        
-                        // Image Path Handling (using ?? '' to guarantee string)
-                        $cleaned_path = Helper::imageUrlCleaner($content[$i]['manga_image_path'] ?? '');
-                        $content[$i]['manga_image_path'] = Helper::imageUrlReplace(
-                            $content[$i]['manga_id'] ?? 0, 
-                            'manga', 
-                            $cleaned_path, 
-                            $this->_user
-                        );
+                    // FIX: Ensure 'manga_english' is set to null if missing to prevent "Undefined array key" warnings
+                    if ($this->_type == 'manga') {
+                        $item_ref['manga_english'] = $item_ref['manga_english'] ?? null;
+                    }
+
+                    if (!empty($item_ref['anime_title'])) {
+                        $item_ref['anime_title'] = str_replace(['"', '[', ']'], '', $item_ref['anime_title']);
+                    } else {
+                        $item_ref['manga_title'] = str_replace(['"', '[', ']'], '', $item_ref['manga_title']);
                     }
                     
-                    // --- END OPTIMIZED NULL/UNDEFINED KEY FIXES ---
+                    if (!empty($item_ref['anime_title_eng'])) {
+                        $item_ref['anime_title_eng'] = str_replace(['"', '[', ']'], '', $item_ref['anime_title_eng']);
+                    } else {
+                        // This is now safe because we set it to null above if it was missing
+                        $item_ref['manga_english'] = str_replace(['"', '[', ']'], '', $item_ref['manga_english']); 
+                    }
+                    
+                    if (!empty($item_ref['anime_image_path'])) {
+                        $item_ref['anime_image_path'] = Helper::imageUrlCleaner($item_ref['anime_image_path']);
+                    } else {
+                        $item_ref['manga_image_path'] = Helper::imageUrlCleaner($item_ref['manga_image_path']);
+                    }
+                    
+                    if (!empty($item_ref['anime_id'])) {
+                        $item_ref['anime_image_path'] = Helper::imageUrlReplace($item_ref['anime_id'], 'anime', $item_ref['anime_image_path'], $this->_user);
+                    } else {
+                        $item_ref['manga_image_path'] = Helper::imageUrlReplace($item_ref['manga_id'], 'manga', $item_ref['manga_image_path'], $this->_user);
+                    }
+                    
+                    $item_ref['\a'] = "-a"; // Original field manipulation
 
-                    if ($content[$i]['status'] == 1) {
+                    if ($item_ref['status'] == 1) {
                         $te_cwr += 1;
                         $te_all += 1;
-                    } elseif ($content[$i]['status'] == 2) {
+                    } elseif ($item_ref['status'] == 2) {
                         $te_c += 1;
                         $te_all += 1;
-                    } elseif ($content[$i]['status'] == 3) {
+                    } elseif ($item_ref['status'] == 3) {
                         $te_oh += 1;
                         $te_all += 1;
-                    } elseif ($content[$i]['status'] == 4) {
+                    } elseif ($item_ref['status'] == 4) {
                         $te_d += 1;
                         $te_all += 1;
-                    } elseif ($content[$i]['status'] == 6) {
+                    } elseif ($item_ref['status'] == 6) {
                         $te_ptw += 1;
                         $te_all += 1;
                     }
                     
+                    $data[] = $item_ref;
+                }
+                
+                // Update final total entries count after the loop completes
+                // Note: The loop below modifies the array entries after they've been added to $data, 
+                // which is why the previous loop uses $item_ref = &$content[$i] and array_merge isn't used.
+
+                foreach ($data as &$item) {
+                    $item['total_entries_cwr'] = $te_cwr;
+                    $item['total_entries_c'] = $te_c;
+                    $item['total_entries_oh'] = $te_oh;
+                    $item['total_entries_d'] = $te_d;
+                    $item['total_entries_ptw'] = $te_ptw;
+                    $item['total_entries_all'] = $te_all;
+
                     if ($this->_type == 'anime') {
-                        $te_ep = $content[$i]['anime_num_episodes'] ?? 1;
-                        $te_my_ep = $content[$i]['num_watched_episodes'] ?? 0;
+                        $te_ep = $item['anime_num_episodes'] ?? 1;
+                        $te_my_ep = $item['num_watched_episodes'] ?? 0;
                     } else {
-                        $te_ep = $content[$i]['manga_num_chapters'] ?? 1;
-                        $te_my_ep = $content[$i]['num_read_chapters'] ?? 0;
+                        $te_ep = $item['manga_num_chapters'] ?? 1;
+                        $te_my_ep = $item['num_read_chapters'] ?? 0;
                     }
 
                     // Protect against division by zero 
                     $te_ep_safe = $te_ep > 0 ? $te_ep : 1;
                     
-                    $content[$i]['progress'] = (int) (($te_my_ep / $te_ep_safe) * 100);
-                    
-                    $data[] = $content[$i];
+                    $item['progress'] = (int) (($te_my_ep / $te_ep_safe) * 100);
                 }
 
-                if (count($content) < 300) {
-                    if (self::debug) echo "DEBUG: Fetch finished (less than 300 items) at offset: {$offset}\n";
+
+                if (count($content) < self::OFFSET_STEP) {
                     break;
                 }
-                $offset += 300;
+                $offset += self::OFFSET_STEP;
             } else {
-                if (self::debug) echo "DEBUG: Fetch finished (no content or invalid JSON) at offset: {$offset}\n";
                 break;
             }
         }
@@ -222,7 +230,6 @@ class UserListCSSModel extends MainModel
         // Close cURL handle ONCE after the loop
         curl_close($ch); 
         
-        if (self::debug) echo "DEBUG: getList (CSS) completed. Total items: " . count($data) . "\n";
         return $data;
     }
 }
