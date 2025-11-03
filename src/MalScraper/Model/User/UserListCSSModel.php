@@ -37,6 +37,11 @@ class UserListCSSModel extends MainModel
      * @var string
      */
     private $_genre;
+
+    // --- DEBUG CONSTANTS ---
+    const debug = true; 
+    const OFFSET_STEP = 300; 
+
     /**
      * Default constructor.
      *
@@ -89,7 +94,7 @@ class UserListCSSModel extends MainModel
      */
     public function getList()
     {
-        if (function_exists('add_debug_message')) add_debug_message("Starting getList (CSS) for user: {$this->_user}, type: {$this->_type}");
+        if (self::debug) echo "DEBUG: Starting getList (CSS) for user: {$this->_user}, type: {$this->_type}\n";
         
         // --- SCARAPING LOGIC (Synchronous) ---
         $data = [];
@@ -107,18 +112,17 @@ class UserListCSSModel extends MainModel
         while (true) {
             $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre;
 
-            if (function_exists('add_debug_message')) add_debug_message("Fetching offset: {$offset}, URL: {$url}");
+            if (self::debug) echo "DEBUG: Fetching offset: {$offset}, URL: {$url}\n";
             
             // Set URL for the current iteration
             curl_setopt($ch, CURLOPT_URL, htmlspecialchars_decode($url));
             
-
             $response = curl_exec($ch);
             $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $curl_error = curl_error($ch);
             
             if ($http_code !== 200 || $curl_error) {
-                 if (function_exists('add_debug_message')) add_debug_message("cURL Error at offset {$offset}: HTTP {$http_code}, Error: {$curl_error}");
+                 if (self::debug) echo "DEBUG: cURL Error at offset {$offset}: HTTP {$http_code}, Error: {$curl_error}\n";
                  break; // Stop fetching on error
             }
 
@@ -126,7 +130,7 @@ class UserListCSSModel extends MainModel
             
             if ($content) {
                 $count = count($content);
-                if (function_exists('add_debug_message')) add_debug_message("Successful fetch for offset {$offset}. Items found: {$count}");
+                if (self::debug) echo "DEBUG: Successful fetch for offset {$offset}. Items found: {$count}\n";
 
                 $te_cwr = 0;
                 $te_c = 0;
@@ -144,8 +148,7 @@ class UserListCSSModel extends MainModel
                     
                     // 2. Safely ensure English titles exist for the correct type
                     if ($this->_type == 'anime') {
-                        // The title is accessed as 'anime_title_eng' in the original logic block, 
-                        // but needs to be added here if missing to prevent "Undefined array key" warning.
+                        // FIX: Safely ensure 'anime_title_eng' is set to null if missing
                         $content[$i]['anime_title_eng'] = $content[$i]['anime_title_eng'] ?? null;
                         
                         // Image Path Handling (using ?? '' to guarantee string)
@@ -157,8 +160,7 @@ class UserListCSSModel extends MainModel
                             $this->_user
                         );
                     } else { // manga
-                        // FIX: Safely ensure 'manga_english' is set to null if missing, 
-                        // preventing the "Undefined array key" warning when processing titles later.
+                        // FIX: Safely ensure 'manga_english' is set to null if missing
                         $content[$i]['manga_english'] = $content[$i]['manga_english'] ?? null;
                         
                         // Image Path Handling (using ?? '' to guarantee string)
@@ -207,12 +209,12 @@ class UserListCSSModel extends MainModel
                 }
 
                 if (count($content) < 300) {
-                    if (function_exists('add_debug_message')) add_debug_message("Fetch finished (less than 300 items) at offset: {$offset}");
+                    if (self::debug) echo "DEBUG: Fetch finished (less than 300 items) at offset: {$offset}\n";
                     break;
                 }
                 $offset += 300;
             } else {
-                if (function_exists('add_debug_message')) add_debug_message("Fetch finished (no content or invalid JSON) at offset: {$offset}");
+                if (self::debug) echo "DEBUG: Fetch finished (no content or invalid JSON) at offset: {$offset}\n";
                 break;
             }
         }
@@ -220,7 +222,7 @@ class UserListCSSModel extends MainModel
         // Close cURL handle ONCE after the loop
         curl_close($ch); 
         
-        if (function_exists('add_debug_message')) add_debug_message("getList (CSS) completed. Total items: " . count($data));
+        if (self::debug) echo "DEBUG: getList (CSS) completed. Total items: " . count($data) . "\n";
         return $data;
     }
 }
