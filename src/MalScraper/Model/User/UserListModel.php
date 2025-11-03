@@ -48,7 +48,7 @@ class UserListModel extends MainModel
     // --- CONCURRENCY CONSTANTS (Optimized for large lists, e.g., 3,000+ items) ---
     const debug = false; // Set to true to see debug echo output
     // Number of user list pages to fetch concurrently (Each page is 300 items)
-    const LIST_CONCURRENCY_SIZE = 10; 
+    public static $LIST_CONCURRENCY_SIZE = 10; 
     // This constant is included for consistency but is not strictly used in this model, 
     // as it does not fetch item metadata like UserListCSSModel.php.
     const ITEM_CONCURRENCY_SIZE = 100; 
@@ -74,7 +74,7 @@ class UserListModel extends MainModel
         $this->_status = $status;
 		$this->_genre = $genre;
 		$this->_order = $order;
-        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user;
+        $this->_url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset=0';
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
@@ -106,6 +106,18 @@ class UserListModel extends MainModel
      */
     public function getAllInfo()
     {
+        // --- Dynamic Concurrency Adjustment (FIXED) ---
+        // We use self::$LIST_CONCURRENCY_SIZE instead of self::LIST_CONCURRENCY_SIZE
+        if ($this->_user == '_All_') {
+            self::$LIST_CONCURRENCY_SIZE = 75; 
+            if (self::debug) {
+                echo "UserListModel: Setting LIST_CONCURRENCY_SIZE to 75 for '_All_'.\n";
+            }
+        } else {
+            if (self::debug) {
+                echo "UserListModel: Using default LIST_CONCURRENCY_SIZE of 10.\n";
+            }
+        }
         // Renamed from $all_items to $data
         $data = [];
         $current_offset = 0;
@@ -120,7 +132,7 @@ class UserListModel extends MainModel
             $handles = [];
             $batch_found_new_data = false;
             $max_offset_in_batch = 0;
-			if ($this->_user == '_All_') self::LIST_CONCURRENCY_SIZE = 75;
+
             // Prepare batch of concurrent requests
             for ($i = 0; $i < self::LIST_CONCURRENCY_SIZE; $i++) {
                 $offset_to_fetch = $current_offset + ($i * self::OFFSET_STEP);
