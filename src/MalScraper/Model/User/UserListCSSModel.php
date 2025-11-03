@@ -38,14 +38,14 @@ class UserListCSSModel extends MainModel
      */
     private $_genre;
 
-    // --- CONCURRENCY CONSTANTS ---
-    // Number of user list pages to fetch concurrently (Each page is 300 items)
+    // --- CONCURRENCY AND RETRY CONSTANTS ---
     const LIST_CONCURRENCY_SIZE = 15; 
-    // Number of individual item metadata URLs to fetch concurrently. 
-    // This is the main speed bottleneck, set higher for max speed.
     const ITEM_CONCURRENCY_SIZE = 100; 
-    // Max entries per page returned by MAL load.json endpoint
     const OFFSET_STEP = 300; 
+
+    // Retry Configuration
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY_MS = 2000; // Base delay in milliseconds (2 seconds)
 
     /**
      * Default constructor.
@@ -88,6 +88,22 @@ class UserListCSSModel extends MainModel
     }
 
     /**
+     * Default call.
+     *
+     * @param string $type
+     * @param array  $id
+     *
+     * @return string|int
+     */
+    public function get_subdirectory($type, $id)
+	{
+        $subdirectory_number = floor($id / 10000);
+        $subdirectory_path = '../info/' . $type . '/' . $subdirectory_number . '/';
+
+        return strval($subdirectory_number);
+    }
+
+    /**
      * Initializes a single cURL handle.
      *
      * @param string $url The URL to fetch.
@@ -109,9 +125,9 @@ class UserListCSSModel extends MainModel
     }
 
     /**
-     * Executes a batch of cURL handles concurrently using curl_multi_exec.
+     * Executes a batch of cURL handles concurrently using curl_multi_exec with retry logic.
      *
-     * @param array $handles An array of cURL handles.
+     * @param array $handles An array of cURL handles keyed by their identifier (e.g., offset or index).
      * @return array An associative array of results, keyed by the original array key.
      */
     private function _executeMultiCurl(array $handles): array
@@ -119,44 +135,90 @@ class UserListCSSModel extends MainModel
         if (empty($handles)) {
             return [];
         }
-        $mh = curl_multi_init();
-        foreach ($handles as $key => $ch) {
-            curl_multi_add_handle($mh, $ch);
-        }
 
-        $running = null;
+        $all_results = [];
+        $retry_handles = $handles;
 
-        do {
-            $mrc = curl_multi_exec($mh, $running);
-        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
-
-        while ($running && $mrc == CURLM_OK) {
-            if (curl_multi_select($mh, 1.0) == -1) {
-                usleep(100000); 
+        for ($retry_attempt = 0; $retry_attempt <= self::MAX_RETRIES; $retry_attempt++) {
+            
+            if (empty($retry_handles)) {
+                break; // All handles successfully completed
             }
+
+            // Exponential Backoff Delay (except for the first attempt)
+            if ($retry_attempt > 0) {
+                // Wait 2s, 4s, 8s...
+                $delay_ms = self::RETRY_DELAY_MS * pow(2, $retry_attempt - 1);
+                usleep($delay_ms * 1000); 
+                
+                // Re-initialize handles for retry, necessary for cURL multi environment
+                $new_retry_handles = [];
+                foreach ($retry_handles as $key => $ch) {
+                    $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
+                    curl_close($ch);
+                    $new_retry_handles[$key] = $this->_initializeCurlHandle($url);
+                }
+                $retry_handles = $new_retry_handles;
+            }
+
+            $mh = curl_multi_init();
+            foreach ($retry_handles as $key => $ch) {
+                curl_multi_add_handle($mh, $ch);
+            }
+
+            $running = null;
             do {
                 $mrc = curl_multi_exec($mh, $running);
             } while ($mrc == CURLM_CALL_MULTI_PERFORM);
-        }
 
-        $results = [];
-        foreach ($handles as $key => $ch) {
-            $response = curl_multi_getcontent($ch);
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            
-            if ($http_code == 200 && $response) {
-                $results[$key] = json_decode($response, true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                     $results[$key] = null; // Mark as failed if JSON decode failed
+            while ($running && $mrc == CURLM_OK) {
+                if (curl_multi_select($mh, 1.0) == -1) {
+                    usleep(100000); 
                 }
-            } else {
-                $results[$key] = null; 
+                do {
+                    $mrc = curl_multi_exec($mh, $running);
+                } while ($mrc == CURLM_CALL_MULTI_PERFORM);
             }
-            curl_multi_remove_handle($mh, $ch);
+            
+            $batch_failed_handles = [];
+            foreach ($retry_handles as $key => $ch) {
+                $response = curl_multi_getcontent($ch);
+                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $curl_error = curl_error($ch);
+
+                // Define success criteria
+                $is_successful = $http_code == 200 && $response && json_decode($response, true) !== null;
+                
+                if ($is_successful) {
+                    $all_results[$key] = json_decode($response, true);
+                    // Remove successful handle from the retry list
+                } else {
+                    // Critical failure conditions (e.g., non-recoverable HTTP errors, cURL errors)
+                    if ($retry_attempt === self::MAX_RETRIES) {
+                        // Max retries reached, mark as failed permanently
+                        $all_results[$key] = null;
+                    } else {
+                        // Queue for retry
+                        $batch_failed_handles[$key] = $ch;
+                    }
+                }
+                curl_multi_remove_handle($mh, $ch);
+            }
+            curl_multi_close($mh);
+
+            // Set the remaining handles for the next retry loop
+            $retry_handles = $batch_failed_handles; 
         }
 
-        curl_multi_close($mh);
-        return $results;
+        // Ensure any remaining failed handles (those that hit max retries) are marked null
+        foreach ($retry_handles as $key => $ch) {
+             if (!isset($all_results[$key])) {
+                 $all_results[$key] = null;
+             }
+             curl_close($ch);
+        }
+        
+        return $all_results;
     }
 
 
@@ -168,7 +230,6 @@ class UserListCSSModel extends MainModel
     public function getAllInfo()
     {
       if (!extension_loaded('curl')) {
-          // Return a structured error for the API consumer
           return ['error' => 'PHP cURL extension is required for asynchronous scraping.'];
       }
         
@@ -176,7 +237,7 @@ class UserListCSSModel extends MainModel
       $current_offset = 0;
       $list_finished = false;
 
-      // --- STAGE 1: Concurrent MAL User List Pages Fetching ---
+      // --- STAGE 1: Concurrent MAL User List Pages Fetching (LIST_CONCURRENCY_SIZE = 15) ---
 
       while (!$list_finished) {
           $list_handles = [];
@@ -188,24 +249,29 @@ class UserListCSSModel extends MainModel
               $list_handles[$offset_to_fetch] = $this->_initializeCurlHandle($url);
           }
           
-          // 2. Execute the batch concurrently
+          // 2. Execute the batch concurrently with retry logic
           $list_results = $this->_executeMultiCurl($list_handles);
 
           $batch_found_new_data = false;
+          // Process the list results in order of offset fetched
+          ksort($list_results); 
+
           foreach($list_results as $offset_fetched => $content) {
-              if (is_array($content) && !empty($content)) {
+              if (is_array($content) && count($content) > 0) {
                   $all_list_content = array_merge($all_list_content, $content);
                   $batch_found_new_data = true;
                   
                   // If the fetched page was less than the maximum possible, we reached the end
                   if (count($content) < self::OFFSET_STEP) {
                        $list_finished = true;
+                       break;
                   }
               } else {
-                  // If the page returned null or empty, stop looking further in the list
-                  if ($offset_fetched == $current_offset) {
-                     $list_finished = true;
-                  }
+                   // If the content is null or empty, and it's the expected next page, stop
+                   if ($offset_fetched >= $current_offset) {
+                       $list_finished = true;
+                       break;
+                   }
               }
           }
           
@@ -224,11 +290,10 @@ class UserListCSSModel extends MainModel
       }
 
 
-      // --- STAGE 2: Concurrent Metadata Fetching for All Items ---
+      // --- STAGE 2: Concurrent Metadata Fetching for All Items (ITEM_CONCURRENCY_SIZE = 100) ---
       
       $item_handles = [];
       $metadata_results = [];
-      $data = []; // Final output array
       
       // Process the list in batches for metadata fetching
       $total_batches = ceil($total_list_entries / self::ITEM_CONCURRENCY_SIZE);
@@ -245,14 +310,14 @@ class UserListCSSModel extends MainModel
               $id = !empty($item['anime_id']) ? $item['anime_id'] : $item['manga_id'];
               $t = !empty($item['anime_id']) ? 'anime' : 'manga';
 
-              $subdirectory = get_subdirectory('info', $t, $id);
+              $subdirectory = $this->get_subdirectory($t, $id);
               //$url2 = 'https://shaggyze.website/maldb/info/' . $t . '/' . $subdirectory . '/' . $id . '.json';
               $url2 = 'https://shaggyze.website/msa/info?t=' . $t . '&id=' . $id;
               // Use the item's array index ($i) as the key to map the result back later
               $item_handles[$i] = $this->_initializeCurlHandle($url2);
           }
 
-          // 2. Execute the batch concurrently
+          // 2. Execute the batch concurrently with retry logic
           $batch_metadata_results = $this->_executeMultiCurl($item_handles);
 
           // 3. Merge the results into the main results array
@@ -261,11 +326,13 @@ class UserListCSSModel extends MainModel
       
       // --- STAGE 3: Process Results and Apply Original Logic ---
       
+      $data = [];
       $te_all = 0; $te_cwr = 0; $te_c = 0; $te_oh = 0; $te_d = 0; $te_ptwr = 0;
 
       foreach ($all_list_content as $i => $item) {
           $content2 = $metadata_results[$i]; // Metadata result for item $i
           
+          // Original logic to handle content2/metadata
           if (is_array($content2)) {
               $data_meta = $content2['data'] ?? $content2;
           } else {
