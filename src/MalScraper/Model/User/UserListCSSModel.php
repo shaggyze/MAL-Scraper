@@ -40,7 +40,7 @@ class UserListCSSModel extends MainModel
 
     // --- CONCURRENCY CONSTANTS ---
     // Number of user list pages to fetch concurrently (Each page is 300 items)
-    const LIST_CONCURRENCY_SIZE = 5; 
+    const LIST_CONCURRENCY_SIZE = 10; 
     // Number of individual item metadata URLs to fetch concurrently. 
     // This is the main speed bottleneck, set higher for max speed.
     const ITEM_CONCURRENCY_SIZE = 50; 
