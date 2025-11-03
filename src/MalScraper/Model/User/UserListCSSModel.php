@@ -4,7 +4,7 @@ namespace MalScraper\Model\User;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
-$debug=true;
+
 /**
  * UserListModel class.
  */
@@ -39,6 +39,7 @@ class UserListCSSModel extends MainModel
     private $_genre;
 
     // --- NEW CONCURRENCY CONSTANTS ---
+    const debug = true;
     // Number of user list pages to fetch concurrently (Each page is 300 items)
     const LIST_CONCURRENCY_SIZE = 5; 
     // Number of individual item metadata URLs to fetch concurrently. 
