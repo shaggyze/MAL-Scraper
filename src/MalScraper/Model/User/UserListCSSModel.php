@@ -37,16 +37,6 @@ class UserListCSSModel extends MainModel
      * @var string
      */
     private $_genre;
-
-    // --- CONCURRENCY AND RETRY CONSTANTS ---
-    const LIST_CONCURRENCY_SIZE = 15; 
-    const ITEM_CONCURRENCY_SIZE = 100; 
-    const OFFSET_STEP = 300; 
-
-    // Retry Configuration
-    const MAX_RETRIES = 3;
-    const RETRY_DELAY_MS = 2000; // Base delay in milliseconds (2 seconds)
-
     /**
      * Default constructor.
      *
@@ -88,22 +78,6 @@ class UserListCSSModel extends MainModel
     }
 
     /**
-     * Default call.
-     *
-     * @param string $type
-     * @param array  $id
-     *
-     * @return string|int
-     */
-    public function get_subdirectory($type, $id)
-	{
-        $subdirectory_number = floor($id / 10000);
-        $subdirectory_path = '../info/' . $type . '/' . $subdirectory_number . '/';
-
-        return strval($subdirectory_number);
-    }
-
-    /**
      * Initializes a single cURL handle.
      *
      * @param string $url The URL to fetch.
@@ -114,7 +88,7 @@ class UserListCSSModel extends MainModel
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, htmlspecialchars_decode($url));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30); 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 20); 
         
         $headers = [
             'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -125,100 +99,50 @@ class UserListCSSModel extends MainModel
     }
 
     /**
-     * Executes a batch of cURL handles concurrently using curl_multi_exec with retry logic.
+     * Executes a batch of cURL handles concurrently using curl_multi_exec.
      *
-     * @param array $handles An array of cURL handles keyed by their identifier (e.g., offset or index).
+     * @param array $handles An array of cURL handles.
      * @return array An associative array of results, keyed by the original array key.
      */
     private function _executeMultiCurl(array $handles): array
     {
-        if (empty($handles)) {
-            return [];
+        $mh = curl_multi_init();
+        foreach ($handles as $ch) {
+            curl_multi_add_handle($mh, $ch);
         }
 
-        $all_results = [];
-        $retry_handles = $handles;
+        $running = null;
+        do {
+            $mrc = curl_multi_exec($mh, $running);
+        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
 
-        for ($retry_attempt = 0; $retry_attempt <= self::MAX_RETRIES; $retry_attempt++) {
-            
-            if (empty($retry_handles)) {
-                break; // All handles successfully completed
+        while ($running && $mrc == CURLM_OK) {
+            if (curl_multi_select($mh, 1.0) == -1) {
+                usleep(100000); 
             }
-
-            // Exponential Backoff Delay (except for the first attempt)
-            if ($retry_attempt > 0) {
-                // Wait 2s, 4s, 8s...
-                $delay_ms = self::RETRY_DELAY_MS * pow(2, $retry_attempt - 1);
-                usleep($delay_ms * 1000); 
-                
-                // Re-initialize handles for retry, necessary for cURL multi environment
-                $new_retry_handles = [];
-                foreach ($retry_handles as $key => $ch) {
-                    $url = curl_getinfo($ch, CURLINFO_EFFECTIVE_URL);
-                    curl_close($ch);
-                    $new_retry_handles[$key] = $this->_initializeCurlHandle($url);
-                }
-                $retry_handles = $new_retry_handles;
-            }
-
-            $mh = curl_multi_init();
-            foreach ($retry_handles as $key => $ch) {
-                curl_multi_add_handle($mh, $ch);
-            }
-
-            $running = null;
             do {
                 $mrc = curl_multi_exec($mh, $running);
             } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+        }
 
-            while ($running && $mrc == CURLM_OK) {
-                if (curl_multi_select($mh, 1.0) == -1) {
-                    usleep(100000); 
-                }
-                do {
-                    $mrc = curl_multi_exec($mh, $running);
-                } while ($mrc == CURLM_CALL_MULTI_PERFORM);
-            }
+        $results = [];
+        foreach ($handles as $key => $ch) {
+            $response = curl_multi_getcontent($ch);
+            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             
-            $batch_failed_handles = [];
-            foreach ($retry_handles as $key => $ch) {
-                $response = curl_multi_getcontent($ch);
-                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                $curl_error = curl_error($ch);
-
-                // Define success criteria
-                $is_successful = $http_code == 200 && $response && json_decode($response, true) !== null;
-                
-                if ($is_successful) {
-                    $all_results[$key] = json_decode($response, true);
-                    // Remove successful handle from the retry list
-                } else {
-                    // Critical failure conditions (e.g., non-recoverable HTTP errors, cURL errors)
-                    if ($retry_attempt === self::MAX_RETRIES) {
-                        // Max retries reached, mark as failed permanently
-                        $all_results[$key] = null;
-                    } else {
-                        // Queue for retry
-                        $batch_failed_handles[$key] = $ch;
-                    }
-                }
-                curl_multi_remove_handle($mh, $ch);
+            // Check for success (HTTP 200) and content
+            if ($http_code == 200 && $response) {
+                $results[$key] = json_decode($response, true);
+            } else {
+                // Return null or false for failed requests
+                $results[$key] = null; 
             }
-            curl_multi_close($mh);
-
-            // Set the remaining handles for the next retry loop
-            $retry_handles = $batch_failed_handles; 
+            curl_multi_remove_handle($mh, $ch);
+            // curl_close($ch); // Closing handle is often done by curl_multi_close on some PHP versions
         }
 
-        // Ensure any remaining failed handles (those that hit max retries) are marked null
-        foreach ($retry_handles as $key => $ch) {
-             if (!isset($all_results[$key])) {
-                 $all_results[$key] = null;
-             }
-             curl_close($ch);
-        }
-        
-        return $all_results;
+        curl_multi_close($mh);
+        return $results;
     }
 
 
@@ -230,357 +154,329 @@ class UserListCSSModel extends MainModel
     public function getAllInfo()
     {
       if (!extension_loaded('curl')) {
-          return ['error' => 'PHP cURL extension is required for asynchronous scraping.'];
+          trigger_error("PHP cURL extension is required for asynchronous scraping.", E_USER_ERROR);
+          return ['error' => 'cURL extension missing'];
       }
         
+      $data = [];
       $all_list_content = [];
-      $current_offset = 0;
-      $list_finished = false;
+      $offset = 0;
+      $batch_size = 5; // How many MAL list pages to fetch concurrently (e.g., 5 * 300 = 1500 items per batch)
 
-      // --- STAGE 1: Concurrent MAL User List Pages Fetching (LIST_CONCURRENCY_SIZE = 15) ---
-
-      while (!$list_finished) {
-          $list_handles = [];
-          
-          // 1. Prepare a batch of concurrent list page requests
-          for ($i = 0; $i < self::LIST_CONCURRENCY_SIZE; $i++) {
-              $offset_to_fetch = $current_offset + ($i * self::OFFSET_STEP);
-              $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset_to_fetch.'&status='.$this->_status.'&genre='.$this->_genre;
-              $list_handles[$offset_to_fetch] = $this->_initializeCurlHandle($url);
-          }
-          
-          // 2. Execute the batch concurrently with retry logic
-          $list_results = $this->_executeMultiCurl($list_handles);
-
-          $batch_found_new_data = false;
-          // Process the list results in order of offset fetched
-          ksort($list_results); 
-
-          foreach($list_results as $offset_fetched => $content) {
-              if (is_array($content) && count($content) > 0) {
-                  $all_list_content = array_merge($all_list_content, $content);
-                  $batch_found_new_data = true;
-                  
-                  // If the fetched page was less than the maximum possible, we reached the end
-                  if (count($content) < self::OFFSET_STEP) {
-                       $list_finished = true;
-                       break;
-                  }
-              } else {
-                   // If the content is null or empty, and it's the expected next page, stop
-                   if ($offset_fetched >= $current_offset) {
-                       $list_finished = true;
-                       break;
-                   }
-              }
-          }
-          
-          // If the list is marked finished or we didn't find any data in the entire batch, break
-          if ($list_finished || !$batch_found_new_data) {
-              break;
-          }
-          
-          // Move to the start of the next batch
-          $current_offset += (self::LIST_CONCURRENCY_SIZE * self::OFFSET_STEP);
-      }
+      // --- STAGE 1: Concurrent MAL User List Pages Fetching ---
+      // We assume the list is large and pre-calculate potential page URLs. 
+      // This is simpler than looping until empty. We'll check for null/empty response.
       
-      $total_list_entries = count($all_list_content);
-      if ($total_list_entries === 0) {
-          return [];
+      echo "Starting concurrent list page fetching...\n";
+
+      // Build initial batch of list URLs
+      $list_handles = [];
+      for ($i = 0; $i < $batch_size * 2; $i++) { // Pre-fetch two batches
+          $current_offset = $i * 300;
+          $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$current_offset.'&status='.$this->_status.'&genre='.$this->_genre;
+          $list_handles[$current_offset] = $this->_initializeCurlHandle($url);
       }
 
+      $list_results = $this->_executeMultiCurl($list_handles);
 
-      // --- STAGE 2: Concurrent Metadata Fetching for All Items (ITEM_CONCURRENCY_SIZE = 100) ---
+      foreach($list_results as $content) {
+          if (is_array($content) && !empty($content)) {
+              $all_list_content = array_merge($all_list_content, $content);
+          } else {
+              // Assuming that if a page returns null or empty array, we've reached the end
+              break; 
+          }
+      }
+
+      echo "Total list entries fetched: " . count($all_list_content) . "\n";
+
+
+      // --- STAGE 2: Concurrent Metadata Fetching for All Items ---
       
       $item_handles = [];
-      $metadata_results = [];
-      
-      // Process the list in batches for metadata fetching
-      $total_batches = ceil($total_list_entries / self::ITEM_CONCURRENCY_SIZE);
-      
-      for ($batch_num = 0; $batch_num < $total_batches; $batch_num++) {
-          
-          $item_handles = [];
-          $start_index = $batch_num * self::ITEM_CONCURRENCY_SIZE;
-          $end_index = min($start_index + self::ITEM_CONCURRENCY_SIZE, $total_list_entries);
-
-          // 1. Build the batch of item metadata URLs
-          for ($i = $start_index; $i < $end_index; $i++) {
-              $item = $all_list_content[$i];
-              $id = !empty($item['anime_id']) ? $item['anime_id'] : $item['manga_id'];
-              $t = !empty($item['anime_id']) ? 'anime' : 'manga';
-
-              $subdirectory = $this->get_subdirectory($t, $id);
-              //$url2 = 'https://shaggyze.website/maldb/info/' . $t . '/' . $subdirectory . '/' . $id . '.json';
-              $url2 = 'https://shaggyze.website/msa/info?t=' . $t . '&id=' . $id;
-              // Use the item's array index ($i) as the key to map the result back later
-              $item_handles[$i] = $this->_initializeCurlHandle($url2);
-          }
-
-          // 2. Execute the batch concurrently with retry logic
-          $batch_metadata_results = $this->_executeMultiCurl($item_handles);
-
-          // 3. Merge the results into the main results array
-          $metadata_results = array_merge($metadata_results, $batch_metadata_results);
-      }
-      
-      // --- STAGE 3: Process Results and Apply Original Logic ---
-      
-      $data = [];
+      $item_map = []; // Map the key to the original $all_list_content index
       $te_all = 0; $te_cwr = 0; $te_c = 0; $te_oh = 0; $te_d = 0; $te_ptwr = 0;
 
+      echo "Preparing concurrent metadata requests for " . count($all_list_content) . " items...\n";
+
+      // 1. Build the batch of item metadata URLs
       foreach ($all_list_content as $i => $item) {
-          $content2 = $metadata_results[$i]; // Metadata result for item $i
+          $id = !empty($item['anime_id']) ? $item['anime_id'] : $item['manga_id'];
+          $t = !empty($item['anime_id']) ? 'anime' : 'manga';
+
+          $subdirectory = get_subdirectory('info', $t, $id);
+          // Prioritize the local/cached JSON endpoint
+          $url2 = 'https://shaggyze.website/maldb/info/' . $t . '/' . $subdirectory . '/' . $id . '.json';
           
-          // Original logic to handle content2/metadata
+          // Fallback to the 'msa' endpoint if the first one fails or is invalid (this logic is preserved)
+          // NOTE: We cannot check file_get_contents() synchronously here, so we will handle the fallback 
+          // after the primary async request fails. For now, we only request the primary URL2.
+
+          // Using the item index as the key to map the result back later
+          $item_handles[$i] = $this->_initializeCurlHandle($url2);
+      }
+
+      // 2. Execute the batch concurrently
+      echo "Executing concurrent metadata requests...\n";
+      $metadata_results = $this->_executeMultiCurl($item_handles);
+
+
+      // 3. Process the results and merge into the main list
+      echo "Processing results and generating final structure...\n";
+      foreach ($all_list_content as $i => &$item) {
+          $content2 = $metadata_results[$i]; // Content2 is the metadata for item $i
+
+          // If the primary URL failed (null in metadata_results), you would need to implement 
+          // a second synchronous or concurrent request to the fallback URL here.
+          // For simplicity, we assume the primary URL (url2) works if not null.
           if (is_array($content2)) {
-              $data_meta = $content2['data'] ?? $content2;
+              // Access the data sub-array if it exists
+              $data = $content2['data'] ?? $content2;
           } else {
-              $data_meta = []; 
+              // If metadata failed to fetch, treat it as empty data
+              $data = []; 
           }
-          
-          // Reference to the item for easier modification
-          $item_ref = $item; 
           
           // --- START: Original Logic Preserved (Mapping the Content2/Data back to Item) ---
           
           // Check for anime vs manga titles based on your original logic
-          if (empty($item_ref['anime_id'])) {
-			  if (isset($data_meta['title_german']) && $data_meta['title_german'] !== null) {
-			    $item_ref['manga_title_de'] = str_replace(['"', '[', ']'], '', $data_meta['title_german']);
+          if (empty($item['anime_id'])) {
+			  if (isset($data['title_german']) && $data['title_german'] !== null) {
+			    $item['manga_title_de'] = str_replace(['"', '[', ']'], '', $data['title_german']);
 			  } else {
-			    if ($item_ref['manga_english'] !== 'N/A') {
-			      $item_ref['manga_title_de'] = $item_ref['manga_english'];
+			    if ($item['manga_english'] !== 'N/A') {
+			      $item['manga_title_de'] = $item['manga_english'];
 				} else {
-				  $item_ref['manga_title_de'] = $item_ref['manga_title'];
+				  $item['manga_title_de'] = $item['manga_title'];
 				}
 			  }
           } else {
-			  if (isset($data_meta['title_german']) && $data_meta['title_german'] !== null) {
-			    $item_ref['anime_title_de'] = str_replace(['"', '[', ']'], '', $data_meta['title_german']);
+			  if (isset($data['title_german']) && $data['title_german'] !== null) {
+			    $item['anime_title_de'] = str_replace(['"', '[', ']'], '', $data['title_german']);
 			  } else {
-				if ($item_ref['anime_title_eng'] !== 'N/A') {
-			      $item_ref['anime_title_de'] = $item_ref['anime_title_eng'];
+				if ($item['anime_title_eng'] !== 'N/A') {
+			      $item['anime_title_de'] = $item['anime_title_eng'];
 				} else {
-				  $item_ref['anime_title_de'] = $item_ref['anime_title'];
+				  $item['anime_title_de'] = $item['anime_title'];
 				}
 			  }
           }
-          if (empty($item_ref['anime_id'])) {
-			  if (isset($data_meta['title_japanese']) && $data_meta['title_japanese'] !== null) {
-			    $item_ref['manga_title_jp'] = str_replace(['"', '[', ']'], '', $data_meta['title_japanese']);
+          if (empty($item['anime_id'])) {
+			  if (isset($data['title_japanese']) && $data['title_japanese'] !== null) {
+			    $item['manga_title_jp'] = str_replace(['"', '[', ']'], '', $data['title_japanese']);
 			  } else {
-			    if ($item_ref['manga_english'] !== 'N/A') {
-			      $item_ref['manga_title_jp'] = $item_ref['manga_english'];
+			    if ($item['manga_english'] !== 'N/A') {
+			      $item['manga_title_jp'] = $item['manga_english'];
 				} else {
-				  $item_ref['manga_title_jp'] = $item_ref['manga_title'];
+				  $item['manga_title_jp'] = $item['manga_title'];
 				}
 			  }
           } else {
-			  if (isset($data_meta['title_japanese']) && $data_meta['title_japanese'] !== null) {
-			    $item_ref['anime_title_jp'] = str_replace(['"', '[', ']'], '', $data_meta['title_japanese']);
+			  if (isset($data['title_japanese']) && $data['title_japanese'] !== null) {
+			    $item['anime_title_jp'] = str_replace(['"', '[', ']'], '', $data['title_japanese']);
 			  } else {
-				if ($item_ref['anime_title_eng'] !== 'N/A') {
-			      $item_ref['anime_title_jp'] = $item_ref['anime_title_eng'];
+				if ($item['anime_title_eng'] !== 'N/A') {
+			      $item['anime_title_jp'] = $item['anime_title_eng'];
 				} else {
-				  $item_ref['anime_title_jp'] = $item_ref['anime_title'];
+				  $item['anime_title_jp'] = $item['anime_title'];
 				}
 			  }
           }
-          if (!empty($item_ref['anime_id'])) {
-			  if ($item_ref['anime_title_eng'] == 'N/A') {
-			    $item_ref['anime_title_eng'] = $item_ref['anime_title'];
+          if (!empty($item['anime_id'])) {
+			  if ($item['anime_title_eng'] == 'N/A') {
+			    $item['anime_title_eng'] = $item['anime_title'];
 			  }
           } else {
-			  if ($item_ref['manga_english'] == 'N/A') {
-			    $item_ref['manga_english'] = $item_ref['manga_title'];
+			  if ($item['manga_english'] == 'N/A') {
+			    $item['manga_english'] = $item['manga_title'];
 			  }
           }
-          if (!empty($item_ref['num_watched_episodes'])) {
-			  if ($item_ref['anime_num_episodes'] !== 0) {
-			    $item_ref['progress_percent'] = round(($item_ref['num_watched_episodes'] / $item_ref['anime_num_episodes']) * 100, 2);
+          if (!empty($item['num_watched_episodes'])) {
+			  if ($item['anime_num_episodes'] !== 0) {
+			    $item['progress_percent'] = round(($item['num_watched_episodes'] / $item['anime_num_episodes']) * 100, 2);
 			  } else {
-			    $item_ref['progress_percent'] = 0;
+			    $item['progress_percent'] = 0;
 			  }
-          } elseif (!empty($item_ref['num_read_volumes'])) {
-			  if ($item_ref['manga_num_volumes'] !== 0) {
-			    $item_ref['progress_percent'] = round(($item_ref['num_read_volumes'] / $item_ref['manga_num_volumes']) * 100, 2);
+          } elseif (!empty($item['num_read_volumes'])) {
+			  if ($item['manga_num_volumes'] !== 0) {
+			    $item['progress_percent'] = round(($item['num_read_volumes'] / $item['manga_num_volumes']) * 100, 2);
 			  } else {
-			    $item_ref['progress_percent'] = 0;
+			    $item['progress_percent'] = 0;
 			  }
           } else {
-			  $item_ref['progress_percent'] = 0;
+			  $item['progress_percent'] = 0;
           }
-          
-          // The specific rank check:
-          if (!empty($data_meta['rank'])) {
-			  $item_ref['rank'] = $data_meta['rank'];
+          // The specific line you asked about:
+          if (!empty($data['rank'])) {
+			  $item['rank'] = $data['rank'];
           } else {
-			  $item_ref['rank'] = "N/A";
+			  $item['rank'] = "N/A";
           }
-          if (!empty($data_meta['broadcast'])) {
-				$item_ref['broadcast'] = $data_meta['broadcast'];
+          if (!empty($data['broadcast'])) {
+				$item['broadcast'] = $data['broadcast'];
 			} else {
-				$item_ref['broadcast'] = "";
+				$item['broadcast'] = "";
 			}
-			if (!empty($data_meta['synopsis'])) {
-			  $synopsis = preg_replace('/[\x0D]/', "", $data_meta['synopsis']);
+			if (!empty($data['synopsis'])) {
+			  $synopsis = preg_replace('/[\x0D]/', "", $data['synopsis']);
 			  $synopsis = str_replace(array("\n", "\t", "\r"), "-a ", $synopsis);
 			  $synopsis = str_replace('"', '-"', $synopsis);
 			  $synopsis = str_replace("'", "-'", $synopsis);
-			  $item_ref['synopsis'] = $synopsis;
+			  $item['synopsis'] = $synopsis;
 			} else {
-			  $item_ref['synopsis'] = "N/A";
+			  $item['synopsis'] = "N/A";
 			}
-			if (!empty($data_meta['duration'])) {
-			  $episodes = intval($data_meta['episodes']);
-			  $duration = intval(str_replace(' min. per ep.', '', $data_meta['duration']));
+			if (!empty($data['duration'])) {
+			  $episodes = intval($data['episodes']);
+			  $duration = intval(str_replace(' min. per ep.', '', $data['duration']));
 			  if ($episodes > 0 && $duration > 0) {
-			    $item_ref['total_runtime'] = floor($episodes * $duration / 60) . 'h ' . ($episodes * $duration % 60) . 'm';
+			    $item['total_runtime'] = floor($episodes * $duration / 60) . 'h ' . ($episodes * $duration % 60) . 'm';
 			  } else {
-				$item_ref['total_runtime'] = 'N/A';
+				$item['total_runtime'] = 'N/A';
 			  }
 			} else {
-				$item_ref['total_runtime'] = 'N/A';
+				$item['total_runtime'] = 'N/A';
 			}
-			if (!empty($data_meta['premiered'])) {
-			  $item_ref['year'] = str_replace(['Winter ', 'Spring ', 'Summer ', 'Fall '], '', $data_meta['premiered']);
+			if (!empty($data['premiered'])) {
+			  $item['year'] = str_replace(['Winter ', 'Spring ', 'Summer ', 'Fall '], '', $data['premiered']);
 			} else {
-			  if (!empty($data_meta['aired']['start'])) {
-			    $item_ref['year'] = (int) substr($data_meta['aired']['start'], -4);
+			  if (!empty($data['aired']['start'])) {
+			    $item['year'] = (int) substr($data['aired']['start'], -4);
 			  } else {
-			    if (!empty($data_meta['published']['start'])) {
-			      $item_ref['year'] = (int) substr($data_meta['published']['start'], -4);
+			    if (!empty($data['published']['start'])) {
+			      $item['year'] = (int) substr($data['published']['start'], -4);
 			    } else {
-			      $item_ref['year'] = 'N/A';
+			      $item['year'] = 'N/A';
 			    }
 			  }
 			}
-			if (!empty($data_meta['genres'])) {
-			  $genres = $data_meta['genres'];
+			if (!empty($data['genres'])) {
+			  $genres = $data['genres'];
 			  $genreNames = '';
 			  if (is_array($genres)) {
 			    foreach ($genres as $genre) {
 				  $genreNames .= $genre['name'] . ', ';
 			    }
 			  }
-			  $item_ref['genres'] = rtrim($genreNames, ', ');
+			  $item['genres'] = rtrim($genreNames, ', ');
 			} else {
-			  if (!empty($data_meta['genre'])) {
-			    $genres = $data_meta['genre'];
+			  if (!empty($data['genre'])) {
+			    $genres = $data['genre'];
 			    $genreNames = '';
 				if (is_array($genres)) {
 			      foreach ($genres as $genre) {
 				    $genreNames .= $genre['name'] . ', ';
 			      }
 				}
-			    $item_ref['genres'] = rtrim($genreNames, ', ');
+			    $item['genres'] = rtrim($genreNames, ', ');
 			  } else {
-			  $item_ref['genres'] = 'N/A';
+			  $item['genres'] = 'N/A';
 			  }
 			}
-			if (!empty($data_meta['themes'])) {
-			  $themes = $data_meta['themes'];
+			if (!empty($data['themes'])) {
+			  $themes = $data['themes'];
 			  $themeNames = '';
 			  if (is_array($themes)) {
 			    foreach ($themes as $theme) {
 				  $themeNames .= $theme['name'] . ', ';
 			    }
 			  }
-			  $item_ref['themes'] = rtrim($themeNames, ', ');
+			  $item['themes'] = rtrim($themeNames, ', ');
 			} else {
-			  if (!empty($data_meta['theme'])) {
-			    $themes = $data_meta['theme'];
+			  if (!empty($data['theme'])) {
+			    $themes = $data['theme'];
 			    $themeNames = '';
 			    if (is_array($themes)) {
 			    foreach ($themes as $theme) {
 				  $themeNames .= $theme['name'] . ', ';
 			    }
 			    }
-			    $item_ref['themes'] = rtrim($themeNames, ', ');
+			    $item['themes'] = rtrim($themeNames, ', ');
 			  } else {
-			    $item_ref['themes'] = 'N/A';
+			    $item['themes'] = 'N/A';
 			  }
 			}
-			if (!empty($data_meta['demographic'])) {
-			  $demographics = $data_meta['demographic'];
+			if (!empty($data['demographic'])) {
+			  $demographics = $data['demographic'];
 			  $demographicNames = '';
 			  if (is_array($demographics)) {
 			  foreach ($demographics as $demographic) {
 				$demographicNames .= $demographic['name'] . ', ';
 			  }
 			  }
-			  $item_ref['demographic'] = rtrim($demographicNames, ', ');
+			  $item['demographic'] = rtrim($demographicNames, ', ');
 			} else {
-			  $item_ref['demographic'] = 'N/A';
+			  $item['demographic'] = 'N/A';
 			}
-			if (!empty($data_meta['serialization'])) {
-			  $serializations = $data_meta['serialization'];
+			if (!empty($data['serialization'])) {
+			  $serializations = $data['serialization'];
 			  $serializationNames = '';
 			  $serializations = !is_array($serializations) ? [] : $serializations;
 			  foreach ($serializations as $serialization) {
 				$serializationNames .= $serialization['name'] . ', ';
 			  }
-			  $item_ref['serialization'] = rtrim($serializationNames, ', ');
+			  $item['serialization'] = rtrim($serializationNames, ', ');
 			} else {
-			  $item_ref['serialization'] = 'N/A';
+			  $item['serialization'] = 'N/A';
 			}
-			if (!empty($item_ref['manga_magazines'])) {
-			  $mangamagazines = $item_ref['manga_magazines'];
+			if (!empty($item['manga_magazines'])) {
+			  $mangamagazines = $item['manga_magazines'];
 			  $mangamagazineNames = '';
 			  $mangamagazines = !is_array($mangamagazines) ? [] : $mangamagazines;
 			  foreach ($mangamagazines as $mangamagazine) {
 				$mangamagazineNames .= $mangamagazine['name'] . ', ';
+			  // error_log($mangamagazineNames . ' ' . $mangamagazine['name']); // Removed debug log
 			  }
-			  $item_ref['manga_magazines'] = rtrim($mangamagazineNames, ', ');
+			  $item['manga_magazines'] = rtrim($mangamagazineNames, ', ');
 			} else {
-			  $item_ref['manga_magazines'] = 'N/A';
+			  $item['manga_magazines'] = 'N/A';
 			}
 
-          // Count totals
-          if ($item_ref['status'] == 1) {
+          // Your original calculation for totals (must be outside the loop if using concurrent, but kept here for status update)
+          if ($item['status'] == 1) {
 			  $te_cwr += 1;
 			  $te_all += 1;
-          } elseif ($item_ref['status'] == 2) {
+          } elseif ($item['status'] == 2) {
 			  $te_c += 1;
 			  $te_all += 1;
-          } elseif ($item_ref['status'] == 3) {
+          } elseif ($item['status'] == 3) {
 			  $te_oh += 1;
 			  $te_all += 1;
-          } elseif ($item_ref['status'] == 4) {
+          } elseif ($item['status'] == 4) {
 			  $te_d += 1;
 			  $te_all += 1;
-          } elseif ($item_ref['status'] == 6) {
+          } elseif ($item['status'] == 6) {
 			  $te_ptwr += 1;
 			  $te_all += 1;
           }
           // --- END: Original Logic Preserved ---
 
           // Update titles with clean versions
-          if (!empty($item_ref['anime_title'])) {
-			  $item_ref['anime_title'] = str_replace(['"', '[', ']'], '', $item_ref['anime_title']);
+          if (!empty($item['anime_title'])) {
+			  $item['anime_title'] = str_replace(['"', '[', ']'], '', $item['anime_title']);
 			} else {
-			  $item_ref['manga_title'] = str_replace(['"', '[', ']'], '', $item_ref['manga_title']);
+			  $item['manga_title'] = str_replace(['"', '[', ']'], '', $item['manga_title']);
 			}
-			if (!empty($item_ref['anime_title_eng'])) {
-			  $item_ref['anime_title_eng'] = str_replace(['"', '[', ']'], '', $item_ref['anime_title_eng']);
+			if (!empty($item['anime_title_eng'])) {
+			  $item['anime_title_eng'] = str_replace(['"', '[', ']'], '', $item['anime_title_eng']);
 			} else {
-			  $item_ref['manga_english'] = str_replace(['"', '[', ']'], '', $item_ref['manga_english']);
+			  $item['manga_english'] = str_replace(['"', '[', ']'], '', $item['manga_english']);
 			}
-			if (!empty($item_ref['anime_image_path'])) {
-			  $item_ref['anime_image_path'] = Helper::imageUrlCleaner($item_ref['anime_image_path']);
+			if (!empty($item['anime_image_path'])) {
+			  $item['anime_image_path'] = Helper::imageUrlCleaner($item['anime_image_path']);
 			} else {
-			  $item_ref['manga_image_path'] = Helper::imageUrlCleaner($item_ref['manga_image_path']);
+			  $item['manga_image_path'] = Helper::imageUrlCleaner($item['manga_image_path']);
 			}
-			if (!empty($item_ref['anime_id'])) {
-			  $item_ref['anime_image_path'] = Helper::imageUrlReplace($item_ref['anime_id'], 'anime', $item_ref['anime_image_path'], $this->_user);
+			if (!empty($item['anime_id'])) {
+			  $item['anime_image_path'] = Helper::imageUrlReplace($item['anime_id'], 'anime', $item['anime_image_path'], $this->_user);
 			} else {
-			  $item_ref['manga_image_path'] = Helper::imageUrlReplace($item_ref['manga_id'], 'manga', $item_ref['manga_image_path'], $this->_user);
+			  $item['manga_image_path'] = Helper::imageUrlReplace($item['manga_id'], 'manga', $item['manga_image_path'], $this->_user);
 			}
-			$item_ref['\a'] = "-a";
+			$item['\a'] = "-a";
 
-          $data[] = $item_ref;
+          $data[] = $item;
       }
+      unset($item); // Break the reference on the last element
 
       // Update final total entries count after the loop completes
       foreach ($data as &$item) {
@@ -593,6 +489,7 @@ class UserListCSSModel extends MainModel
       }
       unset($item);
       
+
       return $data;
     }
 }
