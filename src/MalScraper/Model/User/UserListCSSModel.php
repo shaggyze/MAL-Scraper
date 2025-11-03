@@ -4,7 +4,7 @@ namespace MalScraper\Model\User;
 
 use MalScraper\Helper\Helper;
 use MalScraper\Model\MainModel;
-global debug = true;
+global const debug = true;
 /**
  * UserListModel class.
  */
