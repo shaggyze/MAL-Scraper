@@ -45,15 +45,13 @@ class UserListModel extends MainModel
      */
     private $_order;
 
-    // --- CONCURRENCY CONSTANTS (Optimized for large lists, e.g., 3,000+ items) ---
-    // Number of user list pages to fetch concurrently (Each page is 300 items)
-    const LIST_CONCURRENCY_SIZE = 10; 
-    // This constant is included for consistency but is not strictly used in this model, 
-    // as it does not fetch item metadata like UserListCSSModel.php.
-    const ITEM_CONCURRENCY_SIZE = 100; 
+    // --- CONCURRENCY CONSTANTS (Used for single-threaded cURL fetch) ---
+    const debug = true; // Set to true to see debug echo output
+    // Number of user list pages to fetch concurrently. Set to 1 as requested.
+    const LIST_CONCURRENCY_SIZE = 1; 
     // Max entries per page returned by MAL load.json endpoint
     const OFFSET_STEP = 300; 
-    
+
     /**
      * Default constructor.
      *
@@ -78,110 +76,104 @@ class UserListModel extends MainModel
 
         parent::errorCheck($this);
     }
-
+	
     /**
-     * Default call.
+     * Initializes a cURL handle with common options.
      *
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return array|string|int
+     * @param string $url The URL to set.
+     * @return resource The cURL handle.
      */
-    public function __call($method, $arguments)
-    {
-        if ($this->_error) {
-            return $this->_error;
-        }
-
-        return call_user_func_array([$this, $method], $arguments);
-    }
-
-    /**
-     * Default call.
-     *
-     * @param string $type
-     * @param array  $id
-     *
-     * @return string|int
-     */
-    public function get_subdirectory($type, $id)
-	{
-        $subdirectory_number = floor($id / 10000);
-        $subdirectory_path = '../info/' . $type . '/' . $subdirectory_number . '/';
-
-        return strval($subdirectory_number);
-    }
-
-    /**
-     * Initializes a single cURL handle.
-     *
-     * @param string $url The URL to fetch.
-     * @return mixed The configured cURL handle (resource/CurlHandle).
-     */
-    private function _initializeCurlHandle(string $url)
+    private function initCurlHandle($url) 
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, htmlspecialchars_decode($url));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30); 
-        
+        curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Set a reasonable timeout
         $headers = [
             'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         ];
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
         return $ch;
     }
 
     /**
-     * Executes a batch of cURL handles concurrently using curl_multi_exec.
+     * Fetches all user list pages sequentially using cURL (Concurrency size 1).
      *
-     * @param array $handles An array of cURL handles.
-     * @return array An associative array of results, keyed by the original array key.
+     * @return array All list items combined.
      */
-    private function _executeMultiCurl(array $handles): array
+    private function fetchAllListPagesConcurrent()
     {
-        if (empty($handles)) {
-            return [];
-        }
-        $mh = curl_multi_init();
-        foreach ($handles as $key => $ch) {
-            curl_multi_add_handle($mh, $ch);
-        }
+        $all_items = [];
+        $offset = 0;
 
-        $running = null;
+        while (true) {
+            $master_mh = curl_multi_init();
+            $handles = [];
 
-        do {
-            $mrc = curl_multi_exec($mh, $running);
-        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
-
-        while ($running && $mrc == CURLM_OK) {
-            if (curl_multi_select($mh, 1.0) == -1) {
-                usleep(100000); 
-            }
-            do {
-                $mrc = curl_multi_exec($mh, $running);
-            } while ($mrc == CURLM_CALL_MULTI_PERFORM);
-        }
-
-        $results = [];
-        foreach ($handles as $key => $ch) {
-            $response = curl_multi_getcontent($ch);
-            $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            // Prepare batch of concurrent requests (size 1)
+            $current_offset = $offset;
+            $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$current_offset.'&status='.$this->_status.'&genre='.$this->_genre.'&order='.$this->_order;
             
-            if ($http_code == 200 && $response) {
-                $results[$key] = json_decode($response, true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                     $results[$key] = null; // Mark as failed if JSON decode failed
-                }
-            } else {
-                $results[$key] = null; 
-            }
-            curl_multi_remove_handle($mh, $ch);
-        }
+            $ch = $this->initCurlHandle($url);
+            curl_multi_add_handle($master_mh, $ch);
+            $handles[$current_offset] = $ch;
 
-        curl_multi_close($mh);
-        return $results;
+            // Execute concurrent request (only 1 handle, effectively sequential)
+            $running = null;
+            do {
+                curl_multi_exec($master_mh, $running);
+            } while ($running > 0);
+            
+            $items_in_batch = 0;
+            $list_finished = false;
+
+            // Process results
+            foreach ($handles as $offset_fetched => $ch) {
+                $response = curl_multi_getcontent($ch);
+                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+                $curl_error = curl_error($ch);
+                curl_multi_remove_handle($master_mh, $ch);
+                curl_close($ch);
+
+                if ($http_code === 200 && !$curl_error && $response) {
+                    $content = json_decode($response, true);
+                    if (is_array($content) && count($content) > 0) {
+                        $all_items = array_merge($all_items, $content);
+                        $items_in_batch += count($content);
+                        
+                        // If the page returned fewer than OFFSET_STEP, we are done
+                        if (count($content) < self::OFFSET_STEP) {
+                             $list_finished = true;
+                        }
+
+                    } elseif (self::debug) {
+                        echo "Empty or invalid JSON for offset $offset_fetched.\n";
+                        $list_finished = true;
+                    }
+                } else {
+                    if (self::debug) {
+                        echo "Failed fetch for offset $offset_fetched. HTTP: $http_code, Error: $curl_error\n";
+                    }
+                    $list_finished = true;
+                }
+            }
+
+            curl_multi_close($master_mh);
+            
+            if ($list_finished) {
+                break;
+            }
+            
+            // Move offset forward by the page size
+            $offset += self::OFFSET_STEP;
+
+            // Safety break if needed
+            if ($items_in_batch === 0 && count($all_items) > 0) {
+                break;
+            }
+        }
+        
+        return $all_items;
     }
 
 
@@ -192,94 +184,11 @@ class UserListModel extends MainModel
      */
     private function getAllInfo()
     {
-        if (!extension_loaded('curl')) {
-            // Reverting to synchronous file_get_contents if cURL is not available
-            $data = [];
-            $offset = 0;
-            while (true) {
-                $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset.'&status='.$this->_status.'&genre='.$this->_genre.'&order='.$this->_order;
+        $list_data = $this->fetchAllListPagesConcurrent();
 
-                // Synchronous fetch
-                $content = json_decode(file_get_contents(htmlspecialchars_decode($url)), true);
-                
-                if ($content) {
-                    $count = count($content);
-                    for ($i = 0; $i < $count; $i++) {
-                        // Original image path cleaning/replacing logic
-                        if (!empty($content[$i]['anime_image_path'])) {
-                            $content[$i]['anime_image_path'] = Helper::imageUrlCleaner($content[$i]['anime_image_path']);
-                        } else {
-                            $content[$i]['manga_image_path'] = Helper::imageUrlCleaner($content[$i]['manga_image_path']);
-                        }
-                        if (!empty($content[$i]['anime_id'])) {
-                            $content[$i]['anime_image_path'] = Helper::imageUrlReplace($content[$i]['anime_id'], 'anime', $content[$i]['anime_image_path'], $this->_user);
-                        } else {
-                            $content[$i]['manga_image_path'] = Helper::imageUrlReplace($content[$i]['manga_id'], 'manga', $content[$i]['manga_image_path'], $this->_user);
-                        }
-                    }
-
-                    $data = array_merge($data, $content);
-                    $offset += self::OFFSET_STEP;
-                } else {
-                    break;
-                }
-            }
-            return $data;
-        }
-
-        // --- Asynchronous Logic (Aggressive Concurrency) ---
-        
-        $all_list_content = [];
-        $current_offset = 0;
-        $list_finished = false;
-
-        while (!$list_finished) {
-            $list_handles = [];
-            
-            // 1. Prepare a batch of concurrent list page requests
-            for ($i = 0; $i < self::LIST_CONCURRENCY_SIZE; $i++) {
-                $offset_to_fetch = $current_offset + ($i * self::OFFSET_STEP);
-                $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset_to_fetch.'&status='.$this->_status.'&genre='.$this->_genre.'&order='.$this->_order;
-                
-                // Use the expected offset as the key
-                $list_handles[$offset_to_fetch] = $this->_initializeCurlHandle($url);
-            }
-            
-            // 2. Execute the batch concurrently
-            $list_results = $this->_executeMultiCurl($list_handles);
-
-            $batch_found_new_data = false;
-            foreach($list_results as $offset_fetched => $content) {
-                if (is_array($content) && !empty($content)) {
-                    $all_list_content = array_merge($all_list_content, $content);
-                    $batch_found_new_data = true;
-                    
-                    // If the fetched page was less than the maximum possible (300 items), we reached the end
-                    if (count($content) < self::OFFSET_STEP) {
-                         $list_finished = true;
-                    }
-                } else {
-                    // If the very first page of the batch failed, we assume the list has ended
-                    if ($offset_fetched == $current_offset) {
-                       $list_finished = true;
-                    }
-                }
-            }
-            
-            // If the list is marked finished or we didn't find any data in the entire batch, break
-            if ($list_finished || !$batch_found_new_data) {
-                break;
-            }
-            
-            // Move to the start of the next batch
-            $current_offset += (self::LIST_CONCURRENCY_SIZE * self::OFFSET_STEP);
-        }
-        
-        // --- Apply Item-Level Logic (Image Cleaning) ---
-        
+        // Apply original item-level logic
         $final_data = [];
-        foreach ($all_list_content as $item) {
-            // Apply original item-level logic
+        foreach ($list_data as $item) {
             if (!empty($item['anime_image_path'])) {
                 $item['anime_image_path'] = Helper::imageUrlCleaner($item['anime_image_path']);
             } else {
