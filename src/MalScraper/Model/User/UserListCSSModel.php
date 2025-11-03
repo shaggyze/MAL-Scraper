@@ -39,7 +39,7 @@ class UserListCSSModel extends MainModel
     private $_genre;
 
     // --- NEW CONCURRENCY CONSTANTS ---
-    const debug = false;
+    const debug = false; // Set to true to see debug echo output
     // Number of user list pages to fetch concurrently (Each page is 300 items)
     const LIST_CONCURRENCY_SIZE = 10; 
     // Number of individual item metadata URLs to fetch concurrently. 
