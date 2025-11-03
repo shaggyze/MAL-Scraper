@@ -48,7 +48,7 @@ class UserListModel extends MainModel
     // --- CONCURRENCY CONSTANTS (Optimized for large lists, e.g., 3,000+ items) ---
     const debug = false; // Set to true to see debug echo output
     // Number of user list pages to fetch concurrently (Each page is 300 items)
-    public static $LIST_CONCURRENCY_SIZE = 10; 
+    public static LIST_CONCURRENCY_SIZE = 10; 
     // This constant is included for consistency but is not strictly used in this model, 
     // as it does not fetch item metadata like UserListCSSModel.php.
     const ITEM_CONCURRENCY_SIZE = 100; 
@@ -107,9 +107,8 @@ class UserListModel extends MainModel
     public function getAllInfo()
     {
         // --- Dynamic Concurrency Adjustment (FIXED) ---
-        // We use self::$LIST_CONCURRENCY_SIZE instead of self::LIST_CONCURRENCY_SIZE
         if ($this->_user == '_All_') {
-            self::$LIST_CONCURRENCY_SIZE = 75; 
+            self::LIST_CONCURRENCY_SIZE = 75; 
             if (self::debug) {
                 echo "UserListModel: Setting LIST_CONCURRENCY_SIZE to 75 for '_All_'.\n";
             }
