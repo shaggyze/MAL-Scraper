@@ -48,7 +48,7 @@ class UserListModel extends MainModel
     // --- CONCURRENCY CONSTANTS (Optimized for large lists, e.g., 3,000+ items) ---
     const debug = false; // Set to true to see debug echo output
     // Number of user list pages to fetch concurrently (Each page is 300 items)
-    const LIST_CONCURRENCY_SIZE = 50; 
+    const LIST_CONCURRENCY_SIZE = 10; 
     // This constant is included for consistency but is not strictly used in this model, 
     // as it does not fetch item metadata like UserListCSSModel.php.
     const ITEM_CONCURRENCY_SIZE = 100; 
@@ -91,7 +91,7 @@ class UserListModel extends MainModel
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, htmlspecialchars_decode($url));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 60); // Set a reasonable timeout
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30); // Set a reasonable timeout
         $headers = [
             'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
         ];
