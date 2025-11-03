@@ -204,7 +204,7 @@ class UserListCSSModel extends MainModel
               $list_handles[$offset_to_fetch] = $this->_initializeCurlHandle($url);
           }
           
-          if (debug) echo "Batch $batch_counter: Requesting offsets $current_offset to " . ($current_offset + ((self::LIST_CONCURRENCY_SIZE - 1) * self::OFFSET_STEP)) . "\n";
+          if (self::debug) echo "Batch $batch_counter: Requesting offsets $current_offset to " . ($current_offset + ((self::LIST_CONCURRENCY_SIZE - 1) * self::OFFSET_STEP)) . "\n";
           
           // 2. Execute the batch concurrently
           $list_results = $this->_executeMultiCurl($list_handles);
@@ -241,10 +241,10 @@ class UserListCSSModel extends MainModel
       
       $total_list_entries = count($all_list_content);
       if ($total_list_entries === 0) {
-          if (debug) echo "Total list entries fetched: 0. Exiting.\n";
+          if (self::debug) echo "Total list entries fetched: 0. Exiting.\n";
           return [];
       }
-      if (debug) echo "Total list entries fetched: $total_list_entries. \n";
+      if (self::debug) echo "Total list entries fetched: $total_list_entries. \n";
 
 
       // --- STAGE 2: Concurrent Metadata Fetching for All Items ---
@@ -253,7 +253,7 @@ class UserListCSSModel extends MainModel
       $metadata_results = [];
       $data = []; // Final output array
       
-      if (debug) echo "\nPreparing concurrent metadata requests for $total_list_entries items (Batch Size: " . self::ITEM_CONCURRENCY_SIZE . ")...\n";
+      if (self::debug) echo "\nPreparing concurrent metadata requests for $total_list_entries items (Batch Size: " . self::ITEM_CONCURRENCY_SIZE . ")...\n";
 
       // Process the list in batches for metadata fetching
       $total_batches = ceil($total_list_entries / self::ITEM_CONCURRENCY_SIZE);
@@ -278,7 +278,7 @@ class UserListCSSModel extends MainModel
           }
 
           // 2. Execute the batch concurrently
-          if (debug) echo "Executing metadata batch " . ($batch_num + 1) . " of $total_batches (" . count($item_handles) . " items)...\n";
+          if (self::debug) echo "Executing metadata batch " . ($batch_num + 1) . " of $total_batches (" . count($item_handles) . " items)...\n";
           $batch_metadata_results = $this->_executeMultiCurl($item_handles);
 
           // 3. Merge the results into the main results array
@@ -289,7 +289,7 @@ class UserListCSSModel extends MainModel
       
       $te_all = 0; $te_cwr = 0; $te_c = 0; $te_oh = 0; $te_d = 0; $te_ptwr = 0;
 
-      if (debug) echo "\nProcessing $total_list_entries results and finalizing data structure...\n";
+      if (self::debug) echo "\nProcessing $total_list_entries results and finalizing data structure...\n";
 
       foreach ($all_list_content as $i => $item) {
           $content2 = $metadata_results[$i]; // Metadata result for item $i
@@ -554,7 +554,7 @@ class UserListCSSModel extends MainModel
       }
       unset($item);
       
-      if (debug) echo "Finished processing all data.\n";
+      if (self::debug) echo "Finished processing all data.\n";
       return $data;
     }
     
