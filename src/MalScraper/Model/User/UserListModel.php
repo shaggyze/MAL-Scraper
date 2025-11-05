@@ -48,7 +48,7 @@ class UserListModel extends MainModel
     // --- CONCURRENCY CONSTANTS (Optimized for large lists, e.g., 3,000+ items) ---
     const debug = false; // Set to true to see debug echo output
     // Number of user list pages to fetch concurrently (Each page is 300 items)
-    public $LIST_CONCURRENCY_SIZE = 10; 
+    const LIST_CONCURRENCY_SIZE = 20; 
     // This constant is included for consistency but is not strictly used in this model, 
     // as it does not fetch item metadata like UserListCSSModel.php.
     const ITEM_CONCURRENCY_SIZE = 100; 
@@ -106,23 +106,13 @@ class UserListModel extends MainModel
      */
     public function getAllInfo()
     {
-        // --- Dynamic Concurrency Adjustment (FIXED) ---
-        if ($this->_user == '_All_') {
-            self::$LIST_CONCURRENCY_SIZE = 75; 
-            if (self::debug) {
-                echo "UserListModel: Setting $LIST_CONCURRENCY_SIZE to 75 for '_All_'.\n";
-            }
-        } else {
-            if (self::debug) {
-                echo "UserListModel: Using default $LIST_CONCURRENCY_SIZE of 10.\n";
-            }
-        }
+
         // Renamed from $all_items to $data
         $data = [];
         $current_offset = 0;
 
         if (self::debug) {
-            echo "--- UserListModel: Starting concurrent fetch (Batch Size: " . self::$LIST_CONCURRENCY_SIZE . ") ---\n";
+            echo "--- UserListModel: Starting concurrent fetch (Batch Size: " . self::LIST_CONCURRENCY_SIZE . ") ---\n";
         }
 
         // --- 1. Concurrent Fetching Loop ---
@@ -133,7 +123,7 @@ class UserListModel extends MainModel
             $max_offset_in_batch = 0;
 
             // Prepare batch of concurrent requests
-            for ($i = 0; $i < self::$LIST_CONCURRENCY_SIZE; $i++) {
+            for ($i = 0; $i < self::LIST_CONCURRENCY_SIZE; $i++) {
                 $offset_to_fetch = $current_offset + ($i * self::OFFSET_STEP);
                 $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset_to_fetch.'&status='.$this->_status.'&genre='.$this->_genre.'&order='.$this->_order;
                 
@@ -208,7 +198,7 @@ class UserListModel extends MainModel
             }
             
             // Move to the start of the next batch
-            $current_offset += (self::$LIST_CONCURRENCY_SIZE * self::OFFSET_STEP);
+            $current_offset += (self::LIST_CONCURRENCY_SIZE * self::OFFSET_STEP);
         }
 
         // --- 2. Item Processing Loop ---
