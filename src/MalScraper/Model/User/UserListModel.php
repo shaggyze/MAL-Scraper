@@ -74,152 +74,138 @@ class UserListModel extends MainModel
         $this->_status = $status;
 		$this->_genre = $genre;
 		$this->_order = $order;
-        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status;
+        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
     }
-	
-
+    
+    // --- UTILITY FUNCTIONS ---
+    
     /**
-     * Default call.
+     * Check if status is a number.
      *
-     * @param string $method
-     * @param array  $arguments
-     *
-     * @return array|string|int
+     * @return bool
      */
-    public function __call($method, $arguments)
+    public function isStatusNumeric()
     {
-        if ($this->_error) {
-            return $this->_error;
-        }
-
-        return call_user_func_array([$this, $method], $arguments);
+        return is_numeric($this->_status);
     }
 
     /**
-     * Initializes a single cURL handle.
+     * Get subdirectory number for file path.
      *
-     * @param string $url The URL to fetch.
-     * @return mixed The configured cURL handle (resource/CurlHandle).
+     * @param string $type
+     * @param int $id
+     *
+     * @return string
      */
-    private function initCurlHandle($url)
-    {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, htmlspecialchars_decode($url));
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30); // Set a reasonable timeout
-        $headers = [
-            'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-        ];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        return $ch;
+    public function get_subdirectory($type, $id)
+	{
+        $subdirectory_number = floor($id / 10000);
+        $subdirectory_path = '../info/' . $type . '/' . $subdirectory_number . '/';
+
+        return strval($subdirectory_number);
     }
 
     /**
-     * Get user list info by concurrently fetching all pages and processing them.
+     * Get user list.
      *
      * @return array
      */
     public function getAllInfo()
     {
-        // Renamed from $all_items to $data
+        // Use a dynamic concurrency size if the list is being scraped in full
+        $concurrency_size = self::LIST_CONCURRENCY_SIZE;
+
+        // --- Concurrency Override for _All_ List ---
+        // Since const cannot be changed, we use a local variable based on the constant
+        // for the default, and override if the condition is met.
+        if ($this->_user == '_All_') {
+            $concurrency_size = 75; // Set higher concurrency for the _All_ special user
+            if (self::debug) echo "UserListModel: Setting concurrency to 75 for _All_ user.\n";
+        }
+        
         $data = [];
         $current_offset = 0;
-
-        if (self::debug) {
-            echo "--- UserListModel: Starting concurrent fetch (Batch Size: " . self::LIST_CONCURRENCY_SIZE . ") ---\n";
-        }
+        $all_list_content = [];
+        $list_finished = false;
 
         // --- 1. Concurrent Fetching Loop ---
-        while (true) {
-            $master_mh = curl_multi_init();
-            $handles = [];
+        while (!$list_finished) {
+            $multi_handler = curl_multi_init();
+            $curl_handles = [];
             $batch_found_new_data = false;
-            $max_offset_in_batch = 0;
 
-            // Prepare batch of concurrent requests
-            for ($i = 0; $i < self::LIST_CONCURRENCY_SIZE; $i++) {
+            if (self::debug) echo "UserListModel: Starting batch at offset {$current_offset} with concurrency {$concurrency_size}.\n";
+
+            // Prepare the cURL handles for the current batch
+            for ($i = 0; $i < $concurrency_size; $i++) {
                 $offset_to_fetch = $current_offset + ($i * self::OFFSET_STEP);
                 $url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset='.$offset_to_fetch.'&status='.$this->_status.'&genre='.$this->_genre.'&order='.$this->_order;
+
+                $curl_handles[$offset_to_fetch] = curl_init();
+                curl_setopt($curl_handles[$offset_to_fetch], CURLOPT_URL, htmlspecialchars_decode($url));
+                curl_setopt($curl_handles[$offset_to_fetch], CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($curl_handles[$offset_to_fetch], CURLOPT_CONNECTTIMEOUT, 10);
+                curl_setopt($curl_handles[$offset_to_fetch], CURLOPT_TIMEOUT, 30);
+                curl_multi_add_handle($multi_handler, $curl_handles[$offset_to_fetch]);
                 
-                $ch = $this->initCurlHandle($url);
-                curl_multi_add_handle($master_mh, $ch);
-                $handles[$offset_to_fetch] = $ch;
-                $max_offset_in_batch = $offset_to_fetch;
+                if (self::debug) echo "UserListModel: Request added for offset {$offset_to_fetch}.\n";
             }
 
-            if (self::debug) {
-                echo "UserListModel: Fetching batch starting at offset $current_offset (up to $max_offset_in_batch)...\n";
-            }
-
-            // Execute concurrent requests
-            $running = null;
+            // Execute all requests in the batch concurrently
             do {
-                curl_multi_exec($master_mh, $running);
-            } while ($running > 0);
-            
-            $list_finished = false;
+                $status = curl_multi_exec($multi_handler, $running);
+                if ($running) {
+                    curl_multi_select($multi_handler, 1.0); // Wait for activity
+                }
+            } while ($running > 0 && $status === CURLM_OK);
 
-            // Process results
-            foreach ($handles as $offset_fetched => $ch) {
-                $response = curl_multi_getcontent($ch);
-                $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-                $curl_error = curl_error($ch);
-                curl_multi_remove_handle($master_mh, $ch);
-                curl_close($ch);
+            // Process results from the batch
+            foreach ($curl_handles as $offset_fetched => $handle) {
+                $content = curl_multi_getcontent($handle);
+                $http_code = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+                curl_multi_remove_handle($multi_handler, $handle);
 
-                if ($http_code === 200 && !$curl_error && $response) {
-                    $content = json_decode($response, true);
-                    if (is_array($content) && count($content) > 0) {
-                        // Merge into $data
-                        $data = array_merge($data, $content);
+                if ($http_code == 200 && $content) {
+                    $json_content = json_decode($content, true);
+
+                    if ($json_content && count($json_content) > 0) {
+                        if (self::debug) echo "UserListModel: Successfully fetched and parsed {$offset_fetched} with " . count($json_content) . " items.\n";
+                        $all_list_content = array_merge($all_list_content, $json_content);
                         $batch_found_new_data = true;
-                        
-                        if (self::debug) {
-                            echo "UserListModel: SUCCESS offset $offset_fetched. Items: " . count($content) . "\n";
-                        }
-
-                        // If the page returned fewer than OFFSET_STEP, we are done
-                        if (count($content) < self::OFFSET_STEP) {
-                             $list_finished = true;
-                        }
-
                     } else {
-                        if (self::debug) {
-                            echo "UserListModel: Empty JSON for offset $offset_fetched. Assuming end of list.\n";
+                        // Empty response means the list has ended
+                        if ($offset_fetched == $current_offset) {
+                            $list_finished = true;
+                            if (self::debug) echo "UserListModel: Empty response at first page of batch {$current_offset}. List finished.\n";
                         }
-                        // If the list is empty at this offset, assume the list ends here
-                        $list_finished = true;
                     }
                 } else {
-                    if (self::debug) {
-                        echo "UserListModel: FAILED fetch for offset $offset_fetched. HTTP: $http_code, Error: $curl_error\n";
-                    }
+                    if (self::debug) echo "UserListModel: Request failed for offset {$offset_fetched} (HTTP: {$http_code}).\n";
                     // If the first page of the batch failed, we assume the list has ended
                     if ($offset_fetched == $current_offset) {
                        $list_finished = true;
                     }
                 }
             }
-
-            curl_multi_close($master_mh);
+            curl_multi_close($multi_handler);
             
             // If the list is marked finished or we didn't find any data in the entire batch, break
             if ($list_finished || !$batch_found_new_data) {
                 if (self::debug) {
-                    echo "UserListModel: Batch finished or end of list reached. Total items: " . count($data) . "\n";
+                    echo "UserListModel: Batch finished or end of list reached. Total list pages fetched.\n";
                 }
                 break;
             }
             
             // Move to the start of the next batch
-            $current_offset += (self::LIST_CONCURRENCY_SIZE * self::OFFSET_STEP);
+            $current_offset += ($concurrency_size * self::OFFSET_STEP);
         }
 
         // --- 2. Item Processing Loop ---
-        foreach ($data as &$item) {
+        foreach ($all_list_content as $item) {
             // Apply original item-level logic (Image cleaning/replacement)
             if (!empty($item['anime_image_path'])) {
                 $item['anime_image_path'] = Helper::imageUrlCleaner($item['anime_image_path']);
@@ -231,12 +217,11 @@ class UserListModel extends MainModel
             } else {
                 $item['manga_image_path'] = Helper::imageUrlReplace($item['manga_id'], 'manga', $item['manga_image_path'], $this->_user);
             }
+            $data[] = $item;
         }
-        unset($item); // Break the reference
 
         // --- 3. Single Return ---
         if (self::debug) echo "Finished processing all data.\n";
-        $data = json_encode($data);
         return $data;
     }
 }
