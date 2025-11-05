@@ -99,7 +99,7 @@ class UserListModel extends MainModel
     /**
      * Get user list.
      *
-     * @return string
+     * @return array
      */
     public function getAllInfo()
     {
@@ -207,16 +207,11 @@ class UserListModel extends MainModel
         }
         unset($item); // Break the reference
 
-        // --- 3. Final JSON String Return ---
+        // --- 3. Final PHP Array Return ---
         if (self::debug) echo "Finished processing all data.\n";
+
         
-        $response = [
-            'status' => 200,
-            'message' => 'Success',
-            'data' => $data,
-        ];
-        
-        // CRITICAL: Return the final, encoded JSON string
-        return json_encode($response, JSON_UNESCAPED_SLASHES);
+        // Return the final PHP array, allowing the caller (index.php) to encode it.
+        return $data;
     }
 }
