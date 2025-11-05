@@ -236,6 +236,7 @@ class UserListModel extends MainModel
 
         // --- 3. Single Return ---
         if (self::debug) echo "Finished processing all data.\n";
+        json_encode($data);
         return $data;
     }
 }
