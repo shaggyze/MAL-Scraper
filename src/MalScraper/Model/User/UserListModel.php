@@ -48,7 +48,7 @@ class UserListModel extends MainModel
     // --- CONCURRENCY CONSTANTS (Optimized for large lists, e.g., 3,000+ items) ---
     const debug = false; // Set to true to see debug echo output
     // Number of user list pages to fetch concurrently (Each page is 300 items)
-    const LIST_CONCURRENCY_SIZE = 20; 
+    const LIST_CONCURRENCY_SIZE = 10; 
     // This constant is included for consistency but is not strictly used in this model, 
     // as it does not fetch item metadata like UserListCSSModel.php.
     const ITEM_CONCURRENCY_SIZE = 100; 
@@ -74,17 +74,35 @@ class UserListModel extends MainModel
         $this->_status = $status;
 		$this->_genre = $genre;
 		$this->_order = $order;
-        $this->_url = $this->_myAnimeListUrl.'/'.$this->_type.'list/'.$this->_user.'/load.json?offset=0';
+        $this->_url = $this->_myAnimeListUrl.'/'.$type.'list/'.$user.'?status='.$status;
         $this->_parserArea = $parserArea;
 
         parent::errorCheck($this);
     }
 	
+
     /**
-     * Initializes a cURL handle with common options.
+     * Default call.
      *
-     * @param string $url The URL to set.
-     * @return resource The cURL handle.
+     * @param string $method
+     * @param array  $arguments
+     *
+     * @return array|string|int
+     */
+    public function __call($method, $arguments)
+    {
+        if ($this->_error) {
+            return $this->_error;
+        }
+
+        return call_user_func_array([$this, $method], $arguments);
+    }
+
+    /**
+     * Initializes a single cURL handle.
+     *
+     * @param string $url The URL to fetch.
+     * @return mixed The configured cURL handle (resource/CurlHandle).
      */
     private function initCurlHandle($url)
     {
@@ -106,7 +124,6 @@ class UserListModel extends MainModel
      */
     public function getAllInfo()
     {
-
         // Renamed from $all_items to $data
         $data = [];
         $current_offset = 0;
