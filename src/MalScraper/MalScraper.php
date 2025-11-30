@@ -70,7 +70,7 @@ class MalScraper
      *
      * @var bool
      */
-    private $_enable_cache = true;
+    private $_enable_cache = false;
 
     /**
      * Cache expiration time.
