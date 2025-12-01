@@ -157,7 +157,7 @@ class MalScraper
 					if ($method === "getUserCSS" || $method === "getUserCover") {
 						$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 					} else {
-						$timestamp = json_encode(['-1' => date('Y-m-d\TH:i:s.u\Z')]);
+						$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
 						if (is_array($decoded = json_decode($timestamp, true))) {
 							//error_log($data);
 							if ($data === 404) {
