@@ -157,13 +157,13 @@ class MalScraper
 					if ($method === "getUserCSS" || $method === "getUserCover") {
 						$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 					} else {
-						$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
+						$timestamp = json_encode(['-1' => date('Y-m-d\TH:i:s.u\Z')]);
 						if (is_array($decoded = json_decode($timestamp, true))) {
 							//error_log($data);
 							if ($data === 404) {
 								$result = $data;
 							} else if (is_array($data)) {
-								$data = array_merge($data, $decoded);
+								$data = array_merge($decoded, $data);
 							} else {
 								$result = $data;
 								//error_log("Error: $data is not an array or 404");
