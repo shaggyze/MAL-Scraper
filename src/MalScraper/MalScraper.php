@@ -158,7 +158,7 @@ class MalScraper
 						$data = "/* Generated " . date('Y-m-d\TH:i:s.u\Z') . " */ \r" . $data;
 					} else {
 						$timestamp = json_encode(['generated' => date('Y-m-d\TH:i:s.u\Z')]);
-						if (is_array($decoded = json_decode($timestamp, true))) {
+						if (is_array($decoded = json_decode($timestamp.',', true))) {
 							//error_log($data);
 							if ($data === 404) {
 								$result = $data;
